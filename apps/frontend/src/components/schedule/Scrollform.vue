@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import axios from 'axios'
-import Swal from 'sweetalert2'
-import { computed, onMounted, ref } from 'vue'
+import axios from 'axios';
+import Swal from 'sweetalert2';
+import { computed, onMounted, ref } from 'vue';
 
 // 接收從父組件傳入的屬性
 const props = defineProps<{
@@ -233,25 +233,25 @@ const saveSchedule = async () => {
 
 <template>
   <div
-    class="flex flex-col md:flex-row gap-4 justify-between items-center mb-4 bg-emerald-900/80 rounded-2xl p-4"
+    class="flex flex-col md:flex-row gap-4 justify-between items-center mb-4 rounded-2xl p-4"
   >
     <div class="relative">
       <input
         type="date"
         v-model="localSelectedDate"
         @change="handleDateChange"
-        class="bg-emerald-100 border border-emerald-300 rounded-md px-4 py-2 w-64 text-emerald-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+        class="border border-black rounded-md px-4 py-2 w-64 text-black focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
       />
       <CalendarIcon
-        class="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-emerald-700 pointer-events-none"
+        class="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-black pointer-events-none"
       />
     </div>
-    <h1 class="text-emerald-100">
+    <h1 class="text-black">
       {{ isDateSelected ? '' : '請選擇日期' }}
     </h1>
 
     <button
-      class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2 rounded-md flex items-center transition-all shadow-lg shadow-emerald-500/20"
+      class="bg-black hover:bg-black/80 text-white px-6 py-2 rounded-md flex items-center transition-all shadow-lg shadow-black/20"
       @click="saveSchedule"
       :disabled="!isDateSelected || !hasScheduleChanged"
       :class="{
@@ -264,18 +264,18 @@ const saveSchedule = async () => {
   <div class="flex flex-col lg:flex-row gap-8 h-[calc(100vh-12rem)]">
     <!-- 左邊表格 -->
     <div
-      class="flex-1 rounded-2xl bg-emerald-900/80 backdrop-blur-sm border border-emerald-600/30 overflow-hidden"
+      class="flex-1 rounded-2xl bg-white/90 backdrop-blur-sm border border-gray-200 overflow-hidden shadow-md"
     >
       <div
-        class="max-h-full overflow-y-auto scrollbar-thin scrollbar-thumb-emerald-500 scrollbar-track-emerald-900/50"
+        class="max-h-full overflow-y-auto scrollbar-thin scrollbar-thumb-emerald-500 scrollbar-track-gray-100"
       >
-        <table class="w-full text-emerald-50">
+        <table class="w-full text-gray-800">
           <thead class="sticky top-0 z-10">
             <tr>
-              <th class="bg-emerald-950/90 p-3 text-center backdrop-blur-sm">
+              <th class="bg-emerald-600 p-3 text-center backdrop-blur-sm text-white">
                 Schedule Time
               </th>
-              <th class="bg-emerald-950/90 p-3 text-center backdrop-blur-sm">
+              <th class="bg-emerald-600 p-3 text-center backdrop-blur-sm text-white">
                 Schedule Power (kW)
               </th>
             </tr>
@@ -284,18 +284,18 @@ const saveSchedule = async () => {
             <tr
               v-for="time in times"
               :key="time"
-              class="hover:bg-emerald-800/40 transition-colors"
+              class="hover:bg-emerald-50 transition-colors"
               :class="{ 'opacity-70': isTimeSlotPast(time) }"
             >
-              <td class="p-2 text-center border-b border-emerald-600/30">
+              <td class="p-2 text-center border-b border-gray-200">
                 {{ time }}
                 <span
                   v-if="isTimeSlotPast(time)"
-                  class="text-xs text-amber-400 ml-2"
+                  class="text-xs text-orange-500 ml-2"
                   >(Expired)</span
                 >
               </td>
-              <td class="p-2 border-b border-emerald-600/30">
+              <td class="p-2 border-b border-gray-200">
                 <div class="flex items-center gap-4">
                   <input
                     type="range"
@@ -303,14 +303,14 @@ const saveSchedule = async () => {
                     min="0"
                     max="4000"
                     step="1"
-                    class="w-full h-2 bg-emerald-800/70 rounded-lg appearance-none cursor-pointer hover:bg-emerald-700/70 transition-all"
+                    class="w-full h-2 bg-emerald-200 rounded-lg appearance-none cursor-pointer hover:bg-emerald-300 transition-all"
                     :disabled="!isDateSelected || isTimeSlotPast(time)"
                     :class="{
                       'opacity-50 cursor-not-allowed':
                         !isDateSelected || isTimeSlotPast(time),
                     }"
                   />
-                  <span class="min-w-[4rem] text-right"
+                  <span class="min-w-[10rem] text-right"
                     >{{ powerValues[time] }} kW</span
                   >
                 </div>

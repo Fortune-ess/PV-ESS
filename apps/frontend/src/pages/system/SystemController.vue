@@ -104,7 +104,7 @@ const closeFullscreen = () => {
             :key="currentImageKey"
             :src="currentImage"
             alt="System Status"
-            class="w-full h-full object-contain transition-opacity duration-500 ease-in-out"
+            class="w-2/3 h-full object-contain transition-opacity duration-500 ease-in-out"
             @click="openFullscreen"
           />
         </transition>

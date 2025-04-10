@@ -214,13 +214,13 @@ export const chartOptions: ChartOptions<'bar'> = {
       display: true,
       position: 'top',
       labels: {
-        color: '#d0fae5',
+        color: '#000000',
       },
     },
     title: {
       display: true,
       text: 'Energy Schedule Chart',
-      color: '#d0fae5',
+      color: '#000000',
     },
     tooltip: {
       mode: 'index', // 顯示同一時間點的所有數據
@@ -231,7 +231,7 @@ export const chartOptions: ChartOptions<'bar'> = {
     x: {
       stacked: false, // 不堆疊 X 軸
       ticks: {
-        color: '#d0fae5',
+        color: '#000000',
         maxRotation: 90,
         minRotation: 0,
         autoSkip: true,
@@ -242,12 +242,12 @@ export const chartOptions: ChartOptions<'bar'> = {
       stacked: false, // 不堆疊 Y 軸，允許重疊
       beginAtZero: true,
       ticks: {
-        color: '#d0fae5',
+        color: '#000000',
       },
       title: {
         display: true,
         text: 'Power (W)',
-        color: '#d0fae5',
+        color: '#000000',
       },
     },
   },

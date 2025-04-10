@@ -66,41 +66,43 @@ onMounted(async () => {
 <template>
   <div
     v-if="userStore.user"
-    class="grid grid-cols-1 xl:grid-cols-3 gap-4 md:gap-6 bg-[#0a3726]/80 backdrop-blur-sm p-6 rounded-lg shadow-lg"
+    class="max-w-6xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-xl overflow-hidden"
   >
-    <!-- 歡迎卡片 -->
-    <div class="col-span-full p-4 md:p-6">
-      <h1 class="text-2xl md:text-3xl font-bold text-emerald-100 text-center">
+    <!-- 標題區塊 -->
+    <div class="bg-emerald-600 dark:bg-emerald-700 p-6">
+      <h1 class="text-3xl font-bold text-white text-center">
         {{ $t('main.settings.title') }}
       </h1>
     </div>
 
-    <!-- 語言設定卡片 -->
-    <div
-      class="bg-[#0a3726]/80 backdrop-blur-sm rounded-2xl p-4 md:p-6 border border-emerald-200 hover:shadow-lg transition-all duration-300"
-    >
-      <h2 class="text-lg md:text-xl font-semibold text-emerald-100 mb-4">
-        {{ $t('main.settings.language') }}
-      </h2>
-      <div class="space-y-3">
-        <select
-          v-model="selectedLanguage"
-          class="w-full px-4 py-2 bg-emerald-50 text-emerald-900 rounded-lg border border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-          @change="selectLanguage"
-        >
-          <option v-for="(label, lang) in languages" :key="lang" :value="lang">
-            {{ label }}
-          </option>
-        </select>
+    <!-- 設定內容區塊 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
+      <!-- 語言設定卡片 -->
+      <div class="bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md p-6 transition-all duration-300 hover:shadow-lg">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+          </svg>
+          {{ $t('main.settings.language') }}
+        </h2>
+        <div class="mt-4">
+          <select
+            v-model="selectedLanguage"
+            class="w-full px-4 py-3 bg-white dark:bg-gray-600 text-gray-800 dark:text-white rounded-lg border border-gray-300 dark:border-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+            @change="selectLanguage"
+          >
+            <option v-for="(label, lang) in languages" :key="lang" :value="lang">
+              {{ label }}
+            </option>
+          </select>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- 載入中狀態 -->
-  <div v-else class="flex flex-col items-center justify-center min-h-[50vh]">
-    <div
-      class="animate-spin rounded-full h-8 w-8 md:h-12 md:w-12 border-4 border-emerald-300 border-t-transparent"
-    ></div>
-    <p class="text-base md:text-lg text-emerald-900 mt-4">載入中...</p>
+  <div v-else class="flex flex-col items-center justify-center min-h-[60vh]">
+    <div class="animate-spin rounded-full h-12 w-12 border-4 border-emerald-500 border-t-transparent"></div>
+    <p class="text-lg text-gray-700 dark:text-gray-300 mt-4">{{ $t('main.loading') || '載入中...' }}</p>
   </div>
 </template>
