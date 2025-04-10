@@ -1,4 +1,4 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
+ 
 import { Server } from 'socket.io'
 
 export default function socketEvent(io: Server) {

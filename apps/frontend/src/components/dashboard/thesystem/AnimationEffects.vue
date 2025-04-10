@@ -1,3 +1,44 @@
+<script setup lang="ts">
+import { useSystemStore } from '@/store/systemStore'
+import { Zap } from 'lucide-vue-next'
+
+const {
+  animationStep,
+  animationTriggered,
+  currentAnimationSource,
+  oldPVStatus,
+  status,
+  solarStatus,
+  batteryStatus,
+} = useSystemStore()
+
+const getAnimationStyle = (index: number, direction: 'left' | 'right') => {
+  const positions = {
+    0: '10%',
+    1: '40%',
+    2: '70%',
+  }
+  const step = (animationStep.value + index) % 3
+  return {
+    [direction]: positions[step as keyof typeof positions],
+    transition: 'all 0.5s ease-in-out',
+  }
+}
+
+const getVerticalAnimationStyle = (index: number) => {
+  const positions = {
+    0: '10%',
+    1: '40%',
+    2: '70%',
+  }
+  const step = (animationStep.value + index) % 3
+  return {
+    top: positions[step as keyof typeof positions],
+    transition: 'all 0.5s ease-in-out',
+  }
+}
+</script>
+
 <template>
   <!-- 動畫圖標群組 -->
   <!-- Old PV System to middle -->
@@ -85,47 +126,6 @@
     />
   </div>
 </template>
-
-<script setup lang="ts">
-import { useSystemStore } from '@/store/systemStore'
-import { Zap } from 'lucide-vue-next'
-
-const {
-  animationStep,
-  animationTriggered,
-  currentAnimationSource,
-  oldPVStatus,
-  status,
-  solarStatus,
-  batteryStatus,
-} = useSystemStore()
-
-const getAnimationStyle = (index: number, direction: 'left' | 'right') => {
-  const positions = {
-    0: '10%',
-    1: '40%',
-    2: '70%',
-  }
-  const step = (animationStep.value + index) % 3
-  return {
-    [direction]: positions[step as keyof typeof positions],
-    transition: 'all 0.5s ease-in-out',
-  }
-}
-
-const getVerticalAnimationStyle = (index: number) => {
-  const positions = {
-    0: '10%',
-    1: '40%',
-    2: '70%',
-  }
-  const step = (animationStep.value + index) % 3
-  return {
-    top: positions[step as keyof typeof positions],
-    transition: 'all 0.5s ease-in-out',
-  }
-}
-</script>
 
 <style scoped>
 .animate-pulse {

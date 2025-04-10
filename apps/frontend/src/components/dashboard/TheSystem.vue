@@ -1,3 +1,34 @@
+<script setup lang="ts">
+import { onMounted } from 'vue'
+import { useSystemStore } from '../../store/systemStore'
+import BatteryIcon from './icons/BatteryIcon.vue'
+import SolarpanelIcon from './icons/SolarpanelIcon.vue'
+import TowerIcon from './icons/TowerIcon.vue'
+import AnimationEffects from './thesystem/AnimationEffects.vue'
+import ConnectionLines from './thesystem/ConnectionLines.vue'
+import SystemComponent from './thesystem/SystemComponent.vue'
+
+const {
+  frequency,
+  solarPower,
+  batteryPower,
+  batteryCapacity,
+  oldPVPower,
+  status,
+  solarStatus,
+  batteryStatus,
+  oldPVStatus,
+  totalPower,
+  updateTotalPower,
+  startAnimation,
+} = useSystemStore()
+
+onMounted(() => {
+  updateTotalPower()
+  startAnimation()
+})
+</script>
+
 <template>
   <div class="rounded-xl text-black flex justify-center items-center">
     <div class="grid grid-cols-2 gap-4 relative">
@@ -40,34 +71,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { onMounted } from 'vue'
-import { useSystemStore } from '../../store/systemStore'
-import BatteryIcon from './icons/BatteryIcon.vue'
-import SolarpanelIcon from './icons/SolarpanelIcon.vue'
-import TowerIcon from './icons/TowerIcon.vue'
-import AnimationEffects from './thesystem/AnimationEffects.vue'
-import ConnectionLines from './thesystem/ConnectionLines.vue'
-import SystemComponent from './thesystem/SystemComponent.vue'
-
-const {
-  frequency,
-  solarPower,
-  batteryPower,
-  batteryCapacity,
-  oldPVPower,
-  status,
-  solarStatus,
-  batteryStatus,
-  oldPVStatus,
-  totalPower,
-  updateTotalPower,
-  startAnimation,
-} = useSystemStore()
-
-onMounted(() => {
-  updateTotalPower()
-  startAnimation()
-})
-</script>

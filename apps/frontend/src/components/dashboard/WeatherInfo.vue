@@ -1,20 +1,3 @@
-<template>
-  <div class="flex items-center gap-4 text-gray-600">
-    <div class="text-sm">
-      {{ formattedTime }}
-    </div>
-    <div class="flex items-center gap-2">
-      <component
-        v-if="weatherStore.currentWeather.weather"
-        :is="weatherStore.weatherIcon"
-        class="h-5 w-5"
-        :class="weatherStore.weatherIconColor"
-      />
-      <span>{{ weatherStore.currentWeather.temperature }}</span>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { useWeatherStore } from '@/store/weather'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
@@ -40,3 +23,20 @@ onBeforeUnmount(() => {
   weatherStore.stopTimer()
 })
 </script>
+
+<template>
+  <div class="flex items-center gap-4 text-gray-600">
+    <div class="text-sm">
+      {{ formattedTime }}
+    </div>
+    <div class="flex items-center gap-2">
+      <component
+        v-if="weatherStore.currentWeather.weather"
+        :is="weatherStore.weatherIcon"
+        class="h-5 w-5"
+        :class="weatherStore.weatherIconColor"
+      />
+      <span>{{ weatherStore.currentWeather.temperature }}</span>
+    </div>
+  </div>
+</template>

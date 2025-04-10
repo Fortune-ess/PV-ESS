@@ -1,70 +1,3 @@
-<template>
-  <!-- Entry Buttons Section -->
-  <div class="py-16 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16">
-        <h2
-          class="text-4xl font-bold text-gray-800 sm:text-5xl bg-clip-text bg-gradient-to-r from-[#b8f719] to-emerald-400"
-        >
-          {{ $t('home.features.monitoring.title') }}
-        </h2>
-        <p class="mt-6 text-xl text-gray-600 max-w-3xl mx-auto">
-          {{ $t('home.features.monitoring.description') }}
-        </p>
-      </div>
-      <div class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
-        <FeatureCard
-          :icon="monitoringIcon"
-          :title="$t('home.features.monitoring.title')"
-          :description="$t('home.features.monitoring.description')"
-          :button-text="$t('home.features.monitoring.button')"
-        />
-        <FeatureCard
-          :icon="analyticsIcon"
-          :title="$t('home.features.analytics.title')"
-          :description="$t('home.features.analytics.description')"
-          :button-text="$t('home.features.analytics.button')"
-        />
-        <FeatureCard
-          :icon="schedulingIcon"
-          :title="$t('home.features.scheduling.title')"
-          :description="$t('home.features.scheduling.description')"
-          :button-text="$t('home.features.scheduling.button')"
-        />
-        <FeatureCard
-          :icon="systemMonitoringIcon"
-          :title="$t('home.features.system_monitoring.title')"
-          :description="$t('home.features.system_monitoring.description')"
-          :button-text="$t('home.features.system_monitoring.button')"
-        />
-      </div>
-    </div>
-  </div>
-
-  <!-- Features Section -->
-  <div class="py-16 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 gap-10 md:grid-cols-3">
-        <FeatureCard
-          :icon="solarPanelIcon"
-          :title="$t('home.features.solar_panel.title')"
-          :description="$t('home.features.solar_panel.description')"
-        />
-        <FeatureCard
-          :icon="energyStorageIcon"
-          :title="$t('home.features.energy_storage.title')"
-          :description="$t('home.features.energy_storage.description')"
-        />
-        <FeatureCard
-          :icon="energyConsumptionIcon"
-          :title="$t('home.features.energy_consumption.title')"
-          :description="$t('home.features.energy_consumption.description')"
-        />
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { ref } from 'vue'
 import FeatureCard from './FeatureCard.vue'
@@ -132,6 +65,73 @@ const energyConsumptionIcon = ref(`
   />
 `)
 </script>
+
+<template>
+  <!-- Entry Buttons Section -->
+  <div class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2
+          class="text-4xl font-bold text-gray-800 sm:text-5xl bg-clip-text bg-gradient-to-r from-[#b8f719] to-emerald-400"
+        >
+          {{ $t('home.features.monitoring.title') }}
+        </h2>
+        <p class="mt-6 text-xl text-gray-600 max-w-3xl mx-auto">
+          {{ $t('home.features.monitoring.description') }}
+        </p>
+      </div>
+      <div class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
+        <FeatureCard
+          :icon="monitoringIcon"
+          :title="$t('home.features.monitoring.title')"
+          :description="$t('home.features.monitoring.description')"
+          :button-text="$t('home.features.monitoring.button')"
+        />
+        <FeatureCard
+          :icon="analyticsIcon"
+          :title="$t('home.features.analytics.title')"
+          :description="$t('home.features.analytics.description')"
+          :button-text="$t('home.features.analytics.button')"
+        />
+        <FeatureCard
+          :icon="schedulingIcon"
+          :title="$t('home.features.scheduling.title')"
+          :description="$t('home.features.scheduling.description')"
+          :button-text="$t('home.features.scheduling.button')"
+        />
+        <FeatureCard
+          :icon="systemMonitoringIcon"
+          :title="$t('home.features.system_monitoring.title')"
+          :description="$t('home.features.system_monitoring.description')"
+          :button-text="$t('home.features.system_monitoring.button')"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Features Section -->
+  <div class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 gap-10 md:grid-cols-3">
+        <FeatureCard
+          :icon="solarPanelIcon"
+          :title="$t('home.features.solar_panel.title')"
+          :description="$t('home.features.solar_panel.description')"
+        />
+        <FeatureCard
+          :icon="energyStorageIcon"
+          :title="$t('home.features.energy_storage.title')"
+          :description="$t('home.features.energy_storage.description')"
+        />
+        <FeatureCard
+          :icon="energyConsumptionIcon"
+          :title="$t('home.features.energy_consumption.title')"
+          :description="$t('home.features.energy_consumption.description')"
+        />
+      </div>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .group:hover {

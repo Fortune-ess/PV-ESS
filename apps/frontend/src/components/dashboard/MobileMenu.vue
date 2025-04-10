@@ -1,3 +1,35 @@
+<script setup lang="ts">
+import { ChevronDown, ChevronUp } from 'lucide-vue-next'
+import { ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+
+const router = useRouter()
+const route = useRoute()
+const expandedSubmenu = ref('')
+
+defineProps<{
+  isOpen: boolean
+  menuItems: any[]
+  footerNavItems: any[]
+}>()
+
+defineEmits(['close'])
+
+const toggleSubmenu = (itemId: string) => {
+  if (expandedSubmenu.value === itemId) {
+    expandedSubmenu.value = ''
+  } else {
+    expandedSubmenu.value = itemId
+  }
+}
+
+const navigateTo = (link: string) => {
+  if (link) {
+    router.push(link)
+  }
+}
+</script>
+
 <template>
   <div v-if="isOpen" class="fixed inset-0 z-50 lg:hidden">
     <div class="fixed inset-0 bg-black/50" @click="$emit('close')"></div>
@@ -63,35 +95,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ChevronDown, ChevronUp } from 'lucide-vue-next'
-import { ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-
-const router = useRouter()
-const route = useRoute()
-const expandedSubmenu = ref('')
-
-defineProps<{
-  isOpen: boolean
-  menuItems: any[]
-  footerNavItems: any[]
-}>()
-
-defineEmits(['close'])
-
-const toggleSubmenu = (itemId: string) => {
-  if (expandedSubmenu.value === itemId) {
-    expandedSubmenu.value = ''
-  } else {
-    expandedSubmenu.value = itemId
-  }
-}
-
-const navigateTo = (link: string) => {
-  if (link) {
-    router.push(link)
-  }
-}
-</script>

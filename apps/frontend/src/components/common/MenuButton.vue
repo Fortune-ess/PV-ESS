@@ -1,3 +1,14 @@
+<script setup lang="ts">
+defineProps({
+  isOpen: {
+    type: Boolean,
+    required: true,
+  },
+})
+
+defineEmits(['toggle'])
+</script>
+
 <template>
   <button
     class="text-black focus:outline-none transition-transform duration-200 hover:scale-105"
@@ -35,14 +46,3 @@
     </svg>
   </button>
 </template>
-
-<script setup lang="ts">
-defineProps({
-  isOpen: {
-    type: Boolean,
-    required: true,
-  },
-})
-
-defineEmits(['toggle'])
-</script>

@@ -1,3 +1,22 @@
+<script setup lang="ts">
+interface NavLink {
+  key: string
+  link: string
+}
+
+defineProps<{
+  isOpen: boolean
+  isLoading: boolean
+  navLinks: NavLink[]
+}>()
+
+const emit = defineEmits(['logout'])
+
+const onLogout = () => {
+  emit('logout')
+}
+</script>
+
 <template>
   <div
     class="md:hidden transition-all duration-300"
@@ -45,22 +64,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-interface NavLink {
-  key: string
-  link: string
-}
-
-defineProps<{
-  isOpen: boolean
-  isLoading: boolean
-  navLinks: NavLink[]
-}>()
-
-const emit = defineEmits(['logout'])
-
-const onLogout = () => {
-  emit('logout')
-}
-</script>

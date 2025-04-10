@@ -1,3 +1,31 @@
+<script setup lang="ts">
+import { ChevronDown, ChevronUp } from 'lucide-vue-next'
+import { ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+
+const router = useRouter()
+const route = useRoute()
+const expandedSubmenu = ref('')
+
+defineProps<{
+  menuItems: any[]
+}>()
+
+const toggleSubmenu = (itemId: string) => {
+  if (expandedSubmenu.value === itemId) {
+    expandedSubmenu.value = ''
+  } else {
+    expandedSubmenu.value = itemId
+  }
+}
+
+const navigateTo = (link: string) => {
+  if (link) {
+    router.push(link)
+  }
+}
+</script>
+
 <template>
   <nav class="hidden lg:block">
     <ul class="space-y-2">
@@ -40,31 +68,3 @@
     </ul>
   </nav>
 </template>
-
-<script setup lang="ts">
-import { ChevronDown, ChevronUp } from 'lucide-vue-next'
-import { ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-
-const router = useRouter()
-const route = useRoute()
-const expandedSubmenu = ref('')
-
-defineProps<{
-  menuItems: any[]
-}>()
-
-const toggleSubmenu = (itemId: string) => {
-  if (expandedSubmenu.value === itemId) {
-    expandedSubmenu.value = ''
-  } else {
-    expandedSubmenu.value = itemId
-  }
-}
-
-const navigateTo = (link: string) => {
-  if (link) {
-    router.push(link)
-  }
-}
-</script>

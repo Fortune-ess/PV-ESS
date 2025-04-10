@@ -1,3 +1,9 @@
+<script setup lang="ts">
+defineProps<{
+  title: string
+}>()
+</script>
+
 <template>
   <div
     class="flex flex-col gap-4 bg-white/40 backdrop-blur-[30px] rounded-2xl p-4"
@@ -7,9 +13,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-defineProps<{
-  title: string
-}>()
-</script>

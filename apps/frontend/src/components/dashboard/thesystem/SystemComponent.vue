@@ -1,3 +1,15 @@
+<script setup lang="ts">
+import { useSystemStore } from '@/store/systemStore'
+
+const props = defineProps<{
+  title: string
+  status: string
+  icon: any
+}>()
+
+const { getBorderColor } = useSystemStore()
+</script>
+
 <template>
   <div class="rounded-lg p-3 flex flex-col relative">
     <h3 class="text-black text-sm font-medium mb-2">
@@ -28,15 +40,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { useSystemStore } from '@/store/systemStore'
-
-const props = defineProps<{
-  title: string
-  status: string
-  icon: any
-}>()
-
-const { getBorderColor } = useSystemStore()
-</script>

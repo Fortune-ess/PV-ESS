@@ -1,3 +1,24 @@
+<script setup lang="ts">
+defineProps({
+  icon: {
+    type: String,
+    required: true,
+  },
+  title: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  buttonText: {
+    type: String,
+    default: '',
+  },
+})
+</script>
+
 <template>
   <div
     class="group bg-white p-8 rounded-2xl border border-gray-200 hover:border-[#b8f719] shadow-lg hover:shadow-[#b8f719]/20 transition-all duration-500"
@@ -41,27 +62,6 @@
     </a>
   </div>
 </template>
-
-<script setup lang="ts">
-defineProps({
-  icon: {
-    type: String,
-    required: true,
-  },
-  title: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-  buttonText: {
-    type: String,
-    default: '',
-  },
-})
-</script>
 
 <style scoped>
 .group:hover {
