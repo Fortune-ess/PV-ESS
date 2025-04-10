@@ -1,0 +1,194 @@
+{
+  "app_name": "PV-ESS",
+  "auth": {
+    "welcome": "歡迎使用 PV ESS!",
+    "welcome_description": "開始您的能源管理！",
+    "sign_in": "登入",
+    "email": "電子郵件",
+    "password": "密碼",
+    "stay_signed_in": "保持登入",
+    "forgot_password": "忘記密碼？",
+    "sending_reset_link": "發送重置連結...",
+    "sign_up_prompt": "還沒有帳號？",
+    "sign_up": "註冊",
+    "create_account": "創建帳號",
+    "user_name": "使用者名稱",
+    "confirm_password": "確認密碼",
+    "terms_agreement": "我同意",
+    "create_account_button": "創建帳號",
+    "already_have_account": "已經有帳號？",
+    "sign_in_redirect": "登入",
+    "forgot_password_title": "忘記密碼",
+    "forgot_password_description": "輸入您的電子郵件，我們將發送一個重設密碼的連結給您。",
+    "send_reset_link": "發送重設連結",
+    "remember_password": "記得密碼了？",
+    "back_to_login": "返回登入",
+    "new_password": "新密碼",
+    "confirm_new_password": "確認新密碼",
+    "loading": "登入中...",
+    "cooldown": "請等待 {time} 秒！",
+    "success": "成功！",
+    "login_failed": "登入失敗，請檢查您的憑證。",
+    "too_many_requests": "請求過多，請等待 {time} 秒！",
+    "creating_account": "創建帳號中...",
+    "terms_conditions": "條款和條件",
+    "enter_email_to_reset": "輸入您的電子郵件，我們將傳送一個重置密碼的連結",
+    "reset_password": "重置密碼",
+    "reset_password_description": "輸入您的密碼，確認後重置您的密碼。"
+  },
+  "navbar": {
+    "home": "首頁",
+    "profile": "個人資訊",
+    "products": "產品",
+    "solutions": "解決方案",
+    "contact": "聯絡我們",
+    "logout": "登出",
+    "logout_success": "您已成功登出。",
+    "settings": "設定"
+  },
+  "contact": {
+    "message": "訊息內容",
+    "submitting": "傳送中...",
+    "submit_message": "傳送訊息",
+    "success": "成功！",
+    "suceess_text": "您的訊息已成功送出，我們會盡快回覆您。",
+    "confirm_btn": "確定"
+  },
+  "home": {
+    "hero": {
+      "title": "智慧儲能系統",
+      "subtitle": "引領永續未來",
+      "description": "運用先進AI技術優化您的能源管理。",
+      "button": "立即開始"
+    },
+    "features": {
+      "monitoring": {
+        "title": "即時監控",
+        "description": "一目了然掌握能源使用效率與節能成效。",
+        "button": "查看數據"
+      },
+      "analytics": {
+        "title": "財務分析",
+        "description": "深入分析綠能投資回報與成本節約效益。",
+        "button": "查看報告"
+      },
+      "scheduling": {
+        "title": "智慧排程",
+        "description": "AI優化充電與用電時程，實現最大效益。",
+        "button": "設定排程"
+      },
+      "system_monitoring": {
+        "title": "Grafana監控",
+        "description": "監控SCADA狀態與性能，實現最大效益。",
+        "button": "查看數據"
+      },
+      "solar_panel": {
+        "title": "太陽能整合",
+        "description": "智能整合現有太陽能系統，實現最大發電效率"
+      },
+      "energy_storage": {
+        "title": "儲能系統",
+        "description": "採用先進環保儲能技術，確保穩定供電"
+      },
+      "energy_consumption": {
+        "title": "AI智慧管理",
+        "description": "運用人工智慧技術優化能源配置與使用效率"
+      }
+    }
+  },
+  "main": {
+    "sidebar": {
+      "dashboard": "首頁",
+      "report": "財務報告",
+      "schedule": "排程",
+      "system-monitor": "系統監控",
+      "system-controller": "系統控制",
+      "profile": "個人資訊",
+      "settings": "設定",
+      "logout": "登出"
+    },
+    "settings": {
+      "title": "設定",
+      "language": "語言",
+      "theme": "主題",
+      "theme_dark": "暗色",
+      "theme_light": "亮色",
+      "theme_system": "系統",
+      "export_report": "匯出報告",
+      "export": "匯出"
+    },
+    "profile": {
+      "title": "用戶資訊",
+      "information": "資訊",
+      "update": "更新",
+      "update_information": "更新資訊",
+      "update_password": "更新密碼",
+      "time_information": "時間資訊",
+      "join_date": "加入日期",
+      "update_date": "更新日期",
+      "loading": "加載中...",
+      "old_password": "舊密碼",
+      "new_password": "新密碼",
+      "confirm_update": "確認更新"
+    },
+    "dashboard": {
+      "today_accumulated_income": "本日累積收入",
+      "this_month_accumulated_income": "本月累積收入",
+      "today_generation_degree": "本日發電度數",
+      "abandon_light": "棄光",
+      "none": "無",
+      "today_PV_accumulated_amount_kWh": "本日PV累積量(kWh)",
+      "generation_amount": "發電量",
+      "grid_output": "併網輸出",
+      "today_BESS_accumulated_amount_kWh": "本日BESS累積量(kWh)",
+      "today_charging_amount": "今日充電量",
+      "discharge_amount": "放電量",
+      "factory_generation_amount": "案廠發電量",
+      "individual_battery_cabinet_amount": "各電池櫃個別電量",
+      "total_energy": "2.61倍充電量",
+      "real_time_monitoring": "即時監控",
+      "old_pv_system": "舊光儲系統",
+      "new_pv_system": "新光儲系統",
+      "energy_storage_system": "儲能系統",
+      "battery_status": "電池狀態",
+      "error": "錯誤",
+      "warning": "警告",
+      "normal": "正常",
+      "frequency": "頻率",
+      "operation_status": "操作狀態",
+      "charge": "充電",
+      "discharge": "放電",
+      "standby": "待機",
+      "shutdown": "關機",
+      "weather_forecast": "天氣預報",
+      "current_charge": "當前充電量",
+      "battery_charge_capacity": "電池充電容量",
+      "59_percent_represent_2_61_times_charge_capacity": "(59%代表達到2.61倍充電量)",
+      "bar_chart": {
+        "title": "電池容量",
+        "capacity": "容量 (%)",
+        "charged": "已充電",
+        "remaining": "剩餘容量"
+      },
+      "doughnut_chart": {
+        "title": "電池容量",
+        "capacity": "容量 (%)",
+        "charged": "已充電",
+        "remaining": "剩餘容量"
+      }
+    },
+    "weather": {
+      "solar_energy": "太陽能量"
+    },
+    "schedule": {
+      "chart": {
+        "title": "PV-ESS 能源排程圖表",
+        "power": "功率 (W)",
+        "schedule": "排程",
+        "battery_charge_power": "電池充電功率",
+        "battery_charge_prediction": "電池充電預測",
+        "pv_generation": "PV發電功率"
+      }
+    }
+  }
+}

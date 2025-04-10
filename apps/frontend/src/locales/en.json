@@ -1,0 +1,194 @@
+{
+  "app_name": "PV-ESS",
+  "auth": {
+    "welcome": "Welcome to PV ESS!",
+    "welcome_description": "Start your energy management!",
+    "sign_in": "Sign In",
+    "email": "Email",
+    "password": "Password",
+    "stay_signed_in": "Stay signed in",
+    "forgot_password": "Forgot password?",
+    "sign_up_prompt": "Don't have an account?",
+    "sign_up": "Sign up",
+    "create_account": "Create an Account",
+    "user_name": "User Name",
+    "confirm_password": "Confirm Password",
+    "terms_agreement": "I agree to the ",
+    "create_account_button": "Create Account",
+    "already_have_account": "Already have an account?",
+    "sign_in_redirect": "Sign in",
+    "forgot_password_title": "Forgot Password",
+    "forgot_password_description": "Enter your email address and we'll send you a link to reset your password.",
+    "sending_reset_link": "Sending reset link...",
+    "send_reset_link": "Send Reset Link",
+    "remember_password": "Remember your password?",
+    "back_to_login": "Back to login",
+    "new_password": "New Password",
+    "confirm_new_password": "Confirm New Password",
+    "loading": "Signing in...",
+    "cooldown": "Please wait {time} seconds!",
+    "success": "Success!",
+    "login_failed": "Login failed. Please check your credentials.",
+    "too_many_requests": "Too many requests. Please wait {time} seconds.",
+    "creating_account": "Creating Account...",
+    "terms_conditions": "Terms and Conditions",
+    "enter_email_to_reset": "Enter your email address and we'll send you a link to reset your password.",
+    "reset_password": "Reset Password",
+    "reset_password_description": "Enter your new password and confirm it to reset your password."
+  },
+  "navbar": {
+    "home": "Home",
+    "profile": "Profile",
+    "products": "Products",
+    "solutions": "Solutions",
+    "contact": "Contact",
+    "logout": "Logout",
+    "logout_success": "You have successfully logged out.",
+    "settings": "Settings"
+  },
+  "contact": {
+    "message": "Message content",
+    "submitting": "Submitting...",
+    "submit_message": "Submit message",
+    "success": "Success!",
+    "suceess_text": "Your message've submitted, we'll response you as soon as possible.",
+    "confirm_btn": "OK"
+  },
+  "home": {
+    "hero": {
+      "title": "Smart Energy Storage System",
+      "subtitle": "Leading a Sustainable Future",
+      "description": "Optimize your energy management with advanced AI technology.",
+      "button": "Get Started"
+    },
+    "features": {
+      "monitoring": {
+        "title": "Real-time Monitoring",
+        "description": "Track energy usage efficiency at a glance.",
+        "button": "View Data"
+      },
+      "analytics": {
+        "title": "Financial Analysis",
+        "description": "Analyze green energy investment returns.",
+        "button": "View Report"
+      },
+      "scheduling": {
+        "title": "Smart Scheduling",
+        "description": "Optimize charging and power usage with AI.",
+        "button": "Set Schedule"
+      },
+      "system_monitoring": {
+        "title": "Grafana Monitoring",
+        "description": "Monitor the SCADA status and performance.",
+        "button": "View Data"
+      },
+      "solar_panel": {
+        "title": "Solar Integration",
+        "description": "Smartly integrate existing solar systems to maximize efficiency."
+      },
+      "energy_storage": {
+        "title": "Storage System",
+        "description": "Utilize advanced energy storage technology to ensure stable power supply."
+      },
+      "energy_consumption": {
+        "title": "AI Energy Management",
+        "description": "Optimize energy consumption with AI-driven energy management."
+      }
+    }
+  },
+  "main": {
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "report": "Financial Report",
+      "schedule": "Schedule",
+      "system-monitor": "System Monitor",
+      "system-controller": "System Controller",
+      "profile": "Profile",
+      "settings": "Settings",
+      "logout": "Logout"
+    },
+    "settings": {
+      "title": "Settings",
+      "language": "Language",
+      "theme": "Theme",
+      "theme_dark": "Dark",
+      "theme_light": "Light",
+      "theme_system": "System",
+      "export_report": "Export Report",
+      "export": "Export"
+    },
+    "profile": {
+      "title": "User Profile",
+      "information": "Information",
+      "update": "Update",
+      "update_password": "Update Password",
+      "update_information": "Update Information",
+      "time_information": "Time Information",
+      "join_date": "Join Date",
+      "update_date": "Update Date",
+      "loading": "Loading...",
+      "old_password": "Old Password",
+      "new_password": "New Password",
+      "confirm_update": "Confirm Update"
+    },
+    "dashboard": {
+      "today_accumulated_income": "Today's Accumulated Income",
+      "this_month_accumulated_income": "This Month's Accumulated Income",
+      "today_generation_degree": "Today's Generation Degree",
+      "abandon_light": "Abandon Light",
+      "none": "None",
+      "today_PV_accumulated_amount_kWh": "Today's PV Accumulated Amount (kWh)",
+      "generation_amount": "Generation Amount",
+      "grid_output": "Grid Output",
+      "today_BESS_accumulated_amount_kWh": "Today's BESS Accumulated Amount (kWh)",
+      "today_charging_amount": "Today's Charging Amount",
+      "discharge_amount": "Discharge Amount",
+      "factory_generation_amount": "Factory Generation Amount",
+      "individual_battery_cabinet_amount": "Individual Battery Cabinet Amount",
+      "total_energy": "2.61x Charging Amount",
+      "real_time_monitoring": "Real-time Monitoring",
+      "old_pv_system": "Old PV System",
+      "new_pv_system": "New PV System",
+      "energy_storage_system": "Energy Storage System",
+      "battery_status": "Battery Status",
+      "error": "Error",
+      "warning": "Warning",
+      "normal": "Normal",
+      "frequency": "Frequency",
+      "operation_status": "Operation Status",
+      "charge": "Charge",
+      "discharge": "Discharge",
+      "standby": "Standby",
+      "shutdown": "Shutdown",
+      "weather_forecast": "Weather Forecast",
+      "current_charge": "Current Charge",
+      "battery_charge_capacity": "Battery Charge Capacity",
+      "59_percent_represent_2_61_times_charge_capacity": "(59% represent 2.61x times charge capacity)",
+      "bar_chart": {
+        "title": "Battery Capacity",
+        "capacity": "Capacity (%)",
+        "charged": "Charged",
+        "remaining": "Remaining"
+      },
+      "doughnut_chart": {
+        "title": "Battery Capacity",
+        "capacity": "Capacity (%)",
+        "charged": "Charged",
+        "remaining": "Remaining"
+      }
+    },
+    "weather": {
+      "solar_energy": "Solar Energy"
+    },
+    "schedule": {
+      "chart": {
+        "title": "PV-ESS Energy Schedule Chart",
+        "power": "Power (W)",
+        "schedule": "Schedule",
+        "battery_charge_power": "Battery Charge Power",
+        "battery_charge_prediction": "Battery Charge Prediction",
+        "pv_generation": "PV Generation"
+      }
+    }
+  }
+}
