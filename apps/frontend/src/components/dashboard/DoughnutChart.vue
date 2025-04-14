@@ -55,7 +55,7 @@ const option = computed(() => ({
   plugins: {
     title: {
       display: true,
-      text: 'Battery Status',
+      text: t('main.dashboard.doughnut_chart.title'),
       color: '#1f2937', // 深灰色文字
       font: {
         size: 16,

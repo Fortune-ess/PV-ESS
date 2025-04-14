@@ -49,7 +49,7 @@ onUnmounted(() => {
     </div>
     <div class="w-full bg-gray-300/40 rounded-full h-2 overflow-hidden">
       <div
-        class="bg-emerald-400 h-full rounded-full transition-all duration-1000"
+        class="bg-red-500 h-full rounded-full transition-all duration-1000"
         :style="{ width: `${currentSoCPercentage}%` }"
       ></div>
     </div>

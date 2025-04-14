@@ -5,6 +5,7 @@ import LineChart from '@/components/dashboard/LineChart.vue'
 import TheSystem from '@/components/dashboard/TheSystem.vue'
 import Weather from '@/components/dashboard/Weather.vue'
 import BatteryStatus from '@/components/dashboard/dashboard/BatteryStatus.vue'
+import SocCards from '@/components/dashboard/dashboard/SocCards.vue'
 import StatsCards from '@/components/dashboard/dashboard/StatsCards.vue'
 import { useDataStore } from '@/store/data'
 import { onMounted, onUnmounted, ref } from 'vue'
@@ -63,11 +64,15 @@ onUnmounted(() => {
 
         <!-- 右側圓餅圖 -->
         <div class="flex-1 flex flex-col bg-white/40 rounded-2xl p-6 gap-4">
-          <BatteryStatus />
-          <div class="flex items-center justify-center">
-            <DoughnutChart class="w-full h-full max-w-[200px]" />
+          <div class="flex md:flex-row flex-col gap-4">
+            <div class="w-full md:w-1/2">
+              <SocCards />
+            </div>
+            <div class="w-full md:w-1/2 flex items-center justify-center">
+              <DoughnutChart class="w-full h-full max-w-[200px]" />
+            </div>
           </div>
-
+          <BatteryStatus />
           <div class="flex flex-col">
             <div class="h-48 relative">
               <div class="absolute inset-0 flex items-center justify-center">
@@ -80,7 +85,7 @@ onUnmounted(() => {
     </div>
 
     <!-- Right Sidebar -->
-    <div class="lg:w-64 flex flex-col gap-4 bg-white/40 backdrop-blur-[30px]">
+    <div class="lg:w-72 flex flex-col gap-4 bg-white/40 backdrop-blur-[30px]">
       <StatsCards />
       <div class="rounded-2xl p-4">
         <Weather />

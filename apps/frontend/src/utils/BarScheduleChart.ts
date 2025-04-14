@@ -1,7 +1,7 @@
 import { ChartData, ChartOptions } from 'chart.js'
 
 // API endpoint
-const apiUrl = 'http://localhost:3000/api/schedule/day-ahead/2023-09-30'
+const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/schedule/day-ahead/2023-09-30`
 
 // 時間標籤
 const timeLabels = [

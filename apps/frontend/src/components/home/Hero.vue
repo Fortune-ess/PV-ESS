@@ -1,3 +1,7 @@
+<script setup>
+import { useMotion } from '@vueuse/motion'
+</script>
+
 <template>
   <div
     v-motion

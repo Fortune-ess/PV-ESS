@@ -39,7 +39,7 @@ export class AuthController {
         httpOnly: true, // 防止 XSS 攻擊
         secure: false, // HTTPS 限制
         sameSite: 'lax', // 限制 CSRF 攻擊
-        maxAge: 3600000, // 1 小時
+        maxAge: 3600000 * 24 * 30, // 30 天
         domain: process.env.DOMAIN,
       })
 

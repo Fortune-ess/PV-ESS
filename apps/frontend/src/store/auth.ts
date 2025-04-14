@@ -1,5 +1,6 @@
-import { defineStore } from 'pinia'
 import { useAuthApi } from '@/api/authApi'
+import { connectSocket, disconnectSocket } from '@/composable/useSocket'
+import { defineStore } from 'pinia'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -24,6 +25,7 @@ export const useAuthStore = defineStore('auth', {
     async logout() {
       const { logout } = useAuthApi()
       await logout()
+      disconnectSocket()
       this.user = null
       this.isAuthenticated = false
       window.location.href = '/login'
@@ -34,6 +36,7 @@ export const useAuthStore = defineStore('auth', {
       if (res.status === 200) {
         this.user = res.data.user
         this.isAuthenticated = true
+        connectSocket()
       } else {
         this.user = null
         this.isAuthenticated = false

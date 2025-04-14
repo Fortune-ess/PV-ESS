@@ -49,7 +49,6 @@ const handleSubmit = async () => {
       timer: 1500,
       showConfirmButton: false,
     })
-
     isNavigating.value = true
     await router.push('/home')
   } catch (error: any) {

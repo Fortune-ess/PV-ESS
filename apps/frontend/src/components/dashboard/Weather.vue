@@ -24,7 +24,7 @@ onBeforeUnmount(() => {
       <h2 class="text-lg font-medium text-black">
         {{ $t('main.dashboard.weather_forecast') }}
       </h2>
-      <span class="text-sm text-gray-600">
+      <span class="text-sm text-gray-600 tabular-nums min-w-[150px] text-right">
         {{ weatherStore.currentDateTime.toLocaleDateString() }}
         {{ weatherStore.currentDateTime.toLocaleTimeString() }}
       </span>

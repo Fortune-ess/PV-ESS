@@ -1,5 +1,6 @@
 <script setup>
 import weatherApi from '@/api/weatherApi'
+import { useAuthStore } from '@/store/auth'
 import {
   Activity,
   Calendar,
@@ -17,12 +18,12 @@ import {
   User,
   Wallet,
 } from 'lucide-vue-next'
-import { computed, defineEmits, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
+const emit = defineEmits(['toggle-sidebar'])
 const router = useRouter()
 const route = useRoute()
-const emit = defineEmits(['toggle-sidebar'])
 const currentTime = ref('')
 const currentWeather = ref({
   weather: '',
@@ -147,9 +148,20 @@ const menuItems = [
 ]
 
 const footerNavItems = [
-  { name: 'Settings', icon: Settings, link: '/main/settings' },
-  { name: 'Contact us', icon: Headset, link: '/contact' },
+  { name: 'settings', icon: Settings, link: '/main/settings' },
+  { name: 'contact', icon: Headset, link: '/contact' },
 ]
+
+const authStore = useAuthStore()
+
+const handleLogout = async () => {
+  try {
+    await authStore.logout()
+    router.push('/login')
+  } catch (error) {
+    console.error('Logout failed:', error)
+  }
+}
 
 const navigateTo = (link) => {
   if (link) {
@@ -185,13 +197,13 @@ onBeforeUnmount(() => {
     <!-- Mobile Menu Button -->
     <button
       @click="toggleSidebar"
-      class="lg:hidden p-2 rounded-md hover:bg-gray-100"
+      class="xl:hidden p-2 rounded-md hover:bg-gray-100"
     >
       <Menu class="h-5 w-5 text-gray-500" />
     </button>
 
     <!-- Desktop Navigation -->
-    <nav class="hidden lg:flex items-center justify-center flex-1">
+    <nav class="hidden xl:flex items-center justify-center flex-1">
       <div class="flex items-center justify-between gap-6">
         <router-link to="/home" class="pl-0">
           <h2 class="text-xl font-semibold">PV ESS</h2>
@@ -207,7 +219,7 @@ onBeforeUnmount(() => {
               }"
             >
               <component :is="item.lucideIcon" class="h-5 w-5" />
-              <span>{{ item.id }}</span>
+              <span>{{ $t(`main.sidebar.${item.id}`) }}</span>
               <component
                 :is="expandedSubmenu === item.id ? ChevronUp : ChevronDown"
                 class="h-4 w-4"
@@ -226,10 +238,18 @@ onBeforeUnmount(() => {
                   'text-gray-600 after:w-full': route.path === subItem.link,
                 }"
               >
-                <span>{{ subItem.id }}</span>
+                <span>{{ $t(`main.sidebar.${subItem.id}`) }}</span>
               </router-link>
             </div>
           </div>
+          <button
+            v-else-if="item.id === 'logout'"
+            @click="handleLogout"
+            class="flex items-center gap-2 p-2 text-black hover:text-gray-600 transition-colors duration-200 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-gray-400 hover:after:w-full after:transition-all after:duration-300"
+          >
+            <component :is="item.lucideIcon" class="h-5 w-5" />
+            <span>{{ $t(`main.sidebar.${item.id}`) }}</span>
+          </button>
           <router-link
             v-else
             :to="item.link"
@@ -238,14 +258,14 @@ onBeforeUnmount(() => {
             @click="expandedSubmenu = ''"
           >
             <component :is="item.lucideIcon" class="h-5 w-5" />
-            <span>{{ item.id }}</span>
+            <span>{{ $t(`main.sidebar.${item.id}`) }}</span>
           </router-link>
         </template>
       </div>
     </nav>
 
     <!-- Mobile Sidebar -->
-    <div v-if="isSidebarOpen" class="fixed inset-0 z-50 lg:hidden">
+    <div v-if="isSidebarOpen" class="fixed inset-0 z-50 xl:hidden">
       <div class="fixed inset-0 bg-black/50" @click="toggleSidebar"></div>
       <div class="fixed top-0 left-0 bottom-0 w-64 bg-white shadow-lg">
         <div class="p-4 border-b border-gray-200">
@@ -259,7 +279,9 @@ onBeforeUnmount(() => {
               <div>
                 <button
                   @click="
-                    item.hasSubmenu
+                    item.id === 'logout'
+                      ? handleLogout()
+                      : item.hasSubmenu
                       ? toggleSubmenu(item.id)
                       : navigateTo(item.link)
                   "
@@ -267,12 +289,11 @@ onBeforeUnmount(() => {
                   :class="{
                     'text-gray-600 after:w-full':
                       route.path === item.link ||
-                      (item.hasSubmenu &&
-                        route.path.startsWith('/main/system')),
+                      (item.hasSubmenu && route.path.startsWith('/main/system')),
                   }"
                 >
                   <component :is="item.lucideIcon" class="h-5 w-5 mr-3" />
-                  <span>{{ item.id }}</span>
+                  <span>{{ $t(`main.sidebar.${item.id}`) }}</span>
                   <component
                     v-if="item.hasSubmenu"
                     :is="expandedSubmenu === item.id ? ChevronUp : ChevronDown"
