@@ -134,7 +134,7 @@ const saveSchedule = async () => {
       title: '無變更',
       text: '排程未有任何變動',
       icon: 'info',
-      confirmButtonColor: '#10b981',
+      confirmButtonColor: '#3085d6',
     })
     return
   }
@@ -178,8 +178,8 @@ const saveSchedule = async () => {
     showCancelButton: true,
     confirmButtonText: '確認送出',
     cancelButtonText: '取消',
-    confirmButtonColor: '#10b981',
-    cancelButtonColor: '#ef4444',
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
   })
 
   if (result.isConfirmed) {
@@ -203,7 +203,7 @@ const saveSchedule = async () => {
 
       // 發送單一請求更新所有變更
       const response = await axios.put(
-        `${import.meta.env.VITE_API_URL}/api/schedule/${props.selectedDate}`,
+        `${import.meta.env.VITE_API_BASE_URL}/schedule/${props.selectedDate}`,
         updateData,
       )
 
@@ -213,7 +213,7 @@ const saveSchedule = async () => {
         title: '成功!',
         text: '排程已成功送出',
         icon: 'success',
-        confirmButtonColor: '#10b981',
+        confirmButtonColor: '#3085d6',
       })
 
       // 通知父組件更新原始功率值
@@ -224,7 +224,7 @@ const saveSchedule = async () => {
         title: '錯誤!',
         text: '排程送出失敗，請稍後再試',
         icon: 'error',
-        confirmButtonColor: '#ef4444',
+        confirmButtonColor: '#d33',
       })
     }
   }
@@ -240,18 +240,18 @@ const saveSchedule = async () => {
         type="date"
         v-model="localSelectedDate"
         @change="handleDateChange"
-        class="border border-black rounded-md px-4 py-2 w-64 text-black focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+        class="border border-gray-300 rounded-md px-4 py-2 w-64 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
       />
       <CalendarIcon
-        class="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-black pointer-events-none"
+        class="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500 pointer-events-none"
       />
     </div>
-    <h1 class="text-black">
+    <h1 class="text-gray-700">
       {{ isDateSelected ? '' : '請選擇日期' }}
     </h1>
 
     <button
-      class="bg-black hover:bg-black/80 text-white px-6 py-2 rounded-md flex items-center transition-all shadow-lg shadow-black/20"
+      class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md flex items-center transition-all shadow-lg shadow-blue-500/20"
       @click="saveSchedule"
       :disabled="!isDateSelected || !hasScheduleChanged"
       :class="{
@@ -264,18 +264,18 @@ const saveSchedule = async () => {
   <div class="flex flex-col lg:flex-row gap-8 h-[calc(100vh-12rem)]">
     <!-- 左邊表格 -->
     <div
-      class="flex-1 rounded-2xl bg-white/90 backdrop-blur-sm border border-gray-200 overflow-hidden shadow-md"
+      class="flex-1 rounded-2xl bg-white shadow-md border border-gray-200 overflow-hidden"
     >
       <div
-        class="max-h-full overflow-y-auto scrollbar-thin scrollbar-thumb-emerald-500 scrollbar-track-gray-100"
+        class="max-h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100"
       >
-        <table class="w-full text-gray-800">
+        <table class="w-full text-gray-700">
           <thead class="sticky top-0 z-10">
             <tr>
-              <th class="bg-emerald-600 p-3 text-center backdrop-blur-sm text-white">
+              <th class="bg-blue-600 p-3 text-center text-white backdrop-blur-sm">
                 Schedule Time
               </th>
-              <th class="bg-emerald-600 p-3 text-center backdrop-blur-sm text-white">
+              <th class="bg-blue-600 p-3 text-center text-white backdrop-blur-sm">
                 Schedule Power (kW)
               </th>
             </tr>
@@ -284,7 +284,7 @@ const saveSchedule = async () => {
             <tr
               v-for="time in times"
               :key="time"
-              class="hover:bg-emerald-50 transition-colors"
+              class="hover:bg-gray-100 transition-colors"
               :class="{ 'opacity-70': isTimeSlotPast(time) }"
             >
               <td class="p-2 text-center border-b border-gray-200">
@@ -303,14 +303,14 @@ const saveSchedule = async () => {
                     min="0"
                     max="4000"
                     step="1"
-                    class="w-full h-2 bg-emerald-200 rounded-lg appearance-none cursor-pointer hover:bg-emerald-300 transition-all"
+                    class="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer hover:bg-gray-400 transition-all"
                     :disabled="!isDateSelected || isTimeSlotPast(time)"
                     :class="{
                       'opacity-50 cursor-not-allowed':
                         !isDateSelected || isTimeSlotPast(time),
                     }"
                   />
-                  <span class="min-w-[10rem] text-right"
+                  <span class="min-w-[4rem] text-right"
                     >{{ powerValues[time] }} kW</span
                   >
                 </div>

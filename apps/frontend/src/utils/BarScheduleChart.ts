@@ -1,7 +1,7 @@
+import { useScheduleStore } from '@/store/useSocketStore'
+import { ScheduleData } from '@/types'
 import { ChartData, ChartOptions } from 'chart.js'
-
-// API endpoint
-const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/schedule/day-ahead/2023-09-30`
+import { ref } from 'vue'
 
 // 時間標籤
 const timeLabels = [
@@ -103,61 +103,32 @@ const timeLabels = [
   '23:45',
 ]
 
+const chartDataRef = ref<ChartData<'bar' | 'line'> | null>(null)
+const lastUpdateTime = ref<number>(Date.now())
+let startStorage = false
+let result: ScheduleData[] = []
+
 // Function to fetch data from the API
-const fetchData = async (): Promise<any[]> => {
+const fetchData = async (): Promise<ScheduleData[]> => {
   try {
-    const response = await fetch(apiUrl)
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`)
-    }
-    const data = await response.json()
-    console.log(data)
-    return data
+    const scheduleStore = useScheduleStore()
+    result.push(scheduleStore.scheduleData)
+    return result
   } catch (error) {
     console.error('Fetching data error:', error)
-    return [] // Return an empty array in case of an error
+    return [] as ScheduleData[]
   }
 }
 
 // Function to process data and create chart datasets
 const processChartData = async (): Promise<ChartData<'bar' | 'line'>> => {
-  const apiData = await fetchData()
+  const dataPoints = await fetchData()
 
-  // Extract data from the API response and multiply by 1000
-  const dayAheadPredictionData = apiData.map(
-    (item: any) => item.data.pvEnergy * 1000,
-  ) // Assuming pvEnergy is the DayAhead Prediction
-  const feedInFeederData = apiData.map((item: any) => item.data.esEnergy * 1000) // Assuming esEnergy represents Feed-in Feeder data
-  const feedInBSData = apiData.map((item: any) => item.data.esHSL * 1000) // Assuming esHSL represents Feed-in BS data
+  // 初始化數據陣列 - 使用固定長度96（24小時 * 4個15分鐘）
+  const dayAheadPredictionData: number[] = new Array(96).fill(0)
+  const feedInFeederData: number[] = new Array(96).fill(0)
+  const feedInBSData: number[] = new Array(96).fill(0)
 
-  // 只顯示09:00到14:30的數據
-  const filteredFeedInFeederData = timeLabels.map((label, index) => {
-    const hour = parseInt(label.split(':')[0])
-    const minute = parseInt(label.split(':')[1])
-
-    if (
-      (hour === 9 && minute >= 0) ||
-      (hour > 9 && hour < 14) ||
-      (hour === 14 && minute <= 30)
-    ) {
-      return feedInFeederData[index]
-    }
-    return null
-  })
-
-  const filteredFeedInBSData = timeLabels.map((label, index) => {
-    const hour = parseInt(label.split(':')[0])
-    const minute = parseInt(label.split(':')[1])
-
-    if (
-      (hour === 9 && minute >= 0) ||
-      (hour > 9 && hour < 14) ||
-      (hour === 14 && minute <= 30)
-    ) {
-      return feedInBSData[index]
-    }
-    return null
-  })
 
   // Create datasets for the chart
   const chartData: ChartData<'bar' | 'line'> = {
@@ -166,31 +137,28 @@ const processChartData = async (): Promise<ChartData<'bar' | 'line'>> => {
       {
         label: 'DayAhead Prediction',
         type: 'line',
-        borderColor: 'blue',
+        borderColor: '#4e79a7',
+        backgroundColor: 'rgba(78, 121, 167, 0.1)',
+        borderWidth: 2,
+        pointRadius: 0,
+        pointHoverRadius: 5,
+        tension: 0.3,
+        fill: true,
         data: dayAheadPredictionData,
         yAxisID: 'y',
       },
-      // {
-      //   label: 'Feed-in Feeder',
-      //   type: 'bar',
-      //   backgroundColor: 'rgba(255, 165, 0, 0.7)', // 半透明橙色
-      //   data: filteredFeedInFeederData,
-      //   yAxisID: 'y',
-      //   stack: 'stack0', // 使用相同的堆疊組
-      //   order: 2, // 較高的順序值會先繪製（在底層）
-      //   barPercentage: 1.5, // 增加條形圖的寬度百分比
-      //   categoryPercentage: 0.9, // 增加類別的寬度百分比
-      // },
       {
         label: 'Feed-in BS by Day Ahead Model',
         type: 'bar',
-        backgroundColor: 'rgba(0, 128, 0, 0.7)', // 半透明綠色
-        data: filteredFeedInBSData,
+        backgroundColor: 'rgba(76, 175, 80, 0.7)',
+        borderColor: 'rgba(76, 175, 80, 0.9)',
+        borderWidth: 1,
+        data: feedInBSData,
         yAxisID: 'y',
-        stack: 'stack0', // 使用相同的堆疊組
-        order: 1, // 較低的順序值會後繪製（在頂層）
-        barPercentage: 1.5, // 增加條形圖的寬度百分比
-        categoryPercentage: 0.9, // 增加類別的寬度百分比
+        stack: 'stack0',
+        order: 1,
+        barPercentage: 0.8,
+        categoryPercentage: 0.9,
       },
     ],
   }
@@ -198,14 +166,20 @@ const processChartData = async (): Promise<ChartData<'bar' | 'line'>> => {
   return chartData
 }
 
-// 導出圖表數據
 export const chartData = {
   async get(): Promise<ChartData<'bar' | 'line'>> {
-    return await processChartData()
+    if (!chartDataRef.value) {
+      chartDataRef.value = await processChartData()
+    }
+    return chartDataRef.value
   },
+  async update(): Promise<ChartData<'bar' | 'line'>> {
+    lastUpdateTime.value = Date.now()
+    chartDataRef.value = await processChartData()
+    return chartDataRef.value
+  }
 }
 
-// 導出圖表選項
 export const chartOptions: ChartOptions<'bar'> = {
   responsive: true,
   maintainAspectRatio: false,
@@ -214,41 +188,117 @@ export const chartOptions: ChartOptions<'bar'> = {
       display: true,
       position: 'top',
       labels: {
-        color: '#000000',
+        color: '#333333',
+        font: {
+          size: 12,
+          weight: 'bold',
+        },
+        padding: 15,
+        usePointStyle: true,
       },
     },
     title: {
       display: true,
       text: 'Energy Schedule Chart',
-      color: '#000000',
+      color: '#333333',
+      font: {
+        size: 16,
+        weight: 'bold',
+      },
+      padding: {
+        top: 10,
+        bottom: 20,
+      },
     },
     tooltip: {
-      mode: 'index', // 顯示同一時間點的所有數據
+      mode: 'index',
       intersect: false,
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+      titleColor: '#333333',
+      bodyColor: '#333333',
+      borderColor: '#dddddd',
+      borderWidth: 1,
+      padding: 10,
+      boxPadding: 5,
+      usePointStyle: true,
+      callbacks: {
+        label: function (context) {
+          let label = context.dataset.label || '';
+          if (label) {
+            label += ': ';
+          }
+          if (context.parsed.y !== null) {
+            label += context.parsed.y.toFixed(2) + ' kW';
+          }
+          return label;
+        }
+      }
     },
   },
   scales: {
     x: {
-      stacked: false, // 不堆疊 X 軸
+      stacked: false,
+      grid: {
+        display: true,
+        color: 'rgba(0, 0, 0, 0.05)',
+      },
       ticks: {
-        color: '#000000',
+        color: '#666666',
         maxRotation: 90,
         minRotation: 0,
         autoSkip: true,
-        maxTicksLimit: 64, // Display one tick every 15 minutes
+        maxTicksLimit: 96, // 每15分鐘顯示一個刻度
+        font: {
+          size: 10,
+        },
+      },
+      border: {
+        display: true,
+        color: '#dddddd',
       },
     },
     y: {
-      stacked: false, // 不堆疊 Y 軸，允許重疊
+      stacked: false,
       beginAtZero: true,
+      grid: {
+        display: true,
+        color: 'rgba(0, 0, 0, 0.05)',
+      },
       ticks: {
-        color: '#000000',
+        color: '#666666',
+        font: {
+          size: 10,
+        },
+        callback: function (value) {
+          return value + ' kW';
+        },
+      },
+      border: {
+        display: true,
+        color: '#dddddd',
       },
       title: {
         display: true,
-        text: 'Power (W)',
-        color: '#000000',
+        text: 'Power (kW)',
+        color: '#666666',
+        font: {
+          size: 12,
+          weight: 'bold',
+        },
+        padding: {
+          top: 0,
+          bottom: 10,
+        },
       },
     },
+  },
+  interaction: {
+    mode: 'nearest',
+    axis: 'x',
+    intersect: false,
+  },
+  animation: {
+    duration: 1000,
+    easing: 'easeInOutQuart',
   },
 }

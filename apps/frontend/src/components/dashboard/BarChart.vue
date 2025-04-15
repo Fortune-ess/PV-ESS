@@ -62,14 +62,12 @@ const startCharging = () => {
   }, 50) // 更高的更新頻率使動畫更流暢
 }
 
-// 為每個柱子設置不同的初始值和最大值，使動畫更有變化
+// 修改 batteryConfigs，只保留前4個配置
 const batteryConfigs = [
   { initialOffset: 5, maxValue: 100 },
   { initialOffset: 0, maxValue: 95 },
   { initialOffset: 10, maxValue: 100 },
   { initialOffset: 2, maxValue: 98 },
-  { initialOffset: 8, maxValue: 100 },
-  { initialOffset: 3, maxValue: 97 },
 ]
 
 // 計算每組的充電量，添加一些隨機變化使動畫更自然
@@ -97,20 +95,23 @@ const remainingData = computed(() => {
   })
 })
 
-// 創建圖表數據
+// 修改圖表數據
 const data = computed<ChartData<'bar'>>(() => ({
+  // 保持所有 labels，但只顯示前4個的數據
   labels: ['SOC1', 'SOC2', 'SOC3', 'SOC4', 'SOC5', 'SOC6'],
   datasets: [
     {
       label: t('main.dashboard.bar_chart.charged'),
-      data: chargedData.value,
+      // 只使用前4個數據，後面補 null
+      data: [...chargedData.value.slice(0, 4), null, null],
       backgroundColor: '#eb9234',
       borderWidth: 0,
       barPercentage: 0.7,
     },
     {
       label: t('main.dashboard.bar_chart.remaining'),
-      data: remainingData.value,
+      // 只使用前4個數據，後面補 null
+      data: [...remainingData.value.slice(0, 4), null, null],
       backgroundColor: '#37eb34',
       borderWidth: 1,
       barPercentage: 0.7,

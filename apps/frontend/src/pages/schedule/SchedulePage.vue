@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import ScheduleChart from '@/components/schedule/ScheduleChart.vue'
 import Scrollform from '@/components/schedule/Scrollform.vue'
-import axios from 'axios'
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 
 // 使用 ref 來儲存選擇的日期
 const selectedDate = ref<string>('')
@@ -30,28 +29,11 @@ for (let hour = 0; hour < 24; hour += 1) {
   }
 }
 
-// 獲取排程數據
-const fetchScheduleData = async (date: string) => {
-  try {
-    const response = await axios.get(
-      `http://localhost:3000/api/schedule/${date}`,
-    )
-    console.log('獲取到的排程數據:', response.data)
-    // 這裡可以處理獲取到的數據，更新 powerValues
-  } catch (error) {
-    console.error('獲取排程數據失敗:', error)
-  }
-}
-
 // 處理日期變更事件
 const handleDateChange = (date: string) => {
   selectedDate.value = date
   console.log('選擇的日期:', selectedDate.value)
 
-  // 獲取選擇日期的排程數據
-  if (selectedDate.value) {
-    fetchScheduleData(selectedDate.value)
-  }
 
   // 重置原始功率值
   Object.keys(powerValues.value).forEach((key) => {
@@ -66,26 +48,12 @@ const updateOriginalValues = () => {
   })
 }
 
-// 在組件掛載時獲取當前日期的排程數據
-onMounted(() => {
-  // 設置當前日期為預設值
-  const today = new Date()
-  const year = today.getFullYear()
-  const month = String(today.getMonth() + 1).padStart(2, '0')
-  const day = String(today.getDate()).padStart(2, '0')
-  const formattedDate = `${year}-${month}-${day}`
-
-  selectedDate.value = formattedDate
-
-  // 獲取當前日期的排程數據
-  fetchScheduleData(formattedDate)
-})
 </script>
 
 <template>
-  <div class="flex flex-col h-full gap-5 rounded-2xl">
+  <div class="flex flex-col h-full gap-5">
     <!-- 上半部 (固定大小) -->
-    <div class="flex flex-col items-center rounded-2xl p-4">
+    <div class="flex flex-col items-center bg-white rounded-2xl p-4">
       <h1 class="text-xl font-medium mb-4 text-black flex items-center">
         {{ $t('main.dashboard.factory_generation_amount') }}
       </h1>

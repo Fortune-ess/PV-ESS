@@ -40,7 +40,7 @@ export class AuthController {
         secure: false, // HTTPS 限制
         sameSite: 'lax', // 限制 CSRF 攻擊
         maxAge: 3600000 * 24 * 30, // 30 天
-        domain: process.env.DOMAIN,
+        // domain: process.env.DOMAIN,
       })
 
       res.status(200).json({ user })
@@ -72,7 +72,7 @@ export class AuthController {
         secure: false,
         sameSite: 'lax',
         path: '/',
-        domain: process.env.DOMAIN,
+        // domain: process.env.DOMAIN,
       })
 
       res.status(200).json({ message: 'Logged out successfully' })

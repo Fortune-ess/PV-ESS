@@ -20,7 +20,7 @@ const port = process.env.PORT || 3000
 // CORS 設定
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: ['http://localhost:5173', 'http://192.168.41.63:5173'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
@@ -57,7 +57,7 @@ app.use(`${apiPrefix}/schedule`, scheduleRoutes)
 const server = http.createServer(app)
 const io = new SocketIOServer(server, {
   cors: {
-    origin: 'http://localhost:5173',
+    origin: ['http://localhost:5173', 'http://192.168.41.63:5173'],
     methods: ['GET', 'POST'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -66,7 +66,6 @@ const io = new SocketIOServer(server, {
   pingTimeout: 60000,
 })
 
-// socket connection
 socketEvent(io)
 
 server.listen(port, () => {

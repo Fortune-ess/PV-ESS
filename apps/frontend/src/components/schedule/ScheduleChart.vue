@@ -14,10 +14,9 @@ import {
   Title,
   Tooltip,
 } from 'chart.js'
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { Chart } from 'vue-chartjs'
 
-// ✅ 註冊所有控制器，確保 Bar 和 Line 正常顯示
 ChartJS.register(
   BarController,
   LineController,
@@ -31,21 +30,39 @@ ChartJS.register(
   Tooltip,
 )
 
-// 🔄 使用 ref 來存儲圖表數據
 const isLoading = ref(true)
 const chartDataValue = ref<ChartData<'bar' | 'line'>>({
   labels: [],
   datasets: [],
 })
 
-// 在組件掛載時獲取數據
+const updateChartData = async () => {
+  try {
+    chartDataValue.value = await chartData.update()
+  } catch (error) {
+    console.error('Failed to update chart data:', error)
+  }
+}
+
+let updateInterval: number | null = null
+
 onMounted(async () => {
   try {
+    isLoading.value = true
     chartDataValue.value = await chartData.get()
-  } catch (error) {
-    console.error('loading error:', error)
-  } finally {
     isLoading.value = false
+    updateInterval = window.setInterval(updateChartData, 1000)
+  } catch (error) {
+    console.error('Failed to initialize chart data:', error)
+    isLoading.value = false
+  }
+})
+
+// 在組件卸載時清除定時器
+onUnmounted(() => {
+  if (updateInterval !== null) {
+    clearInterval(updateInterval)
+    updateInterval = null
   }
 })
 </script>
