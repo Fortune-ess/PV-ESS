@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs'
-import appDataSource from '../data-source'
+import appDataSource from '../config/data-source'
 import { User } from '../entities/User'
 
 export class UserService {

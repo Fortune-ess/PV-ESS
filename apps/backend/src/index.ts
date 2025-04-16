@@ -5,12 +5,13 @@ import express from 'express'
 import http from 'http'
 
 import { Server as SocketIOServer } from 'socket.io'
+import AppDataSource from './config/data-source'
 import connectDB from './config/mongo'
-import AppDataSource from './data-source'
 import authRoutes from './routes/authRoute'
 import scheduleRoutes from './routes/scheduleRoute'
 import userRoutes from './routes/userRoute'
 import socketEvent from './socket/socket-event'
+import { startDataInsertion } from './utils/insert-data'
 
 dotenv.config()
 
@@ -42,7 +43,11 @@ const connectMongo = async () => {
   await connectDB({ uri: process.env.MONGO_URI || '' })
 }
 connectMongo()
-  .then(() => console.log('✅ MongoDB connected'))
+  .then(() => {
+    console.log('✅ MongoDB connected')
+    // 每秒insert一次ScheduleData
+    startDataInsertion()
+  })
   .catch((error: Error) => {
     console.error('❌ Error connecting to MongoDB:', error)
     process.exit(1)

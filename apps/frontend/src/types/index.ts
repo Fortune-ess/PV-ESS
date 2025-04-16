@@ -16,6 +16,7 @@ export interface ScheduleData {
   groupId: number
   date: string
   data: {
+    dayAheadPrediction: number
     timestamp: Date
     status: number  // 0: normal 1: abnormal
     esHSL: number  // ESS最大功率

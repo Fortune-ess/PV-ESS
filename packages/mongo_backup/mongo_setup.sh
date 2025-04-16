@@ -29,7 +29,7 @@ cfg.settings = {
 }
 rs.reconfig(cfg)
 
-// 設置讀取偏好，允許從副本讀取
+# 設置讀取偏好，允許從副本讀取
 db.getMongo().setReadPref('secondaryPreferred')
 EOF
 

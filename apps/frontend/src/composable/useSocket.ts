@@ -23,17 +23,11 @@ export function connectSocket() {
     })
 
     socket.value.on('scheduleData', (data: ScheduleData[]) => {
-        const scheduleStore = useScheduleStore()
-
-        // 檢查是否為新的資料
-        const currentTimestamp = data[0]?.data?.timestamp
-        if (currentTimestamp && (!lastTimestamp.value || currentTimestamp.getTime() !== lastTimestamp.value.getTime())) {
-            lastTimestamp.value = currentTimestamp
+        try {
+            const scheduleStore = useScheduleStore()
             scheduleStore.setScheduleData(data)
-            console.log('New schedule data received:')
-            scheduleStore.scheduleData.forEach((item) => {
-                console.log(item.data.timestamp)
-            })
+        } catch (error) {
+            console.error('Error processing schedule data:', error)
         }
     })
 

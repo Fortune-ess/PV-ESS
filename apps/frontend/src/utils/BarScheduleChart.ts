@@ -105,14 +105,14 @@ const timeLabels = [
 
 const chartDataRef = ref<ChartData<'bar' | 'line'> | null>(null)
 const lastUpdateTime = ref<number>(Date.now())
-let startStorage = false
 let result: ScheduleData[] = []
+let lastProcessedData: ScheduleData[] = []
 
 // Function to fetch data from the API
 const fetchData = async (): Promise<ScheduleData[]> => {
   try {
     const scheduleStore = useScheduleStore()
-    result.push(scheduleStore.scheduleData)
+    result = scheduleStore.scheduleData
     return result
   } catch (error) {
     console.error('Fetching data error:', error)
@@ -124,14 +124,77 @@ const fetchData = async (): Promise<ScheduleData[]> => {
 const processChartData = async (): Promise<ChartData<'bar' | 'line'>> => {
   const dataPoints = await fetchData()
 
+  // 檢查數據是否有變化，如果沒有變化則直接返回緩存的圖表數據
+  if (dataPoints.length === lastProcessedData.length &&
+    JSON.stringify(dataPoints) === JSON.stringify(lastProcessedData)) {
+    return chartDataRef.value || {
+      labels: timeLabels,
+      datasets: [
+        {
+          label: 'DayAhead Prediction',
+          type: 'line',
+          borderColor: '#4e79a7',
+          backgroundColor: 'rgba(78, 121, 167, 0.1)',
+          borderWidth: 2,
+          pointRadius: 0,
+          pointHoverRadius: 5,
+          tension: 0.3,
+          fill: true,
+          data: [],
+          yAxisID: 'y',
+        },
+        {
+          label: 'Feed-in BS by Day Ahead Model',
+          type: 'bar',
+          backgroundColor: 'rgba(76, 175, 80, 0.7)',
+          borderColor: 'rgba(76, 175, 80, 0.9)',
+          borderWidth: 1,
+          data: [],
+          yAxisID: 'y',
+          stack: 'stack0',
+          order: 1,
+          barPercentage: 0.8,
+          categoryPercentage: 0.9,
+        },
+      ],
+    }
+  }
+
+  // 更新緩存的數據
+  lastProcessedData = JSON.parse(JSON.stringify(dataPoints))
+
   // 初始化數據陣列 - 使用固定長度96（24小時 * 4個15分鐘）
-  const dayAheadPredictionData: number[] = new Array(96).fill(0)
-  const feedInFeederData: number[] = new Array(96).fill(0)
-  const feedInBSData: number[] = new Array(96).fill(0)
+  let dayAheadPredictionData: number[] = []
+  let feedInFeederData: number[] = []
+  let feedInBSData: number[] = []
+  let started = false
+  const targetTime = '2023-09-30T00:00:00+08:00'
+  const endTime = '2023-09-30T23:45:00+08:00'
 
+  // 修改資料處理邏輯
+  if (dataPoints && dataPoints.length > 0) {
+    for (const item of dataPoints) {
+      // 確保 timestamp 是字串類型
+      const timestamp = String(item.data.timestamp)
+      if (timestamp === endTime) {
+        started = false
+        dayAheadPredictionData = []
+        feedInFeederData = []
+        feedInBSData = []
+      }
+      if (timestamp === targetTime) {
+        started = true
+      }
+      if (started) {
+        dayAheadPredictionData.push(item.data.pvEnergy)
+        feedInFeederData.push(item.data.esHSL)
+        feedInBSData.push(-item.data.esEnergy)
+      }
+    }
+  }
 
-  // Create datasets for the chart
-  const chartData: ChartData<'bar' | 'line'> = {
+  // 無論是否有資料，都返回一個有效的 ChartData 物件
+  return {
     labels: timeLabels,
     datasets: [
       {
@@ -162,8 +225,6 @@ const processChartData = async (): Promise<ChartData<'bar' | 'line'>> => {
       },
     ],
   }
-
-  return chartData
 }
 
 export const chartData = {
@@ -298,7 +359,7 @@ export const chartOptions: ChartOptions<'bar'> = {
     intersect: false,
   },
   animation: {
-    duration: 1000,
+    duration: 500, // 減少動畫時間
     easing: 'easeInOutQuart',
   },
 }

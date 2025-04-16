@@ -8,7 +8,7 @@ const ScheduleSchema: Schema = new Schema({
   date: { type: String, required: true }, // 排程日期
   data: {
     type: {
-      timestamp: { type: Date, required: true }, // 排程時間戳
+      timestamp: { type: String, required: true }, // 排程時間戳
       status: { type: Number, default: 0 }, // ESS狀態 0: normal 1: abnormal
       esHSL: { type: Number, required: true }, // ESS最大功率
       pvEnergy: { type: Number, default: 0 }, // ESS自排程PV發電量

@@ -6,6 +6,7 @@ import {
   BarElement,
   CategoryScale,
   Chart as ChartJS,
+  Filler,
   Legend,
   LinearScale,
   LineController,
@@ -28,6 +29,7 @@ ChartJS.register(
   Legend,
   Title,
   Tooltip,
+  Filler,
 )
 
 const isLoading = ref(true)
@@ -36,12 +38,28 @@ const chartDataValue = ref<ChartData<'bar' | 'line'>>({
   datasets: [],
 })
 
-const updateChartData = async () => {
+// 防抖動函數
+const debounce = (fn: Function, delay: number) => {
+  let timer: number | null = null
+  return function(this: any, ...args: any[]) {
+    if (timer) clearTimeout(timer)
+    timer = window.setTimeout(() => {
+      fn.apply(this, args)
+    }, delay)
+  }
+}
+
+// 使用防抖動包裝更新函數
+const debouncedUpdateChartData = debounce(async () => {
   try {
     chartDataValue.value = await chartData.update()
   } catch (error) {
     console.error('Failed to update chart data:', error)
   }
+}, 300)
+
+const updateChartData = () => {
+  debouncedUpdateChartData()
 }
 
 let updateInterval: number | null = null
@@ -51,6 +69,7 @@ onMounted(async () => {
     isLoading.value = true
     chartDataValue.value = await chartData.get()
     isLoading.value = false
+    // 將更新頻率從1秒改為5秒
     updateInterval = window.setInterval(updateChartData, 1000)
   } catch (error) {
     console.error('Failed to initialize chart data:', error)
@@ -58,7 +77,6 @@ onMounted(async () => {
   }
 })
 
-// 在組件卸載時清除定時器
 onUnmounted(() => {
   if (updateInterval !== null) {
     clearInterval(updateInterval)

@@ -2,8 +2,8 @@ import bcrypt from 'bcryptjs'
 import dotenv from 'dotenv'
 import nodemailer from 'nodemailer'
 import { v4 as uuidv4 } from 'uuid'
+import appDataSource from '../config/data-source'
 import { redisClient } from '../config/redis'
-import appDataSource from '../data-source'
 import { User } from '../entities/User'
 
 dotenv.config()
