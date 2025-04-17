@@ -56,6 +56,7 @@ pnpm run docker-rebuild
 - LLM 數據分析或圖表生成
 - Kubernetes 新增高可用性 高併發
 - 通訊軟件警示通知(Telegram/Line)
+- PWA多裝置相容
 
 ## 相關資源
 
