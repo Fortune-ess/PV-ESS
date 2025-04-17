@@ -55,6 +55,7 @@ pnpm run docker-rebuild
 ## 可擴展性
 - LLM 數據分析或圖表生成
 - Kubernetes 新增高可用性 高併發
+- 通訊軟件警示通知(Telegram/Line)
 
 ## 相關資源
 
