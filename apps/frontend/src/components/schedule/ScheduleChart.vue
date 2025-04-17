@@ -15,7 +15,7 @@ import {
   Title,
   Tooltip,
 } from 'chart.js'
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref, shallowRef } from 'vue'
 import { Chart } from 'vue-chartjs'
 
 ChartJS.register(
@@ -33,7 +33,8 @@ ChartJS.register(
 )
 
 const isLoading = ref(true)
-const chartDataValue = ref<ChartData<'bar' | 'line'>>({
+// 使用 shallowRef 代替 ref，減少深度監聽
+const chartDataValue = shallowRef<ChartData<'bar' | 'line'>>({
   labels: [],
   datasets: [],
 })
@@ -49,14 +50,14 @@ const debounce = (fn: Function, delay: number) => {
   }
 }
 
-// 使用防抖動包裝更新函數
+// 使用防抖動包裝更新函數，但減少延遲時間
 const debouncedUpdateChartData = debounce(async () => {
   try {
     chartDataValue.value = await chartData.update()
   } catch (error) {
     console.error('Failed to update chart data:', error)
   }
-}, 300)
+}, 100) // 減少延遲時間
 
 const updateChartData = () => {
   debouncedUpdateChartData()
@@ -69,7 +70,7 @@ onMounted(async () => {
     isLoading.value = true
     chartDataValue.value = await chartData.get()
     isLoading.value = false
-    // 將更新頻率從1秒改為5秒
+    // 保持每秒更新一次
     updateInterval = window.setInterval(updateChartData, 1000)
   } catch (error) {
     console.error('Failed to initialize chart data:', error)

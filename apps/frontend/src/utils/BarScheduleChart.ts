@@ -107,6 +107,40 @@ const chartDataRef = ref<ChartData<'bar' | 'line'> | null>(null)
 const lastUpdateTime = ref<number>(Date.now())
 let result: ScheduleData[] = []
 let lastProcessedData: ScheduleData[] = []
+let lastProcessedResult: ChartData<'bar' | 'line'> | null = null
+
+// 預先創建空的圖表數據結構
+const emptyChartData: ChartData<'bar' | 'line'> = {
+  labels: timeLabels,
+  datasets: [
+    {
+      label: 'DayAhead Prediction',
+      type: 'line',
+      borderColor: '#4e79a7',
+      backgroundColor: 'rgba(78, 121, 167, 0.1)',
+      borderWidth: 2,
+      pointRadius: 0,
+      pointHoverRadius: 5,
+      tension: 0.3,
+      fill: true,
+      data: [],
+      yAxisID: 'y',
+    },
+    {
+      label: 'Feed-in BS by Day Ahead Model',
+      type: 'bar',
+      backgroundColor: 'rgba(76, 175, 80, 0.7)',
+      borderColor: 'rgba(76, 175, 80, 0.9)',
+      borderWidth: 1,
+      data: [],
+      yAxisID: 'y',
+      stack: 'stack0',
+      order: 1,
+      barPercentage: 0.8,
+      categoryPercentage: 0.9,
+    },
+  ],
+}
 
 // Function to fetch data from the API
 const fetchData = async (): Promise<ScheduleData[]> => {
@@ -126,38 +160,9 @@ const processChartData = async (): Promise<ChartData<'bar' | 'line'>> => {
 
   // 檢查數據是否有變化，如果沒有變化則直接返回緩存的圖表數據
   if (dataPoints.length === lastProcessedData.length &&
-    JSON.stringify(dataPoints) === JSON.stringify(lastProcessedData)) {
-    return chartDataRef.value || {
-      labels: timeLabels,
-      datasets: [
-        {
-          label: 'DayAhead Prediction',
-          type: 'line',
-          borderColor: '#4e79a7',
-          backgroundColor: 'rgba(78, 121, 167, 0.1)',
-          borderWidth: 2,
-          pointRadius: 0,
-          pointHoverRadius: 5,
-          tension: 0.3,
-          fill: true,
-          data: [],
-          yAxisID: 'y',
-        },
-        {
-          label: 'Feed-in BS by Day Ahead Model',
-          type: 'bar',
-          backgroundColor: 'rgba(76, 175, 80, 0.7)',
-          borderColor: 'rgba(76, 175, 80, 0.9)',
-          borderWidth: 1,
-          data: [],
-          yAxisID: 'y',
-          stack: 'stack0',
-          order: 1,
-          barPercentage: 0.8,
-          categoryPercentage: 0.9,
-        },
-      ],
-    }
+    JSON.stringify(dataPoints) === JSON.stringify(lastProcessedData) &&
+    lastProcessedResult) {
+    return lastProcessedResult
   }
 
   // 更新緩存的數據
@@ -171,30 +176,28 @@ const processChartData = async (): Promise<ChartData<'bar' | 'line'>> => {
   const targetTime = '2023-09-30T00:00:00+08:00'
   const endTime = '2023-09-30T23:45:00+08:00'
 
-  // 修改資料處理邏輯
+  // 修改資料處理邏輯 - 使用更高效的方式
   if (dataPoints && dataPoints.length > 0) {
-    for (const item of dataPoints) {
-      // 確保 timestamp 是字串類型
-      const timestamp = String(item.data.timestamp)
-      if (timestamp === endTime) {
-        started = false
-        dayAheadPredictionData = []
-        feedInFeederData = []
-        feedInBSData = []
-      }
-      if (timestamp === targetTime) {
-        started = true
-      }
-      if (started) {
+    // 找到目標時間的索引
+    const targetIndex = dataPoints.findIndex(item => String(item.data.timestamp) === targetTime)
+    const endIndex = dataPoints.findIndex(item => String(item.data.timestamp) === endTime)
+
+    if (targetIndex !== -1) {
+      // 直接從目標時間開始處理數據
+      for (let i = targetIndex; i < dataPoints.length; i++) {
+        const item = dataPoints[i]
         dayAheadPredictionData.push(item.data.pvEnergy)
         feedInFeederData.push(item.data.esHSL)
         feedInBSData.push(-item.data.esEnergy)
+
+        // 如果到達結束時間，停止處理
+        if (i === endIndex) break
       }
     }
   }
 
-  // 無論是否有資料，都返回一個有效的 ChartData 物件
-  return {
+  // 創建新的圖表數據
+  const newChartData: ChartData<'bar' | 'line'> = {
     labels: timeLabels,
     datasets: [
       {
@@ -225,6 +228,10 @@ const processChartData = async (): Promise<ChartData<'bar' | 'line'>> => {
       },
     ],
   }
+
+  // 緩存處理結果
+  lastProcessedResult = newChartData
+  return newChartData
 }
 
 export const chartData = {
@@ -260,7 +267,7 @@ export const chartOptions: ChartOptions<'bar'> = {
     },
     title: {
       display: true,
-      text: 'Energy Schedule Chart',
+      text: 'PV Day Ahead Prediction',
       color: '#333333',
       font: {
         size: 16,
@@ -308,7 +315,7 @@ export const chartOptions: ChartOptions<'bar'> = {
         maxRotation: 90,
         minRotation: 0,
         autoSkip: true,
-        maxTicksLimit: 96, // 每15分鐘顯示一個刻度
+        maxTicksLimit: 24, // 減少刻度數量，每小時顯示一個刻度
         font: {
           size: 10,
         },
@@ -359,7 +366,25 @@ export const chartOptions: ChartOptions<'bar'> = {
     intersect: false,
   },
   animation: {
-    duration: 500, // 減少動畫時間
+    duration: 200, // 進一步減少動畫時間
     easing: 'easeInOutQuart',
+  },
+  // 添加性能優化選項
+  elements: {
+    point: {
+      radius: 0, // 不顯示點
+      hitRadius: 5, // 但保留懸停檢測
+    },
+    line: {
+      borderWidth: 1.5, // 減少線寬
+    },
+    bar: {
+      borderWidth: 0, // 移除條形圖邊框
+    },
+  },
+  // 禁用不必要的功能
+  hover: {
+    mode: 'nearest',
+    intersect: false,
   },
 }
