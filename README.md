@@ -7,7 +7,6 @@ PV-ESS（光儲系統）是一個智能能源管理系統，能夠有效地安�
 ## 功能
 
 - **智慧排程**：根據太陽能發電量與用電需求，動態調整充放電計劃。
-- **AI 預測**：利用 AI 分析天氣、歷史數據與用電習慣，優化能源分配。
 - **即時監測**：透過 Web 介面監控系統運行狀態、電池電量與功率變化。
 - **多設備支援**：透過 WebSocket 實現即時數據同步，支援多裝置同時監控。
 
@@ -19,6 +18,7 @@ PV-ESS（光儲系統）是一個智能能源管理系統，能夠有效地安�
 - TailwindCSS
 - ShadCN
 - TypeScript
+- Pinia
 
 ### **Backend**
 
@@ -26,6 +26,7 @@ PV-ESS（光儲系統）是一個智能能源管理系統，能夠有效地安�
 - JWT 驗證機制
 - Redis（快取與即時數據存儲）
 - PostgreSQL（數據庫）
+- MongoDB replica sets (Real time data Access)
 - Socket.io（即時通訊）
 
 ### **開發工具**
@@ -34,30 +35,13 @@ PV-ESS（光儲系統）是一個智能能源管理系統，能夠有效地安�
 - Docker Compose
 - Turborepo（單體倉庫管理）
 
-### **雲端部署**
-
-- Vercel（前端）
-- GKE（Google Kubernetes Engine，後端與數據管理）
 
 ## 運行方式
 
-## 容器化運行
-
-### **建置專案**
-
+## 本地端啟動(已容器化)
 ```sh
-# 建立 Docker 容器
-docker-compose build
+pnpm run docker-rebuild
 ```
-
-### **啟動所有服務**
-
-```sh
-docker-compose up -d
-```
-
-## 本地端啟動(無容器化)
-
 ### **服務端口**
 
 | 服務       | 端口 |
