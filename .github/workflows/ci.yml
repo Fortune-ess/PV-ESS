@@ -11,10 +11,6 @@ jobs:
     name: Build and Test
     timeout-minutes: 15
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./apps/frontend
-        shell: bash
 
     steps:
       - name: Check out code
