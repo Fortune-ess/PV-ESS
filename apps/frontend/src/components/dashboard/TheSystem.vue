@@ -60,7 +60,7 @@ onMounted(() => {
         :status="batteryStatus"
         :icon="BatteryIcon"
       >
-        功率: {{ batteryPower }}kW / 容量: {{ batteryCapacity }}kWh
+        Power: {{ batteryPower }}kW / Capacity: {{ batteryCapacity }}kWh
       </SystemComponent>
 
       <!-- 連接線 -->

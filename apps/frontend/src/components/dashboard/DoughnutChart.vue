@@ -30,7 +30,6 @@ onMounted(async () => {
       const percentage = doughnutData.value.datasets[0].data[0]
       // 計算實際的 SOC 值
       socValue.value = (percentage / 100) * MAX_SOC
-      console.log('SOC value from chart data:', socValue.value)
       
       // 計算 SOC 百分比
       socPercentage.value = Math.min(Math.round((socValue.value / MAX_SOC) * 100), 100)
@@ -81,132 +80,37 @@ setInterval(updateChart, 1000)
 </script>
 
 <template>
-  <div class="chart-wrapper">
+  <div class="w-full h-full flex flex-col items-center justify-center p-4">
     <!-- 添加標題 -->
-    <h3 class="chart-title">{{ t('main.dashboard.doughnut_chart.title') }}</h3>
+    <h3 class="text-xl font-semibold text-gray-800 mb-4 text-center">
+      {{ t('main.dashboard.doughnut_chart.title') }}
+    </h3>
     
-    <div class="chart-container">
+    <div class="relative w-full h-[80%] flex items-center justify-center">
       <Doughnut v-if="doughnutData && doughnutOptions" :data="doughnutData" :options="doughnutOptions" />
-      <div v-else class="loading">Loading...</div>
+      <div v-else class="flex items-center justify-center h-full text-lg text-gray-600">
+        Loading...
+      </div>
       
       <!-- 目標標記 -->
-      <div class="target-badge" :class="{ 'target-reached': isTargetReached }">
-        <span class="target-icon">{{ isTargetReached ? '✓' : '⟳' }}</span>
-        <span class="target-text">{{ isTargetReached ? 'Charged' : 'Charging' }}</span>
+      <div 
+        class="absolute top-1/2 left-0 flex items-center px-2 py-1 rounded text-sm font-bold text-white shadow-sm"
+        :class="isTargetReached ? 'bg-green-500' : 'bg-orange-500'"
+      >
+        <span class="mr-1">{{ isTargetReached ? '✓' : '⟳' }}</span>
+        <span>{{ isTargetReached ? 'Charged' : 'Charging' }}</span>
       </div>
     </div>
     
     <!-- 當前 SOC 值顯示 -->
-    <div class="current-soc-info">
-      <span class="current-soc-label">當前 SOC:</span>
-      <span class="current-soc-value">{{ socValue.toFixed(2) }}</span>
-      <span class="current-soc-percentage">({{ socPercentage }}%)</span>
+    <div class="mt-2.5 flex flex-wrap items-center text-sm text-gray-600">
+      <span class="mr-1">Current SOC:</span>
+      <span class="font-bold text-blue-500">{{ socValue.toFixed(2) }} MWh</span>
+      <span class="ml-1 text-gray-500">({{ socPercentage }}%)</span>
     </div>
   </div>
 </template>
 
 <style scoped>
-.chart-wrapper {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-}
-
-.chart-title {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-.chart-container {
-  position: relative;
-  width: 100%;
-  height: 80%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  font-size: 1.2rem;
-  color: #666;
-}
-
-.target-badge {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: #eb9234;
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  font-size: 0.8rem;
-  font-weight: bold;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.target-reached {
-  background-color: #10B981;
-}
-
-.target-icon {
-  margin-right: 4px;
-}
-
-.target-info {
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-  font-size: 0.9rem;
-  color: #4B5563;
-}
-
-.target-label {
-  margin-right: 5px;
-}
-
-.target-value {
-  font-weight: bold;
-  color: #10B981;
-}
-
-.max-soc-info {
-  margin-left: 10px;
-  font-size: 0.8rem;
-  color: #6B7280;
-}
-
-.current-soc-info {
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-  font-size: 0.9rem;
-  color: #4B5563;
-}
-
-.current-soc-label {
-  margin-right: 5px;
-}
-
-.current-soc-value {
-  font-weight: bold;
-  color: #3B82F6;
-}
-
-.current-soc-percentage {
-  margin-left: 5px;
-  color: #6B7280;
-}
+/* 移除所有 scoped styles，因為我們現在使用 Tailwind */
 </style>

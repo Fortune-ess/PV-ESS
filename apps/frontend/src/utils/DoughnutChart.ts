@@ -39,8 +39,6 @@ export const centerTextPlugin = {
       }
     }
 
-    console.log('socValue from chart data', socValue)
-
     // 計算百分比，最大為 100%
     const percentage = Math.min(Math.round((socValue / MAX_SOC) * 100), 100)
     const text = `${percentage}%`
