@@ -52,6 +52,10 @@ pnpm run docker-rebuild
 | PgAdmin    | 5050 |
 | Redis      | 6379 |
 
+## 可擴展性
+- LLM 數據分析或圖表生成
+- Kubernetes 新增高可用性 高併發
+
 ## 相關資源
 
 - [Vue.js 官方網站](https://vuejs.org/)
