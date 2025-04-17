@@ -7,7 +7,6 @@ import { ref } from 'vue'
 
 const socket = ref<Socket | null>(null)
 const scheduleData = ref<ScheduleData[]>([])
-const lastTimestamp = ref<Date | null>(null)
 
 export function connectSocket() {
     const authStore = useAuthStore()

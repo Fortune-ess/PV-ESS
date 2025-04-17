@@ -1,4 +1,4 @@
-import { useScheduleStore } from '@/store/useSocketStore'
+import { fetchData } from '@/services/fetch-schedule-data'
 import { ScheduleData } from '@/types'
 import { ChartData, ChartOptions } from 'chart.js'
 import { ref } from 'vue'
@@ -105,54 +105,8 @@ const timeLabels = [
 
 const chartDataRef = ref<ChartData<'bar' | 'line'> | null>(null)
 const lastUpdateTime = ref<number>(Date.now())
-let result: ScheduleData[] = []
 let lastProcessedData: ScheduleData[] = []
 let lastProcessedResult: ChartData<'bar' | 'line'> | null = null
-
-// 預先創建空的圖表數據結構
-const emptyChartData: ChartData<'bar' | 'line'> = {
-  labels: timeLabels,
-  datasets: [
-    {
-      label: 'DayAhead Prediction',
-      type: 'line',
-      borderColor: '#4e79a7',
-      backgroundColor: 'rgba(78, 121, 167, 0.1)',
-      borderWidth: 2,
-      pointRadius: 0,
-      pointHoverRadius: 5,
-      tension: 0.3,
-      fill: true,
-      data: [],
-      yAxisID: 'y',
-    },
-    {
-      label: 'Feed-in BS by Day Ahead Model',
-      type: 'bar',
-      backgroundColor: 'rgba(76, 175, 80, 0.7)',
-      borderColor: 'rgba(76, 175, 80, 0.9)',
-      borderWidth: 1,
-      data: [],
-      yAxisID: 'y',
-      stack: 'stack0',
-      order: 1,
-      barPercentage: 0.8,
-      categoryPercentage: 0.9,
-    },
-  ],
-}
-
-// Function to fetch data from the API
-const fetchData = async (): Promise<ScheduleData[]> => {
-  try {
-    const scheduleStore = useScheduleStore()
-    result = scheduleStore.scheduleData
-    return result
-  } catch (error) {
-    console.error('Fetching data error:', error)
-    return [] as ScheduleData[]
-  }
-}
 
 // Function to process data and create chart datasets
 const processChartData = async (): Promise<ChartData<'bar' | 'line'>> => {
@@ -172,7 +126,6 @@ const processChartData = async (): Promise<ChartData<'bar' | 'line'>> => {
   let dayAheadPredictionData: number[] = []
   let feedInFeederData: number[] = []
   let feedInBSData: number[] = []
-  let started = false
   const targetTime = '2023-09-30T00:00:00+08:00'
   const endTime = '2023-09-30T23:45:00+08:00'
 

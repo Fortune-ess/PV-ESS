@@ -1,30 +1,49 @@
 <script setup lang="ts">
 import { useDataStore } from '@/store/data'
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { chartData } from '@/utils/DoughnutChart'
+import { onMounted, onUnmounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const dataStore = useDataStore()
 const constants = dataStore.constants
-const timeIntervals = dataStore.timeIntervals
-const simulatedData = dataStore.getSimulatedDataForDate('2023-09-30', true)
-const currentTimeIndex = ref(0)
-const maxTimeIndex = timeIntervals.length - 1
 
-const currentSoCPercentage = computed(() => {
-  if (currentTimeIndex.value > maxTimeIndex) return 100
-  const currentSoC = simulatedData[currentTimeIndex.value]?.data.soc || 0
-  return Math.round((currentSoC / constants.BSC) * 100)
-})
+// 從 DoughnutChart.ts 中獲取 SOC 值
+const currentSoCValue = ref(0)
+const currentSoCPercentage = ref(0)
+const MAX_SOC = 11.5 // 與 DoughnutChart.ts 中的值保持一致
+const TARGET_SOC = 8.19 // 與 DoughnutChart.ts 中的值保持一致
+
+// 更新 SOC 值的函數
+const updateSoCValue = async () => {
+  try {
+    // 獲取圖表數據
+    const doughnutData = await chartData.get(t)
+    
+    // 從圖表數據中提取 SOC 值
+    if (doughnutData && doughnutData.datasets.length > 0) {
+      // 從數據集中獲取百分比值
+      const percentage = doughnutData.datasets[0].data[0]
+      // 計算實際的 SOC 值
+      currentSoCValue.value = (percentage / 100) * MAX_SOC
+      // 設置百分比值 - 使用 TARGET_SOC 作為 100% 的基準
+      currentSoCPercentage.value = Math.min(Math.round((currentSoCValue.value / TARGET_SOC) * 100), 100)
+    }
+  } catch (error) {
+    console.error('Error updating SOC value:', error)
+  }
+}
 
 // 電池充電模擬計時器
 let batteryChargingTimer: number | undefined
 
-onMounted(() => {
-  batteryChargingTimer = window.setInterval(() => {
-    if (currentTimeIndex.value < maxTimeIndex) {
-      currentTimeIndex.value++
-    } else {
-      clearInterval(batteryChargingTimer)
-    }
+onMounted(async () => {
+  // 初始更新 SOC 值
+  await updateSoCValue()
+  
+  // 每秒更新一次 SOC 值
+  batteryChargingTimer = window.setInterval(async () => {
+    await updateSoCValue()
   }, 1000)
 })
 
