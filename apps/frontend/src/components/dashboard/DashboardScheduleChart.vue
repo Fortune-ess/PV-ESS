@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { chartData, chartOptions } from '@/utils/StaticSchedule'
+import { chartData, chartOptions } from '@/utils/BarScheduleChart'
 import type { ChartData } from 'chart.js'
 import {
   BarController,
@@ -15,7 +15,7 @@ import {
   Title,
   Tooltip,
 } from 'chart.js'
-import { onMounted, ref, shallowRef } from 'vue'
+import { onMounted, onUnmounted, ref, shallowRef } from 'vue'
 import { Chart } from 'vue-chartjs'
 
 ChartJS.register(
@@ -33,19 +33,55 @@ ChartJS.register(
 )
 
 const isLoading = ref(true)
+// 使用 shallowRef 代替 ref，減少深度監聽
 const chartDataValue = shallowRef<ChartData<'bar' | 'line'>>({
   labels: [],
   datasets: [],
 })
+
+// 防抖動函數
+const debounce = (fn: Function, delay: number) => {
+  let timer: number | null = null
+  return function(this: any, ...args: any[]) {
+    if (timer) clearTimeout(timer)
+    timer = window.setTimeout(() => {
+      fn.apply(this, args)
+    }, delay)
+  }
+}
+
+// 使用防抖動包裝更新函數，但減少延遲時間
+const debouncedUpdateChartData = debounce(async () => {
+  try {
+    chartDataValue.value = await chartData.update()
+  } catch (error) {
+    console.error('Failed to update chart data:', error)
+  }
+}, 100) // 減少延遲時間
+
+const updateChartData = () => {
+  debouncedUpdateChartData()
+}
+
+let updateInterval: number | null = null
 
 onMounted(async () => {
   try {
     isLoading.value = true
     chartDataValue.value = await chartData.get()
     isLoading.value = false
+    // 保持每秒更新一次
+    updateInterval = window.setInterval(updateChartData, 1000)
   } catch (error) {
     console.error('Failed to initialize chart data:', error)
     isLoading.value = false
+  }
+})
+
+onUnmounted(() => {
+  if (updateInterval !== null) {
+    clearInterval(updateInterval)
+    updateInterval = null
   }
 })
 </script>

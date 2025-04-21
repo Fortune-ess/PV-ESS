@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import axios from 'axios';
+import scheduleData from '@/assets/data.json';
 import Swal from 'sweetalert2';
 import { computed, onMounted, ref } from 'vue';
 
@@ -95,8 +95,12 @@ const isTimeSlotPast = (timeSlot: string) => {
     const timeSlotDate = new Date()
     timeSlotDate.setHours(hours, minutes, 0, 0)
 
-    // 如果時間段的開始時間已經過去，則不可編輯
-    return timeSlotDate <= currentTime.value
+    // 計算30分鐘後的時間
+    const thirtyMinutesLater = new Date(currentTime.value)
+    thirtyMinutesLater.setMinutes(thirtyMinutesLater.getMinutes() + 30)
+
+    // 如果時間段的開始時間在當前時間30分鐘內，則不可編輯
+    return timeSlotDate <= thirtyMinutesLater
   }
 
   return false
@@ -118,8 +122,17 @@ const convertToISOTimestamp = (date: string, timeSlot: string) => {
   const dateObj = new Date(date)
   dateObj.setHours(hours, minutes, 0, 0)
 
-  // 返回ISO格式的時間戳
-  return dateObj.toISOString()
+  // 轉換為 UTC+8 時區
+  const utc8Date = new Date(dateObj.getTime() + 8 * 60 * 60 * 1000)
+  
+  // 格式化為 ISO 字符串並添加時區信息
+  const year = utc8Date.getUTCFullYear()
+  const month = String(utc8Date.getUTCMonth() + 1).padStart(2, '0')
+  const day = String(utc8Date.getUTCDate()).padStart(2, '0')
+  const hour = String(utc8Date.getUTCHours()).padStart(2, '0')
+  const minute = String(utc8Date.getUTCMinutes()).padStart(2, '0')
+  
+  return `${year}-${month}-${day}T${hour}:${minute}:00+08:00`
 }
 
 // 儲存排程功能
@@ -143,7 +156,7 @@ const saveSchedule = async () => {
   const changedTimes = changedTimestamps.value
 
   // 創建JSON格式的數據
-  const scheduleData = changedTimes.map((timestamp) => ({
+  const updatedScheduleData = changedTimes.map((timestamp) => ({
     data: {
       timestamp: convertToISOTimestamp(props.selectedDate, timestamp),
       status: 0,
@@ -160,7 +173,7 @@ const saveSchedule = async () => {
   }))
 
   // 轉換為JSON字符串
-  const jsonData = JSON.stringify(scheduleData, null, 2)
+  const jsonData = JSON.stringify(updatedScheduleData, null, 2)
 
   // 使用 SweetAlert2 顯示確認對話框
   const result = await Swal.fire({
@@ -184,30 +197,25 @@ const saveSchedule = async () => {
 
   if (result.isConfirmed) {
     try {
-      // 將所有變更整合為一個請求
-      const updateData = changedTimes.map((timestamp) => ({
-        data: {
-          timestamp: convertToISOTimestamp(props.selectedDate, timestamp),
-          status: 0,
-          esHSL: props.powerValues[timestamp] / 1000,
-          pvEnergy: 0,
-          esEnergy: 0,
-          soc: 0,
-        },
-        _id: '',
-        qseId: '33284077',
-        groupId: 1,
-        date: props.selectedDate,
-        __v: 0,
-      }))
+      // 更新現有數據
+      const updatedData = scheduleData.map((item: any) => {
+        const matchingSchedule = updatedScheduleData.find(
+          (schedule) => schedule.data.timestamp === item.data.timestamp
+        )
+        if (matchingSchedule) {
+          return {
+            ...item,
+            data: {
+              ...item.data,
+              esHSL: matchingSchedule.data.esHSL,
+            },
+          }
+        }
+        return item
+      })
 
-      // 發送單一請求更新所有變更
-      const response = await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/schedule/${props.selectedDate}`,
-        updateData,
-      )
-
-      console.log('儲存排程成功:', response)
+      // 更新 scheduleData
+      scheduleData.splice(0, scheduleData.length, ...updatedData)
 
       Swal.fire({
         title: '成功!',

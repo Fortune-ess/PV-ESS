@@ -203,11 +203,12 @@ onBeforeUnmount(() => {
     </button>
 
     <!-- Desktop Navigation -->
-    <nav class="hidden xl:flex items-center justify-center flex-1">
-      <div class="flex items-center justify-between gap-6">
-        <router-link to="/home" class="pl-0">
+    <nav class="hidden xl:flex items-center justify-between flex-1">
+      <div class="flex items-center justify-start gap-6">
+        <router-link to="/home" class="pl-8">
           <h2 class="text-xl font-semibold">PV ESS</h2>
         </router-link>
+        <div class="mx-54" />
         <template v-for="item in menuItems" :key="item.id">
           <div v-if="item.hasSubmenu" class="relative">
             <button

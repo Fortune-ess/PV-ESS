@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import BarChart from '@/components/dashboard/BarChart.vue'
+import DashboardScheduleChart from '@/components/dashboard/DashboardScheduleChart.vue'
 import DoughnutChart from '@/components/dashboard/DoughnutChart.vue'
 import TheSystem from '@/components/dashboard/TheSystem.vue'
 import Weather from '@/components/dashboard/Weather.vue'
 import BatteryStatus from '@/components/dashboard/dashboard/BatteryStatus.vue'
 import SocCards from '@/components/dashboard/dashboard/SocCards.vue'
 import StatsCards from '@/components/dashboard/dashboard/StatsCards.vue'
-import ScheduleChart from '@/components/schedule/ScheduleChart.vue'
 import { useDataStore } from '@/store/data'
 import { useScheduleStore } from '@/store/useSocketStore'
 import { onMounted, onUnmounted, ref } from 'vue'
@@ -62,7 +62,7 @@ onUnmounted(() => {
           <!-- line Chart -->
           <div class="rounded-2xl">
             <div class="flex flex-col gap-4">
-              <ScheduleChart />
+              <DashboardScheduleChart />
             </div>
           </div>
         </div>
