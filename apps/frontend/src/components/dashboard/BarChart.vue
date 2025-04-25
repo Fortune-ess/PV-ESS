@@ -66,10 +66,10 @@ onUnmounted(() => {
 
 // 修改 batteryConfigs，只保留前4個配置
 const batteryConfigs = [
-  { initialOffset: 5, maxValue: 100 },
-  { initialOffset: 0, maxValue: 95 },
-  { initialOffset: 10, maxValue: 100 },
-  { initialOffset: 2, maxValue: 98 },
+  { initialOffset: 0, maxValue: 100 },
+  { initialOffset: 0, maxValue: 100 },
+  { initialOffset: 0, maxValue: 100 },
+  { initialOffset: 0, maxValue: 100 },
 ]
 
 // 計算每組的充電量，添加一些隨機變化使動畫更自然

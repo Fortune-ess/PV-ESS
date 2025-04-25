@@ -25,3 +25,27 @@ export interface ScheduleData {
     soc: number  // ESS自排程預計電量
   }
 }
+
+export interface RealTimeData {
+  _id: {
+    $oid: string
+  }
+  status: number
+  timestamp: string // Timestamp of the daily record collection
+  date: string      // Date of the daily record
+  payload: {
+    qseId: string
+    groupId: number
+    date: string
+  }
+  data: Array<{
+    timestamp: string // Timestamp of the individual measurement
+    PV_pImm: number
+    PV_pDA: number
+    PV_raw: number
+    genValue_Imm: number
+    genValue_DA: number
+    soc: number
+    version: number
+  }>
+}

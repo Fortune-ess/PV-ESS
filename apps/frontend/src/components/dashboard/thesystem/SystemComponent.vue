@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useSystemStore } from '@/store/systemStore'
+import { useSystemStore } from '@/store/systemStore';
 
 const props = defineProps<{
   title: string
@@ -18,7 +18,8 @@ const { getBorderColor } = useSystemStore()
     <div class="flex items-center justify-center">
       <div
         :class="[
-          'border-2 border-dashed rounded-xl p-2 relative z-10',
+          'rounded-xl p-2 relative z-10',
+          status === 'normal' ? '' : 'border-4 border-dashed',
           getBorderColor(status),
         ]"
       >
@@ -26,9 +27,9 @@ const { getBorderColor } = useSystemStore()
       </div>
     </div>
     <div
+      v-if="status !== 'normal'"
       class="text-center text-xs mt-1 font-medium"
       :class="{
-        'text-green-500': status === 'normal',
         'text-yellow-400': status === 'warning',
         'text-red-300': status === 'error',
       }"

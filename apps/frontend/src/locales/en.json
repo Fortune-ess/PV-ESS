@@ -156,7 +156,7 @@
       "energy_storage_system": "Energy Storage System",
       "battery_status": "Battery Status",
       "error": "Error",
-      "warning": "Warning",
+      "warning": "Shutting down",
       "normal": "Normal",
       "frequency": "Frequency",
       "operation_status": "Operation Status",
@@ -186,12 +186,27 @@
     },
     "schedule": {
       "chart": {
-        "title": "PV-ESS Energy Schedule Chart",
+        "title": "PV Day Ahead Prediction",
         "power": "Power (W)",
         "schedule": "Schedule",
-        "battery_charge_power": "Battery Charge Power",
-        "battery_charge_prediction": "Battery Charge Prediction",
+        "day_ahead_feed_in_bs": "Feed-in BS by Day Ahead Model",
+        "day_ahead_charge_prediction": "Day Ahead Generate Electricity Prediction",
         "pv_generation": "PV Generation"
+      }
+    },
+    "system": {
+      "monitor": {
+        "title": "System monitor dashboard",
+        "battery": "Battery",
+        "pcs": "Power Control System",
+        "meter": "Meter"
+      },
+      "controller": {
+        "title": "System Controller",
+        "battery_on": "Battery on",
+        "battery_off": "Battery off",
+        "power_on": "Power Control on",
+        "power_off": "Power Control off"
       }
     }
   }

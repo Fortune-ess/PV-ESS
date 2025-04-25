@@ -229,6 +229,7 @@ onBeforeUnmount(() => {
             <div
               v-if="expandedSubmenu === item.id"
               class="absolute top-full left-0 mt-1 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-10"
+              @mouseleave="expandedSubmenu = ''"
             >
               <router-link
                 v-for="subItem in item.submenu"
@@ -238,6 +239,7 @@ onBeforeUnmount(() => {
                 :class="{
                   'text-gray-600 after:w-full': route.path === subItem.link,
                 }"
+                @click="expandedSubmenu = ''"
               >
                 <span>{{ $t(`main.sidebar.${subItem.id}`) }}</span>
               </router-link>

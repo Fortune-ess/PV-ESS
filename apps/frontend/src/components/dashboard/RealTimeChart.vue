@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { chartData, chartOptions } from '@/utils/BarScheduleChart'
+import { chartData, getChartOptions } from '@/utils/BarScheduleChart'
 import type { ChartData } from 'chart.js'
 import {
   BarController,
@@ -17,6 +17,9 @@ import {
 } from 'chart.js'
 import { onMounted, onUnmounted, ref, shallowRef } from 'vue'
 import { Chart } from 'vue-chartjs'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 ChartJS.register(
   BarController,
@@ -39,6 +42,8 @@ const chartDataValue = shallowRef<ChartData<'bar' | 'line'>>({
   datasets: [],
 })
 
+const chartOptions = getChartOptions(t)
+
 // 防抖動函數
 const debounce = (fn: Function, delay: number) => {
   let timer: number | null = null
@@ -53,7 +58,7 @@ const debounce = (fn: Function, delay: number) => {
 // 使用防抖動包裝更新函數，但減少延遲時間
 const debouncedUpdateChartData = debounce(async () => {
   try {
-    chartDataValue.value = await chartData.update()
+    chartDataValue.value = await chartData.update(t)
   } catch (error) {
     console.error('Failed to update chart data:', error)
   }
@@ -68,7 +73,7 @@ let updateInterval: number | null = null
 onMounted(async () => {
   try {
     isLoading.value = true
-    chartDataValue.value = await chartData.get()
+    chartDataValue.value = await chartData.get(t)
     isLoading.value = false
     // 保持每秒更新一次
     updateInterval = window.setInterval(updateChartData, 1000)

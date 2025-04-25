@@ -156,7 +156,7 @@
       "energy_storage_system": "儲能系統",
       "battery_status": "電池狀態",
       "error": "錯誤",
-      "warning": "警告",
+      "warning": "關閉",
       "normal": "正常",
       "frequency": "頻率",
       "operation_status": "操作狀態",
@@ -186,12 +186,27 @@
     },
     "schedule": {
       "chart": {
-        "title": "PV-ESS 能源排程圖表",
+        "title": "PV日前預測",
         "power": "功率 (W)",
         "schedule": "排程",
-        "battery_charge_power": "電池充電功率",
-        "battery_charge_prediction": "電池充電預測",
+        "day_ahead_feed_in_bs": "日前預測充電值",
+        "day_ahead_charge_prediction": "日前發電預測",
         "pv_generation": "PV發電功率"
+      }
+    },
+    "system": {
+      "monitor": {
+        "title": "監控儀表板",
+        "battery": "電池",
+        "pcs": "功率逆變器(PCS)",
+        "meter": "電表"
+      },
+      "controller": {
+        "title": "系統控制",
+        "battery_on": "電池開啟",
+        "battery_off": "電池關閉",
+        "power_on": "功率逆變器(PCS)開啟",
+        "power_off": "功率逆變器(PCS)關閉"
       }
     }
   }

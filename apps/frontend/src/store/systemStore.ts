@@ -34,8 +34,6 @@ export const useSystemStore = () => {
   // 根據狀態獲取邊框顏色
   const getBorderColor = (status: string) => {
     switch (status) {
-      case 'normal':
-        return 'border-green-500'
       case 'warning':
         return 'border-yellow-500'
       case 'error':
