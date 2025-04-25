@@ -123,7 +123,7 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
   const pvImmData: number[] = []
   const pvDAData: number[] = []
   const pvRawData: number[] = []
-
+  const socData: number[] = []
 
   // 處理實時數據
   if (realTimeData && realTimeData.length > 0) {
@@ -132,10 +132,10 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
       pvImmData.push(realTimeData[i]?.PV_pImm || 0)
       pvDAData.push(realTimeData[i]?.PV_pDA || 0)
       pvRawData.push(realTimeData[i]?.PV_raw || 0)
+      socData.push(realTimeData[i]?.soc || 0)
     }
   }
 
-  // 創建新的圖表數據
   const newChartData: ChartData<'bar' | 'line'> = {
     labels: timeLabels,
     datasets: [

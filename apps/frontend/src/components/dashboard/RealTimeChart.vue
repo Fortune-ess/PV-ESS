@@ -97,7 +97,7 @@ onUnmounted(() => {
 })
 
 // 監聽數據變化
-watch(chartDataValue, (newValue) => {
+watch(chartDataValue, () => {
 }, { deep: true })
 </script>
 

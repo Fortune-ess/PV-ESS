@@ -1,49 +1,47 @@
 <script setup lang="ts">
-import { useScheduleStore } from '@/store/useSocketStore';
+import { fetchRealTimeData } from '@/services/fetch-realtime-data';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 
-const scheduleStore = useScheduleStore();
+const today_accumulated_income = ref(0);
+const this_month_accumulated_income = ref(0);
+const today_electricity_value = ref(0);
 const abandonLightValue = ref('None');
 let updateInterval: ReturnType<typeof setInterval> | null = null;
+let lastProcessedData = ref<any>(null);
 
-const calculateAbandonLight = () => {
-  const dataPoints = scheduleStore.scheduleData;
-  if (!dataPoints || dataPoints.length === 0) {
-    return 'None';
+const updateData = async () => {
+  const realtime_data = await fetchRealTimeData();
+  if (!realtime_data || realtime_data.length === 0) {
+    return;
   }
 
-  const targetTime = '2023-09-30T00:00:00+08:00';
-  const endTime = '2023-09-30T23:45:00+08:00';
+  const latestData = realtime_data[realtime_data.length - 1];
 
-  const targetIndex = dataPoints.findIndex(item => String(item.data.timestamp) === targetTime);
-  const endIndex = dataPoints.findIndex(item => String(item.data.timestamp) === endTime);
-
-  if (targetIndex === -1) {
-    return 'None';
+  // 如果是新數據
+  if (!lastProcessedData.value || lastProcessedData.value.PV_raw !== latestData.PV_raw) {
+    // 更新發電量
+    today_electricity_value.value = parseFloat((today_electricity_value.value + latestData.PV_raw).toFixed(2));
+    // 更新收益
+    today_accumulated_income.value = parseFloat((today_accumulated_income.value + latestData.PV_raw * 9.39).toFixed(2));
+    // 更新月收益
+    this_month_accumulated_income.value = parseFloat((today_accumulated_income.value * 30).toFixed(2));
+    // 更新最後處理的數據
+    lastProcessedData.value = latestData;
   }
-
-  let totalAbandonLight = 0;
-  for (let i = targetIndex; i < dataPoints.length; i++) {
-    const item = dataPoints[i];
-    // Calculate abandon light as the difference between PV energy and ES energy
-    totalAbandonLight = item.data.status;
-
-    if (i === endIndex) break;
-  }
-
-  return totalAbandonLight + '%';
-};
-
-const updateAbandonLight = () => {
-  abandonLightValue.value = calculateAbandonLight();
 };
 
 onMounted(() => {
-  // Initial update
-  updateAbandonLight();
+  // 初始化時重置數據
+  today_accumulated_income.value = 0;
+  this_month_accumulated_income.value = 0;
+  today_electricity_value.value = 0;
+  lastProcessedData.value = null;
   
-  // Update every second
-  updateInterval = setInterval(updateAbandonLight, 1000);
+  // Initial update
+  updateData();
+  
+  // 每秒更新一次
+  updateInterval = setInterval(updateData, 1000);
 });
 
 onUnmounted(() => {
@@ -53,9 +51,9 @@ onUnmounted(() => {
 });
 
 const stats = computed(() => [
-  { title: 'today_accumulated_income', value: '$62,263' },
-  { title: 'this_month_accumulated_income', value: '$2,100,000' },
-  { title: 'today_generation_degree', value: '16,384,875' },
+  { title: 'today_accumulated_income', value: today_accumulated_income.value },
+  { title: 'this_month_accumulated_income', value: this_month_accumulated_income.value },
+  { title: 'today_generation_degree', value: today_electricity_value.value },
   { title: 'abandon_light', value: abandonLightValue.value },
 ]);
 </script>
