@@ -7,10 +7,10 @@ export const useSystemStore = () => {
   const powerM1 = ref(2016.72)
   const powerM2 = ref(16.72)
   const powerM3 = ref(2000)
-  const solarPower = ref(5000)
+  const solarPower = ref(3150)
   const batteryPower = ref(10000)
-  const batteryCapacity = ref(30000)
-  const oldPVPower = ref(3000)
+  const batteryCapacity = ref(11500)
+  const oldPVPower = ref(4000)
 
   // 狀態
   const status = ref('normal')
@@ -34,8 +34,6 @@ export const useSystemStore = () => {
   // 根據狀態獲取邊框顏色
   const getBorderColor = (status: string) => {
     switch (status) {
-      case 'normal':
-        return 'border-green-500'
       case 'warning':
         return 'border-yellow-500'
       case 'error':

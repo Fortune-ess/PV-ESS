@@ -1,0 +1,1346 @@
+[
+  {
+    "_id": "67fe25e37cc49656b70e6601",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T00:00:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe25e47cc49656b70e6602",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T00:15:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe25e57cc49656b70e6603",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T00:30:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe25e67cc49656b70e6604",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T00:45:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe25e77cc49656b70e6605",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T01:00:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe25e87cc49656b70e6606",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T01:15:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe25ea7cc49656b70e6607",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T01:30:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe25eb7cc49656b70e6608",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T01:45:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe25ec7cc49656b70e6609",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T02:00:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe25ed7cc49656b70e660a",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T02:15:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe25ee7cc49656b70e660b",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T02:30:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe25ef7cc49656b70e660c",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T02:45:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe25f07cc49656b70e660d",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T03:00:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe25f17cc49656b70e660e",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T03:15:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe25f27cc49656b70e660f",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T03:30:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe25f37cc49656b70e6610",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T03:45:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe25f47cc49656b70e6611",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T04:00:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe25f57cc49656b70e6612",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T04:15:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe25f67cc49656b70e6613",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T04:30:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe25f77cc49656b70e6614",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T04:45:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe25f97cc49656b70e6615",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T05:00:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe25fb7cc49656b70e6616",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T05:15:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe25fd7cc49656b70e6617",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T05:30:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe25ff7cc49656b70e6618",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T05:45:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe26017cc49656b70e6619",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T06:00:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0.029,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe26037cc49656b70e661a",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T06:15:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0.126,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe26057cc49656b70e661b",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T06:30:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0.269,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe26077cc49656b70e661c",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T06:45:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0.613,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe26097cc49656b70e661d",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T07:00:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 1.408,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe260b7cc49656b70e661e",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T07:15:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 1.881,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe260d7cc49656b70e661f",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T07:30:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 2.358,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe260f7cc49656b70e6620",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T07:45:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 8,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe26117cc49656b70e6621",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T08:00:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 3.556,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe26137cc49656b70e6622",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T08:15:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 4.139,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe26157cc49656b70e6623",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T08:30:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 4.46,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe26177cc49656b70e6624",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T08:45:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 4.986,
+      "esEnergy": 0,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe26197cc49656b70e6625",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T09:00:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 5.498,
+      "esEnergy": -2.216,
+      "soc": 1.15
+    }
+  },
+  {
+    "_id": "67fe261b7cc49656b70e6626",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T09:15:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 5.767,
+      "esEnergy": -2.163,
+      "soc": 1.697
+    }
+  },
+  {
+    "_id": "67fe261d7cc49656b70e6627",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T09:30:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 5.433,
+      "esEnergy": -1.836,
+      "soc": 2.197
+    }
+  },
+  {
+    "_id": "67fe261f7cc49656b70e6628",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T09:45:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 1.261,
+      "esEnergy": -0.474,
+      "soc": 2.486
+    }
+  },
+  {
+    "_id": "67fe26217cc49656b70e6629",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T10:00:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 5.066,
+      "esEnergy": -2.006,
+      "soc": 2.796
+    }
+  },
+  {
+    "_id": "67fe26237cc49656b70e662a",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T10:15:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 5.136,
+      "esEnergy": -2.121,
+      "soc": 3.312
+    }
+  },
+  {
+    "_id": "67fe26257cc49656b70e662b",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T10:30:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 6.867,
+      "esEnergy": -2.967,
+      "soc": 3.948
+    }
+  },
+  {
+    "_id": "67fe26277cc49656b70e662c",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T10:45:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 8,
+      "esEnergy": -3.15,
+      "soc": 4.764
+    }
+  },
+  {
+    "_id": "67fe26297cc49656b70e662d",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T11:00:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 6.032,
+      "esEnergy": -2.696,
+      "soc": 5.546
+    }
+  },
+  {
+    "_id": "67fe262b7cc49656b70e662e",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T11:15:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 4.507,
+      "esEnergy": -2.001,
+      "soc": 6.133
+    }
+  },
+  {
+    "_id": "67fe262d7cc49656b70e662f",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T11:30:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 6.382,
+      "esEnergy": -2.827,
+      "soc": 6.737
+    }
+  },
+  {
+    "_id": "67fe262f7cc49656b70e6630",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T11:45:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 7.175,
+      "esEnergy": -3.15,
+      "soc": 7.489
+    }
+  },
+  {
+    "_id": "67fe26317cc49656b70e6631",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T12:00:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 7.095,
+      "esEnergy": -3.15,
+      "soc": 8.283
+    }
+  },
+  {
+    "_id": "67fe26337cc49656b70e6632",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T12:15:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 7.039,
+      "esEnergy": -3.097,
+      "soc": 9.065
+    }
+  },
+  {
+    "_id": "67fe26357cc49656b70e6633",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T12:30:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 7.037,
+      "esEnergy": -3.026,
+      "soc": 9.83
+    }
+  },
+  {
+    "_id": "67fe26377cc49656b70e6634",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T12:45:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 6.926,
+      "esEnergy": -2.895,
+      "soc": 10.57
+    }
+  },
+  {
+    "_id": "67fe26397cc49656b70e6635",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T13:00:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 6.685,
+      "esEnergy": -2.647,
+      "soc": 11.263
+    }
+  },
+  {
+    "_id": "67fe263b7cc49656b70e6636",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T13:15:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 5.826,
+      "esEnergy": -2.144,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe263d7cc49656b70e6637",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T13:30:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 6.123,
+      "esEnergy": -2.082,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe263f7cc49656b70e6638",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T13:45:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 6.189,
+      "esEnergy": -1.956,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe26417cc49656b70e6639",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T14:00:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 5.83,
+      "esEnergy": -1.982,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe26437cc49656b70e663a",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T14:15:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 5.766,
+      "esEnergy": -2.128,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe26457cc49656b70e663b",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T14:30:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 5.203,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe26477cc49656b70e663c",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T14:45:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 4.829,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe26497cc49656b70e663d",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T15:00:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 4.393,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe264b7cc49656b70e663e",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T15:15:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 3.998,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe264d7cc49656b70e663f",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T15:30:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 3.558,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe264f7cc49656b70e6640",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T15:45:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 2.929,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe26517cc49656b70e6641",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T16:00:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 2.431,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe26537cc49656b70e6642",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T16:15:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 1.935,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe26557cc49656b70e6643",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T16:30:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 1.455,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe26577cc49656b70e6644",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T16:45:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0.845,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe26597cc49656b70e6645",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T17:00:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0.471,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe265b7cc49656b70e6646",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T17:15:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0.287,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe265d7cc49656b70e6647",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T17:30:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0.058,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe265f7cc49656b70e6648",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T17:45:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe26617cc49656b70e6649",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T18:00:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe26637cc49656b70e664a",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T18:15:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0.001,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe26657cc49656b70e664b",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T18:30:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0.005,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe26677cc49656b70e664c",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T18:45:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0.007,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe26697cc49656b70e664d",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T19:00:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe266b7cc49656b70e664e",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T19:15:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe266d7cc49656b70e664f",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T19:30:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe266f7cc49656b70e6650",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T19:45:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe26717cc49656b70e6651",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T20:00:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe26737cc49656b70e6652",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T20:15:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe26757cc49656b70e6653",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T20:30:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe26777cc49656b70e6654",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T20:45:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe267a7cc49656b70e6655",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T21:00:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe267c7cc49656b70e6656",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T21:15:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe267e7cc49656b70e6657",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T21:30:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe26807cc49656b70e6658",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T21:45:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe26827cc49656b70e6659",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T22:00:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe26847cc49656b70e665a",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T22:15:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe26867cc49656b70e665b",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T22:30:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe26887cc49656b70e665c",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T22:45:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe268a7cc49656b70e665d",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T23:00:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe268c7cc49656b70e665e",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T23:15:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe268e7cc49656b70e665f",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T23:30:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  },
+  {
+    "_id": "67fe26907cc49656b70e6660",
+    "qseId": "33284077",
+    "groupId": 1,
+    "date": "2023-09-30",
+    "data": {
+      "timestamp": "2023-09-30T23:45:00+08:00",
+      "status": 0,
+      "esHSL": 3.15,
+      "pvEnergy": 0,
+      "esEnergy": 0,
+      "soc": 11.5
+    }
+  }
+]

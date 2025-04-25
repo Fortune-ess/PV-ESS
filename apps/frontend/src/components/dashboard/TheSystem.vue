@@ -12,7 +12,6 @@ const {
   frequency,
   solarPower,
   batteryPower,
-  batteryCapacity,
   oldPVPower,
   status,
   solarStatus,
@@ -34,7 +33,7 @@ onMounted(() => {
     <div class="grid grid-cols-2 gap-4 relative">
       <!-- 系統組件 -->
       <SystemComponent
-        title="Old PV System"
+        title="PV System"
         :status="oldPVStatus"
         :icon="SolarpanelIcon"
       >
@@ -60,7 +59,7 @@ onMounted(() => {
         :status="batteryStatus"
         :icon="BatteryIcon"
       >
-        功率: {{ batteryPower }}kW / 容量: {{ batteryCapacity }}kWh
+        Power: {{ batteryPower }}kW
       </SystemComponent>
 
       <!-- 連接線 -->

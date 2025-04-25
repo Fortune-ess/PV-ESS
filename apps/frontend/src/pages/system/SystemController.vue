@@ -2,156 +2,135 @@
 import Swal from 'sweetalert2'
 import { computed, nextTick, ref, watch } from 'vue'
 
-const batteryEnabled = ref(false) // Battery 初始關閉
-const pcsEnabled = ref(false) // Power Control System 初始關閉
-const isFullscreen = ref(false) // 全螢幕狀態
+// 狀態變數
+const batteryEnabled = ref(false)
+const pcsEnabled     = ref(false)
+const isFullscreen   = ref(false)
 
-// 切換 Battery 狀態
-const toggleBattery = async () => {
+// 切換 Battery
+async function toggleBattery() {
   if (pcsEnabled.value) {
     await Swal.fire({
       icon: 'warning',
-      title: 'Can not close Battery',
-      text: 'Please close Power Control System first, then Battery button can close.',
-      confirmButtonText: 'Confirm',
+      title: 'Cannot close Battery',
+      text: 'Please close Power Control System first.',
+      confirmButtonText: 'OK',
     })
   } else {
     batteryEnabled.value = !batteryEnabled.value
   }
 }
 
-// 切換 Power Control System 狀態
-const togglePCS = async () => {
+// 切換 Power Control System
+async function togglePCS() {
   if (!batteryEnabled.value) {
     await Swal.fire({
       icon: 'warning',
-      title: 'Can not open Power Control System',
-      text: 'Please open Battery first, then open Power Control System.',
-      confirmButtonText: 'Confirm',
+      title: 'Cannot open Power Control System',
+      text: 'Please open Battery first.',
+      confirmButtonText: 'OK',
     })
   } else {
     pcsEnabled.value = !pcsEnabled.value
   }
 }
 
-// 計算當前應顯示的圖片
+// 根據當前狀態回傳對應圖片
 const currentImage = computed(() => {
-  if (batteryEnabled.value && pcsEnabled.value) {
-    return '/pcsStart.png'
-  } else if (batteryEnabled.value && !pcsEnabled.value) {
-    return '/bmsStart.png'
-  } else {
-    return '/bmsStop.png'
-  }
+  if (batteryEnabled.value && pcsEnabled.value) return '/pcsStart.png'
+  if (batteryEnabled.value)                  return '/bmsStart.png'
+  return '/bmsStop.png'
 })
 
-// 確保 `<Transition>` 正確觸發動畫
+// 用於 Transition 的 key
 const currentImageKey = ref(0)
 watch(currentImage, async () => {
-  await nextTick() // 確保 DOM 更新後才觸發動畫
-  currentImageKey.value += 1
+  await nextTick()
+  currentImageKey.value++
 })
 
-const openFullscreen = () => {
-  isFullscreen.value = true
-}
+// 全螢幕開關
+function openFullscreen() { isFullscreen.value = true }
+function closeFullscreen() { isFullscreen.value = false }
 
-// 關閉全螢幕
-const closeFullscreen = () => {
-  isFullscreen.value = false
+// 按鈕樣式函式
+function btnClass(active) {
+  return [
+    'w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition-colors duration-200',
+    active
+      ? 'bg-green-600 text-white hover:bg-green-700'
+      : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+  ]
 }
 </script>
 
 <template>
-  <div class="flex flex-col h-full">
-    <!-- 開關按鈕 -->
-    <div class="flex flex-col md:flex-row justify-center gap-4 mb-4 mx-auto">
-      <!-- Battery 按鈕 -->
-      <button
-        @click="toggleBattery"
-        :class="[
-          'px-12 py-4 sm:px-6 sm:py-2 rounded-lg transition-all',
-          batteryEnabled
-            ? 'bg-green-800/70 text-white'
-            : 'bg-gray-300 text-gray-700',
-        ]"
-      >
-        Battery: {{ batteryEnabled ? 'ON' : 'OFF' }}
-      </button>
-
-      <!-- Power Control System 按鈕 -->
-      <button
-        @click="togglePCS"
-        :class="[
-          'px-12 py-4 sm:px-6 sm:py-2 rounded-lg transition-all',
-          pcsEnabled
-            ? 'bg-green-800/70 text-white'
-            : 'bg-gray-300 text-gray-700',
-        ]"
-      >
-        Power Control System: {{ pcsEnabled ? 'ON' : 'OFF' }}
-      </button>
-    </div>
-
-    <!-- 圖片顯示區 -->
-    <div class="flex-1 p-4 flex justify-center items-center">
-      <div
-        class="w-full md:w-3/4 md:h-auto bg-white/80 rounded-lg shadow-md overflow-hidden flex justify-center items-center"
-      >
-        <transition name="fade" mode="out-in">
-          <img
-            v-if="currentImage"
-            :key="currentImageKey"
-            :src="currentImage"
-            alt="System Status"
-            class="w-2/3 h-full object-contain transition-opacity duration-500 ease-in-out"
-            @click="openFullscreen"
-          />
-        </transition>
+  <div class="h-full p-6 mx-auto">
+    <div class="max-w-7xl mx-auto h-full flex flex-col gap-6">
+      <!-- Header -->
+      <header class="text-center">
+        <h1 class="text-3xl font-bold text-gray-700">{{ $t('main.system.controller.title') }}</h1>
+      </header>
+      <!-- 主要內容：控制面板 + 顯示區 -->
+      <div class="flex flex-col lg:flex-row gap-6 flex-1">
+        <!-- 控制面板 -->
+        <aside class="lg:w-1/3 flex flex-col gap-4">
+          <button @click="toggleBattery" :class="btnClass(batteryEnabled)">
+            <span>🔋</span> {{ batteryEnabled ? $t('main.system.controller.battery_on') : $t('main.system.controller.battery_off') }}
+          </button>
+          <button @click="togglePCS" :class="btnClass(pcsEnabled)">
+            <span>⚡</span> {{ pcsEnabled ? $t('main.system.controller.power_on') : $t('main.system.controller.power_off') }}
+          </button>
+        </aside>
+        <!-- 圖片顯示區 -->
+        <section class="lg:w-2/3 bg-white rounded-lg shadow overflow-hidden p-4">
+          <transition name="fade" mode="out-in">
+            <div :key="currentImageKey" class="relative w-full h-full flex items-center justify-center">
+              <img
+                :src="currentImage"
+                alt="System Status"
+                class="max-w-full max-h-full object-contain"
+              />
+              <!-- 小一點的放大按鈕 -->
+              <button
+                @click="openFullscreen"
+                class="absolute top-2 right-2 bg-white bg-opacity-75 hover:bg-opacity-100 rounded-full p-1 text-gray-800 transition"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 4h6M4 4v6M20 20h-6M20 20v-6" />
+                </svg>
+              </button>
+            </div>
+          </transition>
+        </section>
       </div>
     </div>
-  </div>
 
-  <Teleport to="body">
-    <div
-      v-if="isFullscreen"
-      class="fixed inset-0 bg-white bg-opacity-75 flex justify-center items-center z-50"
-    >
-      <button
-        class="absolute top-4 right-4 text-gray-700 hover:bg-white/10 hover:scale-110 transition-all duration-300"
-        @click="closeFullscreen"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
+    <!-- 全螢幕 Overlay -->
+    <Teleport to="body">
+      <div v-if="isFullscreen" class="fixed inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50">
+        <button
+          @click="closeFullscreen"
+          class="absolute top-6 right-6 text-black hover:text-gray-600 transition-transform transform hover:scale-110"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
-      </button>
-      <img
-        :src="currentImage"
-        alt="Fullscreen Image"
-        class="max-w-full max-h-full object-contain"
-      />
-    </div>
-  </Teleport>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        <img :src="currentImage" alt="Fullscreen" class="max-w-full max-h-full object-contain" />
+      </div>
+    </Teleport>
+  </div>
 </template>
 
 <style>
-/* Vue 內建的 Transition 樣式 */
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.5s ease-in-out;
+  transition: opacity 0.4s ease;
 }
-.fade-enter,
+.fade-enter-from,
 .fade-leave-to {
   opacity: 0;
 }

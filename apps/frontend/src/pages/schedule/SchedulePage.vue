@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ScheduleChart from '@/components/schedule/ScheduleChart.vue'
+import DayAheadChart from '@/components/schedule/DayAheadChart.vue'
 import Scrollform from '@/components/schedule/Scrollform.vue'
 import { ref } from 'vue'
 
@@ -47,20 +47,14 @@ const updateOriginalValues = () => {
     originalPowerValues.value[key] = powerValues.value[key]
   })
 }
-
 </script>
 
 <template>
   <div class="flex flex-col h-full gap-5">
     <!-- 上半部 (固定大小) -->
     <div class="flex flex-col items-center bg-white rounded-2xl p-4">
-      <h1 class="text-xl font-medium mb-4 text-black flex items-center">
-        {{ $t('main.dashboard.factory_generation_amount') }}
-      </h1>
-
-      <!-- 限制 LineChart 的大小 -->
       <div class="w-full flex justify-center">
-        <ScheduleChart />
+        <DayAheadChart />
       </div>
     </div>
 

@@ -1,4 +1,4 @@
-import { useScheduleStore } from '@/store/useSocketStore'
+import { fetchData } from '@/services/fetch-schedule-data'
 import { ScheduleData } from '@/types'
 import { ChartData, ChartOptions } from 'chart.js'
 import { ref } from 'vue'
@@ -105,57 +105,11 @@ const timeLabels = [
 
 const chartDataRef = ref<ChartData<'bar' | 'line'> | null>(null)
 const lastUpdateTime = ref<number>(Date.now())
-let result: ScheduleData[] = []
 let lastProcessedData: ScheduleData[] = []
 let lastProcessedResult: ChartData<'bar' | 'line'> | null = null
 
-// 預先創建空的圖表數據結構
-const emptyChartData: ChartData<'bar' | 'line'> = {
-  labels: timeLabels,
-  datasets: [
-    {
-      label: 'DayAhead Prediction',
-      type: 'line',
-      borderColor: '#4e79a7',
-      backgroundColor: 'rgba(78, 121, 167, 0.1)',
-      borderWidth: 2,
-      pointRadius: 0,
-      pointHoverRadius: 5,
-      tension: 0.3,
-      fill: true,
-      data: [],
-      yAxisID: 'y',
-    },
-    {
-      label: 'Feed-in BS by Day Ahead Model',
-      type: 'bar',
-      backgroundColor: 'rgba(76, 175, 80, 0.7)',
-      borderColor: 'rgba(76, 175, 80, 0.9)',
-      borderWidth: 1,
-      data: [],
-      yAxisID: 'y',
-      stack: 'stack0',
-      order: 1,
-      barPercentage: 0.8,
-      categoryPercentage: 0.9,
-    },
-  ],
-}
-
-// Function to fetch data from the API
-const fetchData = async (): Promise<ScheduleData[]> => {
-  try {
-    const scheduleStore = useScheduleStore()
-    result = scheduleStore.scheduleData
-    return result
-  } catch (error) {
-    console.error('Fetching data error:', error)
-    return [] as ScheduleData[]
-  }
-}
-
 // Function to process data and create chart datasets
-const processChartData = async (): Promise<ChartData<'bar' | 'line'>> => {
+const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
   const dataPoints = await fetchData()
 
   // 檢查數據是否有變化，如果沒有變化則直接返回緩存的圖表數據
@@ -172,7 +126,6 @@ const processChartData = async (): Promise<ChartData<'bar' | 'line'>> => {
   let dayAheadPredictionData: number[] = []
   let feedInFeederData: number[] = []
   let feedInBSData: number[] = []
-  let started = false
   const targetTime = '2023-09-30T00:00:00+08:00'
   const endTime = '2023-09-30T23:45:00+08:00'
 
@@ -201,7 +154,7 @@ const processChartData = async (): Promise<ChartData<'bar' | 'line'>> => {
     labels: timeLabels,
     datasets: [
       {
-        label: 'DayAhead Prediction',
+        label: t('main.schedule.chart.day_ahead_charge_prediction'),
         type: 'line',
         borderColor: '#4e79a7',
         backgroundColor: 'rgba(78, 121, 167, 0.1)',
@@ -214,7 +167,7 @@ const processChartData = async (): Promise<ChartData<'bar' | 'line'>> => {
         yAxisID: 'y',
       },
       {
-        label: 'Feed-in BS by Day Ahead Model',
+        label: t('main.schedule.chart.day_ahead_feed_in_bs'),
         type: 'bar',
         backgroundColor: 'rgba(76, 175, 80, 0.7)',
         borderColor: 'rgba(76, 175, 80, 0.9)',
@@ -235,156 +188,158 @@ const processChartData = async (): Promise<ChartData<'bar' | 'line'>> => {
 }
 
 export const chartData = {
-  async get(): Promise<ChartData<'bar' | 'line'>> {
+  async get(t: any): Promise<ChartData<'bar' | 'line'>> {
     if (!chartDataRef.value) {
-      chartDataRef.value = await processChartData()
+      chartDataRef.value = await processChartData(t)
     }
     return chartDataRef.value
   },
-  async update(): Promise<ChartData<'bar' | 'line'>> {
+  async update(t: any): Promise<ChartData<'bar' | 'line'>> {
     lastUpdateTime.value = Date.now()
-    chartDataRef.value = await processChartData()
+    chartDataRef.value = await processChartData(t)
     return chartDataRef.value
   }
 }
 
-export const chartOptions: ChartOptions<'bar'> = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: {
-      display: true,
-      position: 'top',
-      labels: {
-        color: '#333333',
-        font: {
-          size: 12,
-          weight: 'bold',
-        },
-        padding: 15,
-        usePointStyle: true,
-      },
-    },
-    title: {
-      display: true,
-      text: 'PV Day Ahead Prediction',
-      color: '#333333',
-      font: {
-        size: 16,
-        weight: 'bold',
-      },
-      padding: {
-        top: 10,
-        bottom: 20,
-      },
-    },
-    tooltip: {
-      mode: 'index',
-      intersect: false,
-      backgroundColor: 'rgba(255, 255, 255, 0.9)',
-      titleColor: '#333333',
-      bodyColor: '#333333',
-      borderColor: '#dddddd',
-      borderWidth: 1,
-      padding: 10,
-      boxPadding: 5,
-      usePointStyle: true,
-      callbacks: {
-        label: function (context) {
-          let label = context.dataset.label || '';
-          if (label) {
-            label += ': ';
-          }
-          if (context.parsed.y !== null) {
-            label += context.parsed.y.toFixed(2) + ' kW';
-          }
-          return label;
-        }
-      }
-    },
-  },
-  scales: {
-    x: {
-      stacked: false,
-      grid: {
+export const getChartOptions = (t: any): ChartOptions<'bar'> => {
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
         display: true,
-        color: 'rgba(0, 0, 0, 0.05)',
-      },
-      ticks: {
-        color: '#666666',
-        maxRotation: 90,
-        minRotation: 0,
-        autoSkip: true,
-        maxTicksLimit: 24, // 減少刻度數量，每小時顯示一個刻度
-        font: {
-          size: 10,
+        position: 'top',
+        labels: {
+          color: '#333333',
+          font: {
+            size: 12,
+            weight: 'bold',
+          },
+          padding: 15,
+          usePointStyle: true,
         },
-      },
-      border: {
-        display: true,
-        color: '#dddddd',
-      },
-    },
-    y: {
-      stacked: false,
-      beginAtZero: true,
-      grid: {
-        display: true,
-        color: 'rgba(0, 0, 0, 0.05)',
-      },
-      ticks: {
-        color: '#666666',
-        font: {
-          size: 10,
-        },
-        callback: function (value) {
-          return value + ' kW';
-        },
-      },
-      border: {
-        display: true,
-        color: '#dddddd',
       },
       title: {
         display: true,
-        text: 'Power (kW)',
-        color: '#666666',
+        text: t('main.schedule.chart.title'),
+        color: '#333333',
         font: {
-          size: 12,
+          size: 16,
           weight: 'bold',
         },
         padding: {
-          top: 0,
-          bottom: 10,
+          top: 10,
+          bottom: 20,
+        },
+      },
+      tooltip: {
+        mode: 'index',
+        intersect: false,
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        titleColor: '#333333',
+        bodyColor: '#333333',
+        borderColor: '#dddddd',
+        borderWidth: 1,
+        padding: 10,
+        boxPadding: 5,
+        usePointStyle: true,
+        callbacks: {
+          label: function (context) {
+            let label = context.dataset.label || '';
+            if (label) {
+              label += ': ';
+            }
+            if (context.parsed.y !== null) {
+              label += context.parsed.y.toFixed(2) + ' kW';
+            }
+            return label;
+          }
+        }
+      },
+    },
+    scales: {
+      x: {
+        stacked: false,
+        grid: {
+          display: true,
+          color: 'rgba(0, 0, 0, 0.05)',
+        },
+        ticks: {
+          color: '#666666',
+          maxRotation: 90,
+          minRotation: 0,
+          autoSkip: true,
+          maxTicksLimit: 48, // 減少刻度數量，每小時顯示一個刻度
+          font: {
+            size: 10,
+          },
+        },
+        border: {
+          display: true,
+          color: '#dddddd',
+        },
+      },
+      y: {
+        stacked: false,
+        beginAtZero: true,
+        grid: {
+          display: true,
+          color: 'rgba(0, 0, 0, 0.05)',
+        },
+        ticks: {
+          color: '#666666',
+          font: {
+            size: 10,
+          },
+          callback: function (value) {
+            return value + ' kW';
+          },
+        },
+        border: {
+          display: true,
+          color: '#dddddd',
+        },
+        title: {
+          display: true,
+          text: t('main.schedule.chart.power'),
+          color: '#666666',
+          font: {
+            size: 12,
+            weight: 'bold',
+          },
+          padding: {
+            top: 0,
+            bottom: 10,
+          },
         },
       },
     },
-  },
-  interaction: {
-    mode: 'nearest',
-    axis: 'x',
-    intersect: false,
-  },
-  animation: {
-    duration: 200, // 進一步減少動畫時間
-    easing: 'easeInOutQuart',
-  },
-  // 添加性能優化選項
-  elements: {
-    point: {
-      radius: 0, // 不顯示點
-      hitRadius: 5, // 但保留懸停檢測
+    interaction: {
+      mode: 'nearest',
+      axis: 'x',
+      intersect: false,
     },
-    line: {
-      borderWidth: 1.5, // 減少線寬
+    animation: {
+      duration: 200, // 進一步減少動畫時間
+      easing: 'easeInOutQuart',
     },
-    bar: {
-      borderWidth: 0, // 移除條形圖邊框
+    // 添加性能優化選項
+    elements: {
+      point: {
+        radius: 0, // 不顯示點
+        hitRadius: 5, // 但保留懸停檢測
+      },
+      line: {
+        borderWidth: 1.5, // 減少線寬
+      },
+      bar: {
+        borderWidth: 0, // 移除條形圖邊框
+      },
     },
-  },
-  // 禁用不必要的功能
-  hover: {
-    mode: 'nearest',
-    intersect: false,
-  },
+    // 禁用不必要的功能
+    hover: {
+      mode: 'nearest',
+      intersect: false,
+    },
+  }
 }

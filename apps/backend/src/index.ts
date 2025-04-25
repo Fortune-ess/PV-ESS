@@ -12,6 +12,7 @@ import scheduleRoutes from './routes/scheduleRoute'
 import userRoutes from './routes/userRoute'
 import socketEvent from './socket/socket-event'
 import { startDataInsertion } from './utils/insert-data'
+import { startRealTimeDataInsertion } from './utils/insert-rt-data'
 
 dotenv.config()
 
@@ -47,6 +48,9 @@ connectMongo()
     console.log('✅ MongoDB connected')
     // 每秒insert一次ScheduleData
     startDataInsertion()
+    console.log('Schedule data started')
+    startRealTimeDataInsertion()
+    console.log('Real time data started')
   })
   .catch((error: Error) => {
     console.error('❌ Error connecting to MongoDB:', error)
