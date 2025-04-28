@@ -123,59 +123,144 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
   const pvImmData: number[] = []
   const pvDAData: number[] = []
   const pvRawData: number[] = []
-  const socData: number[] = []
+  const socData: number[] = Array(96).fill(0) // 初始化為96個0，對應每15分鐘一個時間點
+
+  const calculateSoc = () => {
+
+    const timeToIndexMap: { [key: string]: number } = {
+      '2023-09-30T09:00:00+08:00': 36, // 09:00 對應 timeLabels 中的索引
+      '2023-09-30T09:15:00+08:00': 37,
+      '2023-09-30T09:30:00+08:00': 38,
+      '2023-09-30T09:45:00+08:00': 39,
+      '2023-09-30T10:00:00+08:00': 40,
+      '2023-09-30T10:15:00+08:00': 41,
+      '2023-09-30T10:30:00+08:00': 42,
+      '2023-09-30T10:45:00+08:00': 43,
+      '2023-09-30T11:00:00+08:00': 44,
+      '2023-09-30T11:15:00+08:00': 45,
+      '2023-09-30T11:30:00+08:00': 46,
+      '2023-09-30T11:45:00+08:00': 47,
+      '2023-09-30T12:00:00+08:00': 48,
+      '2023-09-30T12:15:00+08:00': 49,
+      '2023-09-30T12:30:00+08:00': 50,
+      '2023-09-30T12:45:00+08:00': 51,
+      '2023-09-30T13:00:00+08:00': 52,
+      '2023-09-30T13:15:00+08:00': 53,
+      '2023-09-30T13:30:00+08:00': 54,
+      '2023-09-30T13:45:00+08:00': 55,
+      '2023-09-30T14:00:00+08:00': 56,
+      '2023-09-30T14:15:00+08:00': 57
+    };
+
+    // 係數映射
+    const coefficientMap: { [key: string]: number } = {
+      '2023-09-30T09:00:00+08:00': 0.4,
+      '2023-09-30T09:15:00+08:00': 0.81,
+      '2023-09-30T09:30:00+08:00': 0.45,
+      '2023-09-30T09:45:00+08:00': 0.41,
+      '2023-09-30T10:00:00+08:00': 0.43,
+      '2023-09-30T10:15:00+08:00': 0.64,
+      '2023-09-30T10:30:00+08:00': 0.71,
+      '2023-09-30T10:45:00+08:00': 0.54,
+      '2023-09-30T11:00:00+08:00': 0.39,
+      '2023-09-30T11:15:00+08:00': 0.36,
+      '2023-09-30T11:30:00+08:00': 0.46,
+      '2023-09-30T11:45:00+08:00': 0.49,
+      '2023-09-30T12:00:00+08:00': 0.44,
+      '2023-09-30T12:15:00+08:00': 0.45,
+      '2023-09-30T12:30:00+08:00': 0.54,
+      '2023-09-30T12:45:00+08:00': 0.97,
+      '2023-09-30T13:00:00+08:00': 1.00,
+      '2023-09-30T13:15:00+08:00': 0.76,
+      '2023-09-30T13:30:00+08:00': 0.57,
+      '2023-09-30T13:45:00+08:00': 0.55,
+      '2023-09-30T14:00:00+08:00': 0.42,
+      '2023-09-30T14:15:00+08:00': 0.34
+    };
+
+    for (let i = 0; i < realTimeData.length; i++) {
+      const timestamp = realTimeData[i]?.timestamp;
+
+      if (timestamp && timeToIndexMap[timestamp] !== undefined) {
+        const index = timeToIndexMap[timestamp];
+        const coefficient = coefficientMap[timestamp];
+
+        if (i > 0) {
+          socData[index] = (((realTimeData[i - 1]?.PV_raw + realTimeData[i]?.PV_raw) * 1 / 4) / 2) * coefficient || 0;
+        } else {
+          socData[index] = (realTimeData[i]?.PV_raw * 1 / 4) * coefficient || 0;
+        }
+      }
+    }
+
+    return socData;
+  }
 
   // 處理實時數據
   if (realTimeData && realTimeData.length > 0) {
-
     for (let i = 0; i < realTimeData.length; i++) {
       pvImmData.push(realTimeData[i]?.PV_pImm || 0)
       pvDAData.push(realTimeData[i]?.PV_pDA || 0)
       pvRawData.push(realTimeData[i]?.PV_raw || 0)
-      socData.push(realTimeData[i]?.soc || 0)
     }
+    calculateSoc()
   }
 
   const newChartData: ChartData<'bar' | 'line'> = {
     labels: timeLabels,
     datasets: [
       {
-        label: 'pv_imm',
+        label: t('main.dashboard.real_time_chart.pv_imm'),
         type: 'line',
-        borderColor: '#4e79a7',
-        backgroundColor: 'rgba(78, 121, 167, 0.1)',
-        borderWidth: 2,
+        borderColor: '#3498db',
+        backgroundColor: 'rgba(52, 152, 219, 0.2)',
+        borderWidth: 2.5,
         pointRadius: 0,
-        pointHoverRadius: 5,
-        tension: 0.3,
+        pointHoverRadius: 6,
+        tension: 0.4,
         fill: false,
         data: pvImmData,
         yAxisID: 'y',
       },
       {
-        label: 'pv_da',
+        label: t('main.dashboard.real_time_chart.pv_da'),
         type: 'line',
-        borderColor: '#f28e2c',
-        backgroundColor: 'rgba(242, 142, 44, 0.1)',
-        borderWidth: 2,
-        borderDash: [5, 5], // 虛線
+        borderColor: '#e74c3c',
+        backgroundColor: 'rgba(231, 76, 60, 0.2)',
+        borderWidth: 2.5,
+        borderDash: [6, 4],
         pointRadius: 0,
-        pointHoverRadius: 5,
-        tension: 0.3,
+        pointHoverRadius: 6,
+        tension: 0.4,
         fill: false,
         data: pvDAData,
         yAxisID: 'y',
       },
       {
-        label: 'pv_raw',
+        label: t('main.dashboard.real_time_chart.feed_in_battery'),
         type: 'bar',
-        backgroundColor: 'rgba(59, 125, 191, 0.8)', // 較深的顏色
-        borderColor: 'rgba(59, 125, 191, 1)',
+        backgroundColor: 'rgba(155, 89, 182, 0.5)',
+        borderColor: 'rgba(155, 89, 182, 0.8)',
+        borderWidth: 1,
+        data: socData,
+        yAxisID: 'y',
+        barPercentage: 0.85,
+        categoryPercentage: 0.92,
+        stack: 'stack0',
+        order: 2,
+      },
+      {
+        label: t('main.dashboard.real_time_chart.pv_raw'),
+        type: 'bar',
+        backgroundColor: 'rgba(46, 204, 113, 0.7)',
+        borderColor: 'rgba(46, 204, 113, 0.9)',
         borderWidth: 1,
         data: pvRawData,
         yAxisID: 'y',
-        barPercentage: 0.8,
-        categoryPercentage: 0.9,
+        barPercentage: 0.85,
+        categoryPercentage: 0.92,
+        stack: 'stack0',
+        order: 1,
       },
     ],
   }
@@ -207,39 +292,49 @@ export const getChartOptions = (t: any): ChartOptions<'bar'> => {
         display: true,
         position: 'top',
         labels: {
-          color: '#333333',
+          color: '#2c3e50',
           font: {
             size: 12,
             weight: 'bold',
           },
-          padding: 15,
+          padding: 18,
           usePointStyle: true,
+          boxWidth: 10,
         },
       },
       title: {
         display: true,
-        text: 'pv_title',
-        color: '#333333',
+        text: t('main.dashboard.real_time_chart.title'),
+        color: '#2c3e50',
         font: {
-          size: 16,
+          size: 18,
           weight: 'bold',
+          family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
         },
         padding: {
-          top: 10,
-          bottom: 20,
+          top: 12,
+          bottom: 22,
         },
       },
       tooltip: {
         mode: 'index',
         intersect: false,
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        titleColor: '#333333',
-        bodyColor: '#333333',
-        borderColor: '#dddddd',
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        titleColor: '#2c3e50',
+        bodyColor: '#34495e',
+        borderColor: '#ecf0f1',
         borderWidth: 1,
-        padding: 10,
-        boxPadding: 5,
+        padding: 12,
+        boxPadding: 6,
         usePointStyle: true,
+        cornerRadius: 6,
+        titleFont: {
+          weight: 'bold',
+          size: 13
+        },
+        bodyFont: {
+          size: 12
+        },
         callbacks: {
           label: function (context) {
             let label = context.dataset.label || '';
@@ -256,24 +351,27 @@ export const getChartOptions = (t: any): ChartOptions<'bar'> => {
     },
     scales: {
       x: {
-        stacked: false,
+        stacked: true,
         grid: {
           display: true,
-          color: 'rgba(0, 0, 0, 0.05)',
+          color: 'rgba(189, 195, 199, 0.2)',
         },
         ticks: {
-          color: '#666666',
+          color: '#7f8c8d',
           maxRotation: 90,
           minRotation: 0,
           autoSkip: true,
-          maxTicksLimit: 48, // 減少刻度數量，每小時顯示一個刻度
+          maxTicksLimit: 48,
           font: {
             size: 10,
+            family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
           },
+          padding: 8,
         },
         border: {
           display: true,
-          color: '#dddddd',
+          color: '#ecf0f1',
+          width: 1,
         },
       },
       y: {
@@ -281,32 +379,36 @@ export const getChartOptions = (t: any): ChartOptions<'bar'> => {
         beginAtZero: true,
         grid: {
           display: true,
-          color: 'rgba(0, 0, 0, 0.05)',
+          color: 'rgba(189, 195, 199, 0.2)',
         },
         ticks: {
-          color: '#666666',
+          color: '#7f8c8d',
           font: {
-            size: 10,
+            size: 11,
+            family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
           },
+          padding: 8,
           callback: function (value) {
             return value + ' kW';
           },
         },
         border: {
           display: true,
-          color: '#dddddd',
+          color: '#ecf0f1',
+          width: 1,
         },
         title: {
           display: true,
-          text: 'power',
-          color: '#666666',
+          text: t('main.dashboard.real_time_chart.power'),
+          color: '#34495e',
           font: {
-            size: 12,
+            size: 13,
             weight: 'bold',
+            family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
           },
           padding: {
             top: 0,
-            bottom: 10,
+            bottom: 12,
           },
         },
       },
@@ -317,23 +419,25 @@ export const getChartOptions = (t: any): ChartOptions<'bar'> => {
       intersect: false,
     },
     animation: {
-      duration: 200, // 進一步減少動畫時間
-      easing: 'easeInOutQuart',
+      duration: 150,
+      easing: 'easeOutQuart',
     },
-    // 添加性能優化選項
     elements: {
       point: {
-        radius: 0, // 不顯示點
-        hitRadius: 5, // 但保留懸停檢測
+        radius: 0,
+        hitRadius: 6,
+        hoverRadius: 6,
+        hoverBorderWidth: 2,
       },
       line: {
-        borderWidth: 1.5, // 減少線寬
+        borderWidth: 2,
+        tension: 0.4,
       },
       bar: {
-        borderWidth: 0, // 移除條形圖邊框
+        borderWidth: 1,
+        borderRadius: 2,
       },
     },
-    // 禁用不必要的功能
     hover: {
       mode: 'nearest',
       intersect: false,

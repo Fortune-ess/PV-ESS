@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { chartData } from '@/utils/DoughnutChart'
+import { chartData as doughnutChartData } from '@/utils/DoughnutChart'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -7,21 +7,21 @@ const { t } = useI18n()
 
 // 從 DoughnutChart.ts 中獲取 SOC 值
 const currentSoCValue = ref(0)
-const MAX_SOC = 11.5 // 與 DoughnutChart.ts 中的值保持一致
-const TARGET_SOC = 8.19 // 與 DoughnutChart.ts 中的值保持一致
+const MAX_SOC = 18.40 // 與 DoughnutChart.ts 中的值保持一致
+const TARGET_SOC = 13.104 // 與 DoughnutChart.ts 中的值保持一致
 
 // 更新 SOC 值的函數
 const updateSoCValue = async () => {
   try {
     // 獲取圖表數據
-    const doughnutData = await chartData.get(t)
+    const chartData = await doughnutChartData.get(t)
     
     // 從圖表數據中提取 SOC 值
-    if (doughnutData && doughnutData.datasets.length > 0) {
+    if (chartData && chartData.datasets.length > 0) {
       // 從數據集中獲取百分比值
-      const percentage = doughnutData.datasets[0].data[0]
+      const percentage = chartData.datasets[0].data[0]
       // 計算實際的 SOC 值
-      currentSoCValue.value = (percentage / 100) * MAX_SOC
+      currentSoCValue.value = (Number(percentage) / 100) * MAX_SOC
     }
   } catch (error) {
     console.error('Error updating SOC value:', error)

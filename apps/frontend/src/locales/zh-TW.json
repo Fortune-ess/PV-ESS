@@ -179,6 +179,15 @@
         "capacity": "容量 (%)",
         "charged": "已充電",
         "remaining": "剩餘容量"
+      },
+      "real_time_chart": {
+        "title": "即時預測",
+        "pv_imm": "即時PV",
+        "pv_da": "日前PV",
+        "pv_raw": "實際PV",
+        "power": "功率 (kW)",
+        "soc": "SOC",
+        "feed_in_battery": "充入電池"
       }
     },
     "weather": {
