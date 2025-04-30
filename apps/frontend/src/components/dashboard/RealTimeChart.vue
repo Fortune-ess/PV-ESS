@@ -102,7 +102,7 @@ watch(chartDataValue, () => {
 </script>
 
 <template>
-  <div class="w-full h-96 bg-white p-4 rounded-lg shadow">
+  <div class="flex w-full h-96">
     <div v-if="isLoading" class="flex items-center justify-center h-full">
       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
     </div>
@@ -118,11 +118,3 @@ watch(chartDataValue, () => {
     />
   </div>
 </template>
-
-<style scoped>
-.chart-container {
-  position: relative;
-  height: 100%;
-  width: 100%;
-}
-</style>

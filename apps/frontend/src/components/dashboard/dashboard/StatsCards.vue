@@ -65,7 +65,7 @@ const stats = computed(() => [
 </script>
 
 <template>
-  <div class="lg:w-64 flex flex-col gap-4">
+  <div class="w-full flex flex-col gap-4">
     <div
       v-for="stat in stats"
       :key="stat.title"

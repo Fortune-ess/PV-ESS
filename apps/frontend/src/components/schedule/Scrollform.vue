@@ -1,332 +1,168 @@
 <script setup lang="ts">
-import scheduleData from '@/assets/data.json';
-import Swal from 'sweetalert2';
-import { computed, onMounted, ref } from 'vue';
+import { ref } from 'vue'
+import data from '@/assets/data.json'
 
-// 接收從父組件傳入的屬性
-const props = defineProps<{
-  selectedDate: string
-  powerValues: { [key: string]: number }
-  originalPowerValues: { [key: string]: number }
-  times: string[]
-}>()
+// 定義時間段
+const times = ref([
+  '00:00 -> 00:15',
+  '00:15 -> 00:30',
+  '00:30 -> 00:45',
+  '00:45 -> 01:00',
+  '01:00 -> 01:15',
+  '01:15 -> 01:30',
+  '01:30 -> 01:45',
+  '01:45 -> 02:00',
+  '02:00 -> 02:15',
+  '02:15 -> 02:30',
+  '02:30 -> 02:45',
+  '02:45 -> 03:00',
+  '03:00 -> 03:15',
+  '03:15 -> 03:30',
+  '03:30 -> 03:45',
+  '03:45 -> 04:00',
+  '04:00 -> 04:15',
+  '04:15 -> 04:30',
+  '04:30 -> 04:45',
+  '04:45 -> 05:00',
+  '05:00 -> 05:15',
+  '05:15 -> 05:30',
+  '05:30 -> 05:45',
+  '05:45 -> 06:00',
+  '06:00 -> 06:15',
+  '06:15 -> 06:30',
+  '06:30 -> 06:45',
+  '06:45 -> 07:00',
+  '07:00 -> 07:15',
+  '07:15 -> 07:30',
+  '07:30 -> 07:45',
+  '07:45 -> 08:00',
+  '08:00 -> 08:15',
+  '08:15 -> 08:30',
+  '08:30 -> 08:45',
+  '08:45 -> 09:00',
+  '09:00 -> 09:15',
+  '09:15 -> 09:30',
+  '09:30 -> 09:45',
+  '09:45 -> 10:00',
+  '10:00 -> 10:15',
+  '10:15 -> 10:30',
+  '10:30 -> 10:45',
+  '10:45 -> 11:00',
+  '11:00 -> 11:15',
+  '11:15 -> 11:30',
+  '11:30 -> 11:45',
+  '11:45 -> 12:00',
+  '12:00 -> 12:15',
+  '12:15 -> 12:30',
+  '12:30 -> 12:45',
+  '12:45 -> 13:00',
+  '13:00 -> 13:15',
+  '13:15 -> 13:30',
+  '13:30 -> 13:45',
+  '13:45 -> 14:00',
+  '14:00 -> 14:15',
+  '14:15 -> 14:30',
+  '14:30 -> 14:45',
+  '14:45 -> 15:00',
+  '15:00 -> 15:15',
+  '15:15 -> 15:30',
+  '15:30 -> 15:45',
+  '15:45 -> 16:00',
+  '16:00 -> 16:15',
+  '16:15 -> 16:30',
+  '16:30 -> 16:45',
+  '16:45 -> 17:00',
+  '17:00 -> 17:15',
+  '17:15 -> 17:30',
+  '17:30 -> 17:45',
+  '17:45 -> 18:00',
+  '18:00 -> 18:15',
+  '18:15 -> 18:30',
+  '18:30 -> 18:45',
+  '18:45 -> 19:00',
+  '19:00 -> 19:15',
+  '19:15 -> 19:30',
+  '19:30 -> 19:45',
+  '19:45 -> 20:00',
+  '20:00 -> 20:15',
+  '20:15 -> 20:30',
+  '20:30 -> 20:45',
+  '20:45 -> 21:00',
+  '21:00 -> 21:15',
+  '21:15 -> 21:30',
+  '21:30 -> 21:45',
+  '21:45 -> 22:00',
+  '22:00 -> 22:15',
+  '22:15 -> 22:30',
+  '22:30 -> 22:45',
+  '22:45 -> 23:00',
+  '23:00 -> 23:15',
+  '23:15 -> 23:30',
+  '23:30 -> 23:45',
+  '23:45 -> 00:00'
+])
 
-// 定義事件
-const emit = defineEmits<{
-  (e: 'date-change', date: string): void
-  (e: 'update-original-values'): void
-  (e: 'update:selectedDate', date: string): void
-}>()
+// 模擬 PV 發電量數據
+const pvPower = ref<{ [key: string]: number }>({})
 
-// 本地日期狀態
-const localSelectedDate = ref(props.selectedDate)
-// 當前時間
-const currentTime = ref(new Date())
-
-// 設置定時器更新當前時間
-const updateCurrentTime = () => {
-  currentTime.value = new Date()
-}
-
-// 在組件掛載時設置當前日期和啟動定時器
-onMounted(() => {
-  if (!props.selectedDate) {
-    const today = new Date()
-    const year = today.getFullYear()
-    const month = String(today.getMonth() + 1).padStart(2, '0')
-    const day = String(today.getDate()).padStart(2, '0')
-    const formattedDate = `${year}-${month}-${day}`
-
-    localSelectedDate.value = formattedDate
-    emit('update:selectedDate', formattedDate)
-    emit('date-change', formattedDate)
-  }
-
-  // 初始化當前時間
-  updateCurrentTime()
-
-  // 每分鐘更新一次當前時間
-  setInterval(updateCurrentTime, 60000)
-})
-
-// 計算屬性：判斷是否已選擇日期
-const isDateSelected = computed(() => !!props.selectedDate)
-
-// 計算屬性：判斷排程是否有變動
-const hasScheduleChanged = computed(() => {
-  if (!isDateSelected.value) return false
-
-  return Object.entries(props.powerValues).some(([timeSlot, power]) => {
-    return power !== props.originalPowerValues[timeSlot]
-  })
-})
-
-// 計算屬性：獲取已變更的時間段
-const changedTimestamps = computed(() => {
-  if (!isDateSelected.value) return []
-
-  return Object.entries(props.powerValues)
-    .filter(
-      ([timeSlot, power]) => power !== props.originalPowerValues[timeSlot],
-    )
-    .map(([timeSlot]) => timeSlot)
-})
-
-// 判斷時間段是否已過期（不可編輯）
-const isTimeSlotPast = (timeSlot: string) => {
-  // 如果選擇的日期是過去的日期，則所有時間段都不可編輯
-  const today = new Date()
-  const selectedDate = new Date(props.selectedDate)
-
-  // 重置時間部分以便只比較日期
-  today.setHours(0, 0, 0, 0)
-  selectedDate.setHours(0, 0, 0, 0)
-
-  if (selectedDate < today) {
-    return true
-  }
-
-  // 如果是當天，則檢查時間段是否已過
-  if (selectedDate.getTime() === today.getTime()) {
-    // 從時間段中提取開始時間（例如從 "00:00 -> 00:15" 提取 "00:00"）
-    const startTime = timeSlot.split(' -> ')[0]
-    const [hours, minutes] = startTime.split(':').map(Number)
-
-    const timeSlotDate = new Date()
-    timeSlotDate.setHours(hours, minutes, 0, 0)
-
-    // 計算30分鐘後的時間
-    const thirtyMinutesLater = new Date(currentTime.value)
-    thirtyMinutesLater.setMinutes(thirtyMinutesLater.getMinutes() + 30)
-
-    // 如果時間段的開始時間在當前時間30分鐘內，則不可編輯
-    return timeSlotDate <= thirtyMinutesLater
-  }
-
-  return false
-}
-
-// 處理日期變更事件
-const handleDateChange = () => {
-  emit('update:selectedDate', localSelectedDate.value)
-  emit('date-change', localSelectedDate.value)
-}
-
-// 將時間段轉換為ISO格式的時間戳
-const convertToISOTimestamp = (date: string, timeSlot: string) => {
-  // 從時間段中提取小時和分鐘（例如從 "00:00 -> 00:15" 提取 "00:00"）
-  const startTime = timeSlot.split(' -> ')[0]
-  const [hours, minutes] = startTime.split(':').map(Number)
-
-  // 創建日期對象
-  const dateObj = new Date(date)
-  dateObj.setHours(hours, minutes, 0, 0)
-
-  // 轉換為 UTC+8 時區
-  const utc8Date = new Date(dateObj.getTime() + 8 * 60 * 60 * 1000)
+// 問題在於時間格式不匹配，需要將時間段轉換為與數據中的timestamp格式相匹配
+const timeMap: { [key: string]: string } = {}
+times.value.forEach((time, index) => {
+  // 從時間段中提取開始時間
+  const startTime = time.split(' -> ')[0]
+  const [hour, minute] = startTime.split(':')
   
-  // 格式化為 ISO 字符串並添加時區信息
-  const year = utc8Date.getUTCFullYear()
-  const month = String(utc8Date.getUTCMonth() + 1).padStart(2, '0')
-  const day = String(utc8Date.getUTCDate()).padStart(2, '0')
-  const hour = String(utc8Date.getUTCHours()).padStart(2, '0')
-  const minute = String(utc8Date.getUTCMinutes()).padStart(2, '0')
-  
-  return `${year}-${month}-${day}T${hour}:${minute}:00+08:00`
-}
+  // 構建與數據中相同格式的時間戳 (2023-09-30T00:00:00+08:00)
+  const formattedTime = `2023-09-30T${hour.padStart(2, '0')}:${minute.padStart(2, '0')}:00+08:00`
+  timeMap[time] = formattedTime
+})
 
-// 儲存排程功能
-const saveSchedule = async () => {
-  if (!props.selectedDate) {
-    alert('請先選擇日期')
-    return
+// 填充pvPower數據
+data.forEach(element => {
+  const timestamp = element.data.timestamp
+  // 找到對應的時間段
+  const timeKey = Object.keys(timeMap).find(key => timeMap[key] === timestamp)
+  if (timeKey) {
+    pvPower.value[timeKey] = element.data.pvEnergy * 1000
   }
+})
 
-  if (!hasScheduleChanged.value) {
-    Swal.fire({
-      title: '無變更',
-      text: '排程未有任何變動',
-      icon: 'info',
-      confirmButtonColor: '#3085d6',
-    })
-    return
+// 確保所有時間段都有值，沒有對應數據的設為0
+times.value.forEach(time => {
+  if (pvPower.value[time] === undefined) {
+    pvPower.value[time] = 0
   }
-
-  // 獲取已變更的時間段
-  const changedTimes = changedTimestamps.value
-
-  // 創建JSON格式的數據
-  const updatedScheduleData = changedTimes.map((timestamp) => ({
-    data: {
-      timestamp: convertToISOTimestamp(props.selectedDate, timestamp),
-      status: 0,
-      esHSL: props.powerValues[timestamp] / 1000,
-      pvEnergy: 0,
-      esEnergy: 0,
-      soc: 0,
-    },
-    _id: '',
-    qseId: '33284077',
-    groupId: 1,
-    date: props.selectedDate,
-    __v: 0,
-  }))
-
-  // 轉換為JSON字符串
-  const jsonData = JSON.stringify(updatedScheduleData, null, 2)
-
-  // 使用 SweetAlert2 顯示確認對話框
-  const result = await Swal.fire({
-    title: '確認送出排程?',
-    html: `
-      <div class="text-left">
-        <p><strong>日期:</strong> ${props.selectedDate}</p>
-        <p><strong>功率設定:</strong></p>
-        <div style="max-height: 200px; overflow-y: auto; margin-bottom: 10px;">
-          <pre>${jsonData}</pre>
-        </div>
-      </div>
-    `,
-    icon: 'question',
-    showCancelButton: true,
-    confirmButtonText: '確認送出',
-    cancelButtonText: '取消',
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-  })
-
-  if (result.isConfirmed) {
-    try {
-      // 更新現有數據
-      const updatedData = scheduleData.map((item: any) => {
-        const matchingSchedule = updatedScheduleData.find(
-          (schedule) => schedule.data.timestamp === item.data.timestamp
-        )
-        if (matchingSchedule) {
-          return {
-            ...item,
-            data: {
-              ...item.data,
-              esHSL: matchingSchedule.data.esHSL,
-            },
-          }
-        }
-        return item
-      })
-
-      // 更新 scheduleData
-      scheduleData.splice(0, scheduleData.length, ...updatedData)
-
-      Swal.fire({
-        title: '成功!',
-        text: '排程已成功送出',
-        icon: 'success',
-        confirmButtonColor: '#3085d6',
-      })
-
-      // 通知父組件更新原始功率值
-      emit('update-original-values')
-    } catch (error) {
-      console.error('儲存排程失敗:', error)
-      Swal.fire({
-        title: '錯誤!',
-        text: '排程送出失敗，請稍後再試',
-        icon: 'error',
-        confirmButtonColor: '#d33',
-      })
-    }
-  }
-}
+})
 </script>
 
 <template>
-  <div
-    class="flex flex-col md:flex-row gap-4 justify-between items-center mb-4 rounded-2xl p-4"
-  >
-    <div class="relative">
-      <input
-        type="date"
-        v-model="localSelectedDate"
-        @change="handleDateChange"
-        class="border border-gray-300 rounded-md px-4 py-2 w-64 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-      />
-      <CalendarIcon
-        class="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500 pointer-events-none"
-      />
-    </div>
-    <h1 class="text-gray-700">
-      {{ isDateSelected ? '' : '請選擇日期' }}
-    </h1>
-
-    <button
-      class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md flex items-center transition-all shadow-lg shadow-blue-500/20"
-      @click="saveSchedule"
-      :disabled="!isDateSelected || !hasScheduleChanged"
-      :class="{
-        'opacity-50 cursor-not-allowed': !isDateSelected || !hasScheduleChanged,
-      }"
-    >
-      Save Schedule
-    </button>
-  </div>
-  <div class="flex flex-col lg:flex-row gap-8 h-[calc(100vh-12rem)]">
-    <!-- 左邊表格 -->
-    <div
-      class="flex-1 rounded-2xl bg-white shadow-md border border-gray-200 overflow-hidden"
-    >
-      <div
-        class="max-h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100"
-      >
-        <table class="w-full text-gray-700">
-          <thead class="sticky top-0 z-10">
-            <tr>
-              <th class="bg-blue-600 p-3 text-center text-white backdrop-blur-sm">
-                Schedule Time
-              </th>
-              <th class="bg-blue-600 p-3 text-center text-white backdrop-blur-sm">
-                Schedule Power (kW)
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="time in times"
-              :key="time"
-              class="hover:bg-gray-100 transition-colors"
-              :class="{ 'opacity-70': isTimeSlotPast(time) }"
-            >
-              <td class="p-2 text-center border-b border-gray-200">
+  <div class="flex flex-col p-2 md:p-4 h-96">
+    <div class="rounded-2xl bg-white shadow-lg border border-gray-100 overflow-hidden flex flex-col h-full">
+        <div class="grid grid-cols-2 w-full text-gray-700 h-full">
+          <!-- Header -->
+          <div class="sticky top-0 z-10 col-span-2 grid grid-cols-2">
+            <div class="bg-gradient-to-r from-cyan-500 to-cyan-600 p-2 md:p-4 text-center text-white font-medium text-xs md:text-sm uppercase tracking-wider">
+              Schedule Time
+            </div>
+            <div class="bg-gradient-to-r from-cyan-500 to-cyan-600 p-2 md:p-4 text-center text-white font-medium text-xs md:text-sm uppercase tracking-wider">
+              PV Power (kW)
+            </div>
+          </div>
+          
+          <!-- Content -->
+          <div class="col-span-2 grid grid-cols-2 w-full overflow-y-auto max-h-screen">
+            <div v-for="time in times" :key="time" class="contents">
+              <div class="p-2 md:p-4 text-center border-b border-gray-100 text-gray-600 font-medium text-xs md:text-sm even:bg-gray-50">
                 {{ time }}
-                <span
-                  v-if="isTimeSlotPast(time)"
-                  class="text-xs text-orange-500 ml-2"
-                  >(Expired)</span
-                >
-              </td>
-              <td class="p-2 border-b border-gray-200">
-                <div class="flex items-center gap-4">
-                  <input
-                    type="range"
-                    v-model="powerValues[time]"
-                    min="0"
-                    max="4000"
-                    step="1"
-                    class="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer hover:bg-gray-400 transition-all"
-                    :disabled="!isDateSelected || isTimeSlotPast(time)"
-                    :class="{
-                      'opacity-50 cursor-not-allowed':
-                        !isDateSelected || isTimeSlotPast(time),
-                    }"
-                  />
-                  <span class="min-w-[4rem] text-right"
-                    >{{ powerValues[time] }} kW</span
-                  >
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+              </div>
+              <div class="p-2 md:p-4 text-center border-b border-gray-100 even:bg-gray-50">
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs md:text-sm font-medium bg-cyan-100 text-cyan-800">
+                  {{ pvPower[time] || 0 }} kW
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
     </div>
   </div>
 </template>

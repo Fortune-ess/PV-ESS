@@ -51,9 +51,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="w-full h-96">
+  <div class="w-full h-full">
     <div v-if="isLoading" class="flex items-center justify-center h-full">
-      loading...
+      <div class="text-lg text-gray-500">Loading...</div>
     </div>
     <Chart
       v-else

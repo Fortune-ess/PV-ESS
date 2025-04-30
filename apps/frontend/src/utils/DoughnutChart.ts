@@ -56,7 +56,7 @@ export const centerTextPlugin = {
       centerY,
       Math.max(textMetrics.width, fontSize) / 2 + padding,
       0,
-      Math.PI * 2
+      Math.PI * 2,
     )
     ctx.fillStyle = 'rgba(255, 255, 255, 0.9)'
     ctx.fill()
@@ -70,7 +70,7 @@ export const centerTextPlugin = {
     ctx.fillText(statusText, centerX, centerY + fontSize * 0.7)
 
     ctx.restore()
-  }
+  },
 }
 
 // 圖表數據引用
@@ -123,8 +123,8 @@ const processChartData = async (t: ReturnType<typeof useI18n>['t']): Promise<Cha
       '2023-09-30T13:30:00+08:00': 54,
       '2023-09-30T13:45:00+08:00': 55,
       '2023-09-30T14:00:00+08:00': 56,
-      '2023-09-30T14:15:00+08:00': 57
-    };
+      '2023-09-30T14:15:00+08:00': 57,
+    }
 
     // 係數映射
     const coefficientMap: { [key: string]: number } = {
@@ -149,31 +149,31 @@ const processChartData = async (t: ReturnType<typeof useI18n>['t']): Promise<Cha
       '2023-09-30T13:30:00+08:00': 0.57,
       '2023-09-30T13:45:00+08:00': 0.55,
       '2023-09-30T14:00:00+08:00': 0.42,
-      '2023-09-30T14:15:00+08:00': 0.34
-    };
+      '2023-09-30T14:15:00+08:00': 0.34,
+    }
 
-    for (let i = 0; i < realTimeData.length; i++) {
-      const timestamp = realTimeData[i]?.timestamp;
+    for (let i = 0; i < realTimeData.length; i+=1) {
+      const timestamp = realTimeData[i]?.timestamp
 
       if (timestamp && timeToIndexMap[timestamp] !== undefined) {
-        const index = timeToIndexMap[timestamp];
-        const coefficient = coefficientMap[timestamp];
+        const index = timeToIndexMap[timestamp]
+        const coefficient = coefficientMap[timestamp]
 
         // 只在指定時間範圍內累加 SOC 值
         if (i > 0 && timestamp >= '2023-09-30T09:00:00+08:00' && timestamp <= '2023-09-30T14:15:00+08:00') {
-          const currentSoc = (((realTimeData[i - 1]?.PV_raw + realTimeData[i]?.PV_raw) * 1 / 4) / 2) * coefficient / 1000 || 0;
-          socData[index] = currentSoc;
-          accumulatedSoc += currentSoc; // 只在指定時間範圍內累加 SOC 值
+          const currentSoc = (((realTimeData[i - 1]?.PV_raw + realTimeData[i]?.PV_raw) * 1 / 4) / 2) * coefficient / 1000 || 0
+          socData[index] = currentSoc
+          accumulatedSoc += currentSoc // 只在指定時間範圍內累加 SOC 值
         } else {
-          socData[index] = 0; // 其他時段設為 0
+          socData[index] = 0 // 其他時段設為 0
         }
       }
     }
-    return socData;
+    return socData
   }
 
   // 計算 SOC 值
-  calculateSoc();
+  calculateSoc()
 
   // 使用累加的 SOC 值
   const soc = accumulatedSoc > 0 ? accumulatedSoc : 0
@@ -217,7 +217,7 @@ export const chartData = {
     lastUpdateTime.value = Date.now()
     chartDataRef.value = await processChartData(t)
     return chartDataRef.value
-  }
+  },
 }
 
 // 圖表選項
@@ -250,22 +250,22 @@ export const chartOptions = (socValue: number): ChartOptions<'doughnut'> => {
       tooltip: {
         callbacks: {
           label: function (context: any) {
-            const label = context.label || '';
-            const value = context.raw || 0;
-            const isTargetReached = socValue >= TARGET_SOC;
+            const label = context.label || ''
+            const value = context.raw || 0
+            const isTargetReached = socValue >= TARGET_SOC
 
             if (isTargetReached && context.dataIndex === 0) {
-              return `${label}: ${value.toFixed(2)}% (Charged)`;
+              return `${label}: ${value.toFixed(2)}% (Charged)`
             }
-            return `${label}: ${value.toFixed(2)}%`;
-          }
-        }
-      }
+            return `${label}: ${value.toFixed(2)}%`
+          },
+        },
+      },
     },
     layout: {
       padding: {
-        bottom: 20
-      }
+        bottom: 20,
+      },
     },
     // 添加性能優化選項
     animation: {
@@ -274,8 +274,8 @@ export const chartOptions = (socValue: number): ChartOptions<'doughnut'> => {
     elements: {
       arc: {
         borderWidth: 0, // 移除邊框
-      }
-    }
+      },
+    },
   }
 
   return options as ChartOptions<'doughnut'>

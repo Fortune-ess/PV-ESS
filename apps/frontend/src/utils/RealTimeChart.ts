@@ -149,8 +149,8 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
       '2023-09-30T13:30:00+08:00': 54,
       '2023-09-30T13:45:00+08:00': 55,
       '2023-09-30T14:00:00+08:00': 56,
-      '2023-09-30T14:15:00+08:00': 57
-    };
+      '2023-09-30T14:15:00+08:00': 57,
+    }
 
     // 係數映射
     const coefficientMap: { [key: string]: number } = {
@@ -175,30 +175,30 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
       '2023-09-30T13:30:00+08:00': 0.57,
       '2023-09-30T13:45:00+08:00': 0.55,
       '2023-09-30T14:00:00+08:00': 0.42,
-      '2023-09-30T14:15:00+08:00': 0.34
-    };
+      '2023-09-30T14:15:00+08:00': 0.34,
+    }
 
-    for (let i = 0; i < realTimeData.length; i++) {
-      const timestamp = realTimeData[i]?.timestamp;
+    for (let i = 0; i < realTimeData.length; i += 1) {
+      const timestamp = realTimeData[i]?.timestamp
 
       if (timestamp && timeToIndexMap[timestamp] !== undefined) {
-        const index = timeToIndexMap[timestamp];
-        const coefficient = coefficientMap[timestamp];
+        const index = timeToIndexMap[timestamp]
+        const coefficient = coefficientMap[timestamp]
 
         if (i > 0) {
-          socData[index] = (((realTimeData[i - 1]?.PV_raw + realTimeData[i]?.PV_raw) * 1 / 4) / 2) * coefficient || 0;
+          socData[index] = (((realTimeData[i - 1]?.PV_raw + realTimeData[i]?.PV_raw) * 1 / 4) / 2) * coefficient || 0
         } else {
-          socData[index] = (realTimeData[i]?.PV_raw * 1 / 4) * coefficient || 0;
+          socData[index] = (realTimeData[i]?.PV_raw * 1 / 4) * coefficient || 0
         }
       }
     }
 
-    return socData;
+    return socData
   }
 
   // 處理實時數據
   if (realTimeData && realTimeData.length > 0) {
-    for (let i = 0; i < realTimeData.length; i++) {
+    for (let i = 0; i < realTimeData.length; i += 1) {
       pvImmData.push(realTimeData[i]?.PV_pImm || 0)
       pvDAData.push(realTimeData[i]?.PV_pDA || 0)
       pvRawData.push(realTimeData[i]?.PV_raw || 0)
@@ -212,8 +212,8 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
       {
         label: t('main.dashboard.real_time_chart.pv_imm'),
         type: 'line',
-        borderColor: '#3498db',
-        backgroundColor: 'rgba(52, 152, 219, 0.2)',
+        borderColor: '#2ecc71',
+        backgroundColor: 'rgba(46, 204, 113, 0.2)',
         borderWidth: 2.5,
         pointRadius: 0,
         pointHoverRadius: 6,
@@ -223,24 +223,10 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
         yAxisID: 'y',
       },
       {
-        label: t('main.dashboard.real_time_chart.pv_da'),
-        type: 'line',
-        borderColor: '#e74c3c',
-        backgroundColor: 'rgba(231, 76, 60, 0.2)',
-        borderWidth: 2.5,
-        borderDash: [6, 4],
-        pointRadius: 0,
-        pointHoverRadius: 6,
-        tension: 0.4,
-        fill: false,
-        data: pvDAData,
-        yAxisID: 'y',
-      },
-      {
         label: t('main.dashboard.real_time_chart.feed_in_battery'),
         type: 'bar',
-        backgroundColor: 'rgba(155, 89, 182, 0.5)',
-        borderColor: 'rgba(155, 89, 182, 0.8)',
+        backgroundColor: 'rgba(255, 87, 51)',
+        borderColor: 'rgba(255, 87, 51, 0.9)',
         borderWidth: 1,
         data: socData,
         yAxisID: 'y',
@@ -252,8 +238,8 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
       {
         label: t('main.dashboard.real_time_chart.pv_raw'),
         type: 'bar',
-        backgroundColor: 'rgba(46, 204, 113, 0.7)',
-        borderColor: 'rgba(46, 204, 113, 0.9)',
+        backgroundColor: 'rgba(52, 152, 219, 0.3)',
+        borderColor: 'rgba(52, 152, 219, 0.9)',
         borderWidth: 1,
         data: pvRawData,
         yAxisID: 'y',
@@ -280,7 +266,7 @@ export const chartData = {
   async update(t: any): Promise<ChartData<'bar' | 'line'>> {
     chartDataRef.value = await processChartData(t)
     return chartDataRef.value
-  }
+  },
 }
 
 export const getChartOptions = (t: any): ChartOptions<'bar'> => {
@@ -309,7 +295,7 @@ export const getChartOptions = (t: any): ChartOptions<'bar'> => {
         font: {
           size: 18,
           weight: 'bold',
-          family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
+          family: '\'Helvetica Neue\', \'Helvetica\', \'Arial\', sans-serif',
         },
         padding: {
           top: 12,
@@ -330,23 +316,23 @@ export const getChartOptions = (t: any): ChartOptions<'bar'> => {
         cornerRadius: 6,
         titleFont: {
           weight: 'bold',
-          size: 13
+          size: 13,
         },
         bodyFont: {
-          size: 12
+          size: 12,
         },
         callbacks: {
           label: function (context) {
-            let label = context.dataset.label || '';
+            let label = context.dataset.label || ''
             if (label) {
-              label += ': ';
+              label += ': '
             }
             if (context.parsed.y !== null) {
-              label += context.parsed.y.toFixed(2) + ' kW';
+              label += `${context.parsed.y.toFixed(2)} kW`
             }
-            return label;
-          }
-        }
+            return label
+          },
+        },
       },
     },
     scales: {
@@ -364,7 +350,7 @@ export const getChartOptions = (t: any): ChartOptions<'bar'> => {
           maxTicksLimit: 48,
           font: {
             size: 10,
-            family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
+            family: '\'Helvetica Neue\', \'Helvetica\', \'Arial\', sans-serif',
           },
           padding: 8,
         },
@@ -385,11 +371,11 @@ export const getChartOptions = (t: any): ChartOptions<'bar'> => {
           color: '#7f8c8d',
           font: {
             size: 11,
-            family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
+            family: '\'Helvetica Neue\', \'Helvetica\', \'Arial\', sans-serif',
           },
           padding: 8,
           callback: function (value) {
-            return value + ' kW';
+            return `${value} kW`
           },
         },
         border: {
@@ -404,7 +390,7 @@ export const getChartOptions = (t: any): ChartOptions<'bar'> => {
           font: {
             size: 13,
             weight: 'bold',
-            family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
+            family: '\'Helvetica Neue\', \'Helvetica\', \'Arial\', sans-serif',
           },
           padding: {
             top: 0,
