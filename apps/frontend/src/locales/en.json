@@ -179,6 +179,15 @@
         "capacity": "Capacity (%)",
         "charged": "Charged",
         "remaining": "Remaining"
+      },
+      "real_time_chart": {
+        "title": "Real-time Prediction",
+        "pv_imm": "Immediate PV",
+        "pv_da": "Day Ahead PV",
+        "pv_raw": "Actual PV",
+        "power": "Power (kW)",
+        "soc": "SOC",
+        "feed_in_battery": "Feed-in Battery"
       }
     },
     "weather": {

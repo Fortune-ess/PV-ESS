@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { fetchRealTimeData } from '@/services/fetch-realtime-data';
+import { chartData as realTimeChartData } from '@/utils/RealTimeChart';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const today_accumulated_income = ref(0);
 const this_month_accumulated_income = ref(0);
@@ -16,13 +20,15 @@ const updateData = async () => {
   }
 
   const latestData = realtime_data[realtime_data.length - 1];
-
+  const chartData = await realTimeChartData.get(t);
+  const socData = chartData.datasets.find(dataset => dataset.label === t('main.dashboard.real_time_chart.feed_in_battery'))?.data[chartData.datasets[0].data.length - 1] || 0;
   // 如果是新數據
   if (!lastProcessedData.value || lastProcessedData.value.PV_raw !== latestData.PV_raw) {
+
     // 更新發電量
     today_electricity_value.value = parseFloat((today_electricity_value.value + latestData.PV_raw).toFixed(2));
-    // 更新收益
-    today_accumulated_income.value = parseFloat((today_accumulated_income.value + latestData.PV_raw * 9.39).toFixed(2));
+    // 更新收益（使用實際發電量計算）
+    today_accumulated_income.value = parseFloat((today_accumulated_income.value + (latestData.PV_raw - Number(socData)) * 9.39).toFixed(2));
     // 更新月收益
     this_month_accumulated_income.value = parseFloat((today_accumulated_income.value * 30).toFixed(2));
     // 更新最後處理的數據
@@ -59,7 +65,7 @@ const stats = computed(() => [
 </script>
 
 <template>
-  <div class="lg:w-64 flex flex-col gap-4">
+  <div class="w-full flex flex-col gap-4">
     <div
       v-for="stat in stats"
       :key="stat.title"

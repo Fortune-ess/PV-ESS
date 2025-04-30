@@ -15,8 +15,8 @@ const socPercentage = ref(0)
 const isTargetReached = ref(false)
 
 // 目標值和最大 SOC 值
-const TARGET_SOC = 8.19
-const MAX_SOC = 11.5
+const TARGET_SOC = 13.104
+const MAX_SOC = 18.40
 
 // 初始化圖表
 onMounted(async () => {

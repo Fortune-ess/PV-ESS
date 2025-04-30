@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import DayAheadChart from '@/components/schedule/DayAheadChart.vue'
+import ScheduleChart from '@/components/schedule/ScheduleChart.vue'
 import Scrollform from '@/components/schedule/Scrollform.vue'
 import { ref } from 'vue'
 
@@ -50,22 +50,22 @@ const updateOriginalValues = () => {
 </script>
 
 <template>
-  <div class="flex flex-col h-full gap-5">
-    <!-- 上半部 (固定大小) -->
-    <div class="flex flex-col items-center bg-white rounded-2xl p-4">
-      <div class="w-full flex justify-center">
-        <DayAheadChart />
-      </div>
+  <div class="flex flex-col h-screen">
+    <!-- 上半部 - 佔螢幕高度的一半 -->
+    <div class="flex items-center justify-center h-1/2">
+      <ScheduleChart />
     </div>
 
-    <!-- 下半部 (佔據剩餘高度) -->
-    <Scrollform
-      :selectedDate="selectedDate"
-      :powerValues="powerValues"
-      :originalPowerValues="originalPowerValues"
-      :times="times"
-      @date-change="handleDateChange"
-      @update-original-values="updateOriginalValues"
-    />
+    <!-- 下半部 - 佔螢幕高度的一半 -->
+    <div class="flex-1 items-center h-1/2">
+      <Scrollform
+        :selectedDate="selectedDate"
+        :powerValues="powerValues"
+        :originalPowerValues="originalPowerValues"
+        :times="times"
+        @date-change="handleDateChange"
+        @update-original-values="updateOriginalValues"
+      />
+    </div>
   </div>
 </template>

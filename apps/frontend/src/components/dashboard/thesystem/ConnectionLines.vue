@@ -11,12 +11,12 @@
 
   <!--New PV System to middle-->
   <div
-    class="absolute top-[75%] left-[34%] w-[15%] h-[2px] border-t-2 border-dashed border-emerald-500 z-0"
+    class="absolute top-[75%] left-[32%] w-[18%] h-[2px] border-t-2 border-dashed border-emerald-500 z-0"
   ></div>
 
   <!--Battery System to middle-->
   <div
-    class="absolute top-[75%] right-[34%] w-[15%] h-[2px] border-t-2 border-dashed border-emerald-500 z-0"
+    class="absolute top-[75%] right-[32%] w-[18%] h-[2px] border-t-2 border-dashed border-emerald-500 z-0"
   ></div>
 
   <!--Middle bottom to Middle top-->

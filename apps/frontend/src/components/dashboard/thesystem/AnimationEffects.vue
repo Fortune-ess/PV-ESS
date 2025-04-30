@@ -111,7 +111,6 @@ const getVerticalAnimationStyle = (index: number) => {
 
   <!-- Middle bottom to Middle top -->
   <div
-    v-if="animationTriggered"
     class="absolute top-[25%] left-[50%] h-[52%] z-20 transform -translate-x-1/2"
   >
     <Zap
@@ -120,7 +119,7 @@ const getVerticalAnimationStyle = (index: number) => {
       class="w-4 h-4 text-emerald-500 absolute transform -translate-x-1/2"
       :class="[
         `opacity-${opacity * 100}`,
-        { 'animate-pulse': animationTriggered },
+        { 'animate-pulse': true }
       ]"
       :style="getVerticalAnimationStyle(index)"
     />

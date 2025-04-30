@@ -23,14 +23,14 @@ let chargeInterval: ReturnType<typeof setInterval> | null = null // 用於存儲
 
 // 從 DoughnutChart.ts 中獲取 SOC 值
 const currentSoCValue = ref(0)
-const MAX_SOC = 11.5 // 與 DoughnutChart.ts 中的值保持一致
-const TARGET_SOC = 8.19 // 與 DoughnutChart.ts 中的值保持一致
+const MAX_SOC = 18.40 // 與 DoughnutChart.ts 中的值保持一致
+const TARGET_SOC = 13.104 // 與 DoughnutChart.ts 中的值保持一致
 
 // 更新 SOC 值的函數
 const updateSoCValue = async () => {
   try {
     // 獲取圖表數據
-    const doughnutData = await chartData.get(t)
+    const doughnutData = await chartData.update(t)
     
     // 從圖表數據中提取 SOC 值
     if (doughnutData && doughnutData.datasets.length > 0) {
@@ -51,7 +51,7 @@ onMounted(async () => {
   // 初始更新 SOC 值
   await updateSoCValue()
   
-  // 每秒更新一次 SOC 值
+  // 每1秒更新一次 SOC 值，與 DoughnutChart 保持同步
   chargeInterval = setInterval(async () => {
     await updateSoCValue()
   }, 1000)
@@ -72,20 +72,17 @@ const batteryConfigs = [
   { initialOffset: 0, maxValue: 100 },
 ]
 
-// 計算每組的充電量，添加一些隨機變化使動畫更自然
+// 計算每組的充電量，移除波動效果
 const chargedData = computed(() => {
-  return batteryConfigs.map((config, index) => {
+  return batteryConfigs.map((config) => {
     // 為每個柱子添加輕微的時間差和最大值差異
     const adjustedCharge = Math.min(
       currentCharge.value + config.initialOffset,
       config.maxValue,
     )
 
-    // 添加輕微的波動效果
-    const fluctuation = Math.sin(Date.now() / 1000 + index) * 0.5
-
     return Number(
-      Math.max(0, Math.min(100, adjustedCharge + fluctuation)).toFixed(1),
+      Math.max(0, Math.min(100, adjustedCharge)).toFixed(1),
     )
   })
 })
@@ -163,6 +160,10 @@ const option = {
         color: '#000000',
       },
     },
+  },
+  // 添加性能優化選項
+  animation: {
+    duration: 1000, // 減少動畫時間
   },
 }
 </script>
