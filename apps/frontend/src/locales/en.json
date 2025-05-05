@@ -138,7 +138,7 @@
       "abandon_light": "Abandon Light",
       "none": "None",
       "current_soc_total_charge": "Current SOC Total Charge",
-      "current_remaining_charge": "Current Remaining Charge",
+      "current_discharge_amount": "Current Discharge Amount",
       "total_charge_amount": "Total Charge Amount",
       "output_to_grid_amount": "Output to Grid Amount",
       "today_PV_accumulated_amount_kWh": "Today's PV Accumulated Amount (kWh)",
@@ -187,7 +187,14 @@
         "pv_raw": "Actual PV",
         "power": "Power (kW)",
         "soc": "SOC",
-        "feed_in_battery": "Feed-in Battery"
+        "feed_in_battery": "Feed-in Battery",
+        "discharge_amount": "Discharge Amount"
+      },
+      "pvcard": {
+        "current_pv_system_generation": "Current PV System Generation",
+        "current_new_pv_system_generation": "Current New PV System Generation",
+        "current_ESS_power": "Current ESS Power",
+        "output_to_grid_amount": "Output to Grid Amount"
       }
     },
     "weather": {

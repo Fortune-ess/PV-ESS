@@ -8,6 +8,9 @@ import { useI18n } from 'vue-i18n'
 const MAX_SOC = 18.40
 const TARGET_SOC = 13.104
 
+// 放電時間點索引
+const DISCHARGE_INDICES = [78, 79, 80, 81, 82, 83, 84] // 對應 19:30 到 21:00 的時間點
+
 // 中心文字 plugin
 export const centerTextPlugin = {
   id: 'centerText',
@@ -66,7 +69,7 @@ export const centerTextPlugin = {
 
     // 顯示狀態文字（無論是否達標都顯示）
     ctx.font = `bold ${fontSize * 0.5}px Arial`
-    ctx.fillStyle = isTargetReached ? '#10B981' : '#eb9234' // 達標時綠色，未達標時橙色
+    ctx.fillStyle = isTargetReached ? '#10B981' : '#F59E0B' // 達標時綠色，未達標時琥珀色
     ctx.fillText(statusText, centerX, centerY + fontSize * 0.7)
 
     ctx.restore()
@@ -79,6 +82,7 @@ const lastUpdateTime = ref<number>(Date.now())
 let lastProcessedData: RealTimeData[] = []
 let lastProcessedResult: ChartData<'doughnut'> | null = null
 let accumulatedSoc = 0 // 累加的 SOC 值
+let dischargeAmount = 0 // 放電量
 
 // 處理圖表數據
 const processChartData = async (t: ReturnType<typeof useI18n>['t']): Promise<ChartData<'doughnut'>> => {
@@ -100,9 +104,10 @@ const processChartData = async (t: ReturnType<typeof useI18n>['t']): Promise<Cha
   const calculateSoc = () => {
     // 重置累加的 SOC 值
     accumulatedSoc = 0
+    dischargeAmount = 0
 
     const timeToIndexMap: { [key: string]: number } = {
-      '2023-09-30T09:00:00+08:00': 36, // 09:00 對應 timeLabels 中的索引
+      '2023-09-30T09:00:00+08:00': 36,
       '2023-09-30T09:15:00+08:00': 37,
       '2023-09-30T09:30:00+08:00': 38,
       '2023-09-30T09:45:00+08:00': 39,
@@ -124,6 +129,17 @@ const processChartData = async (t: ReturnType<typeof useI18n>['t']): Promise<Cha
       '2023-09-30T13:45:00+08:00': 55,
       '2023-09-30T14:00:00+08:00': 56,
       '2023-09-30T14:15:00+08:00': 57,
+    }
+
+    // 放電時間映射與權重
+    const dischargeTimeMap: { [key: string]: { index: number; weight: number } } = {
+      '2023-09-30T19:30:00+08:00': { index: 78, weight: 0.1 },  // 10%
+      '2023-09-30T19:45:00+08:00': { index: 79, weight: 0.15 }, // 15%
+      '2023-09-30T20:00:00+08:00': { index: 80, weight: 0.2 },  // 20%
+      '2023-09-30T20:15:00+08:00': { index: 81, weight: 0.2 },  // 20%
+      '2023-09-30T20:30:00+08:00': { index: 82, weight: 0.15 }, // 15%
+      '2023-09-30T20:45:00+08:00': { index: 83, weight: 0.1 },  // 10%
+      '2023-09-30T21:00:00+08:00': { index: 84, weight: 0.1 },  // 10%
     }
 
     // 係數映射
@@ -152,37 +168,64 @@ const processChartData = async (t: ReturnType<typeof useI18n>['t']): Promise<Cha
       '2023-09-30T14:15:00+08:00': 0.34,
     }
 
-    for (let i = 0; i < realTimeData.length; i+=1) {
+    // 處理充電數據
+    for (let i = 0; i < realTimeData.length; i += 1) {
       const timestamp = realTimeData[i]?.timestamp
 
       if (timestamp && timeToIndexMap[timestamp] !== undefined) {
         const index = timeToIndexMap[timestamp]
         const coefficient = coefficientMap[timestamp]
 
-        // 只在指定時間範圍內累加 SOC 值
         if (i > 0 && timestamp >= '2023-09-30T09:00:00+08:00' && timestamp <= '2023-09-30T14:15:00+08:00') {
           const currentSoc = (((realTimeData[i - 1]?.PV_raw + realTimeData[i]?.PV_raw) * 1 / 4) / 2) * coefficient / 1000 || 0
           socData[index] = currentSoc
-          accumulatedSoc += currentSoc // 只在指定時間範圍內累加 SOC 值
+          accumulatedSoc += currentSoc
         } else {
-          socData[index] = 0 // 其他時段設為 0
+          socData[index] = 0
         }
       }
     }
+
+    // 處理放電數據
+    const dischargeStartTime = '2023-09-30T19:30:00+08:00'
+    let hasReachedDischargeTime = false
+
+    // 檢查是否已到達放電時間
+    for (const data of realTimeData) {
+      if (data.timestamp >= dischargeStartTime) {
+        hasReachedDischargeTime = true
+        break
+      }
+    }
+
+    // 只有當到達放電時間才計算放電量
+    if (hasReachedDischargeTime) {
+      const currentTime = realTimeData[realTimeData.length - 1]?.timestamp
+      if (currentTime) {
+        for (const [timestamp, { index, weight }] of Object.entries(dischargeTimeMap)) {
+          if (currentTime >= timestamp) {
+            const dischargeEnergy = accumulatedSoc * weight
+            socData[index] = dischargeEnergy
+            dischargeAmount += dischargeEnergy
+          }
+        }
+      }
+    }
+
     return socData
   }
 
   // 計算 SOC 值
   calculateSoc()
 
-  // 使用累加的 SOC 值
-  const soc = accumulatedSoc > 0 ? accumulatedSoc : 0
-  const percentage = Math.min((soc / MAX_SOC) * 100, 100)
+  // 計算最終的 SOC 值（考慮放電）
+  const finalSoc = Math.max(0, accumulatedSoc - dischargeAmount)
+  const percentage = Math.min((finalSoc / MAX_SOC) * 100, 100)
   const charged = Math.min(Math.max(percentage, 0), 100)
   const remaining = 100 - charged
 
   // 檢查是否已達標
-  const isTargetReached = soc >= TARGET_SOC
+  const isTargetReached = finalSoc >= TARGET_SOC
 
   // 創建新的圖表數據
   const newChartData: ChartData<'doughnut'> = {
@@ -192,7 +235,7 @@ const processChartData = async (t: ReturnType<typeof useI18n>['t']): Promise<Cha
     ],
     datasets: [
       {
-        backgroundColor: isTargetReached ? ['#10B981', '#E5E7EB'] : ['#eb9234', '#37eb34'],
+        backgroundColor: isTargetReached ? ['#10B981', '#E5E7EB'] : ['#F59E0B', '#E5E7EB'],
         borderWidth: 0,
         data: [charged, remaining],
         hoverOffset: 4,
@@ -222,7 +265,6 @@ export const chartData = {
 
 // 圖表選項
 export const chartOptions = (socValue: number): ChartOptions<'doughnut'> => {
-
   const options: any = {
     responsive: true,
     maintainAspectRatio: false,
@@ -267,13 +309,12 @@ export const chartOptions = (socValue: number): ChartOptions<'doughnut'> => {
         bottom: 20,
       },
     },
-    // 添加性能優化選項
     animation: {
-      duration: 200, // 減少動畫時間
+      duration: 200,
     },
     elements: {
       arc: {
-        borderWidth: 0, // 移除邊框
+        borderWidth: 0,
       },
     },
   }

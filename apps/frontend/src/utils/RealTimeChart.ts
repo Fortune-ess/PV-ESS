@@ -126,9 +126,9 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
   const socData: number[] = Array(96).fill(0) // 初始化為96個0，對應每15分鐘一個時間點
 
   const calculateSoc = () => {
-
-    const timeToIndexMap: { [key: string]: number } = {
-      '2023-09-30T09:00:00+08:00': 36, // 09:00 對應 timeLabels 中的索引
+    // 充電時間映射
+    const chargeTimeMap: { [key: string]: number } = {
+      '2023-09-30T09:00:00+08:00': 36,
       '2023-09-30T09:15:00+08:00': 37,
       '2023-09-30T09:30:00+08:00': 38,
       '2023-09-30T09:45:00+08:00': 39,
@@ -152,8 +152,19 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
       '2023-09-30T14:15:00+08:00': 57,
     }
 
-    // 係數映射
-    const coefficientMap: { [key: string]: number } = {
+    // 放電時間映射與權重
+    const dischargeTimeMap: { [key: string]: { index: number; weight: number } } = {
+      '2023-09-30T19:30:00+08:00': { index: 78, weight: 0.1 },  // 10%
+      '2023-09-30T19:45:00+08:00': { index: 79, weight: 0.15 }, // 15%
+      '2023-09-30T20:00:00+08:00': { index: 80, weight: 0.2 },  // 20%
+      '2023-09-30T20:15:00+08:00': { index: 81, weight: 0.2 },  // 20%
+      '2023-09-30T20:30:00+08:00': { index: 82, weight: 0.15 }, // 15%
+      '2023-09-30T20:45:00+08:00': { index: 83, weight: 0.1 },  // 10%
+      '2023-09-30T21:00:00+08:00': { index: 84, weight: 0.1 },  // 10%
+    }
+
+    // 充電係數映射
+    const chargeCoefficientMap: { [key: string]: number } = {
       '2023-09-30T09:00:00+08:00': 0.4,
       '2023-09-30T09:15:00+08:00': 0.81,
       '2023-09-30T09:30:00+08:00': 0.45,
@@ -178,17 +189,50 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
       '2023-09-30T14:15:00+08:00': 0.34,
     }
 
+    // 處理充電數據
+    let totalChargeEnergy = 0 // 追蹤總充電量
     for (let i = 0; i < realTimeData.length; i += 1) {
       const timestamp = realTimeData[i]?.timestamp
 
-      if (timestamp && timeToIndexMap[timestamp] !== undefined) {
-        const index = timeToIndexMap[timestamp]
-        const coefficient = coefficientMap[timestamp]
+      if (timestamp && chargeTimeMap[timestamp] !== undefined) {
+        const index = chargeTimeMap[timestamp]
+        const coefficient = chargeCoefficientMap[timestamp]
 
         if (i > 0) {
-          socData[index] = (((realTimeData[i - 1]?.PV_raw + realTimeData[i]?.PV_raw) * 1 / 4) / 2) * coefficient || 0
+          const chargeEnergy = (((realTimeData[i - 1]?.PV_raw + realTimeData[i]?.PV_raw) * 1 / 4) / 2) * coefficient || 0
+          socData[index] = chargeEnergy
+          totalChargeEnergy += chargeEnergy
         } else {
-          socData[index] = (realTimeData[i]?.PV_raw * 1 / 4) * coefficient || 0
+          const chargeEnergy = (realTimeData[i]?.PV_raw * 1 / 4) * coefficient || 0
+          socData[index] = chargeEnergy
+          totalChargeEnergy += chargeEnergy
+        }
+      }
+    }
+
+    // 處理放電數據
+    const dischargeStartTime = '2023-09-30T19:30:00+08:00'
+    let hasReachedDischargeTime = false
+
+    // 檢查是否已到達放電時間
+    for (const data of realTimeData) {
+      if (data.timestamp >= dischargeStartTime) {
+        hasReachedDischargeTime = true
+        break
+      }
+    }
+
+    // 只有當到達放電時間才顯示放電數據
+    if (hasReachedDischargeTime) {
+      // 找出當前時間對應的放電時間點
+      const currentTime = realTimeData[realTimeData.length - 1]?.timestamp
+      if (currentTime) {
+        for (const [timestamp, { index, weight }] of Object.entries(dischargeTimeMap)) {
+          // 如果當前時間已經到達或超過該放電時間點，就顯示該時間點的放電數據
+          if (currentTime >= timestamp) {
+            const dischargeEnergy = totalChargeEnergy * weight
+            socData[index] = dischargeEnergy
+          }
         }
       }
     }
@@ -247,6 +291,19 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
         categoryPercentage: 0.92,
         stack: 'stack0',
         order: 1,
+      },
+      {
+        label: t('main.dashboard.real_time_chart.discharge_amount'),
+        type: 'bar',
+        backgroundColor: 'rgba(52, 152, 219, 0.3)',
+        borderColor: 'rgba(52, 152, 219, 0.9)',
+        borderWidth: 1,
+        data: socData,
+        yAxisID: 'y',
+        barPercentage: 0.85,
+        categoryPercentage: 0.92,
+        stack: 'stack0',
+        order: 3,
       },
     ],
   }

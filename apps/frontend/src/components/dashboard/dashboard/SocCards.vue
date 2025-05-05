@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { chartData as doughnutChartData } from '@/utils/DoughnutChart'
+import { chartData as realTimeChartData } from '@/utils/RealTimeChart'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -7,21 +8,39 @@ const { t } = useI18n()
 
 // 從 DoughnutChart.ts 中獲取 SOC 值
 const currentSoCValue = ref(0)
+const dischargeAmount = ref(0)
 const MAX_SOC = 18.40 // 與 DoughnutChart.ts 中的值保持一致
 const TARGET_SOC = 13.104 // 與 DoughnutChart.ts 中的值保持一致
+
+// 放電時間點索引
+const DISCHARGE_INDICES = [78, 79, 80, 81, 82, 83, 84] // 對應 19:30 到 21:00 的時間點
 
 // 更新 SOC 值的函數
 const updateSoCValue = async () => {
   try {
     // 獲取圖表數據
-    const chartData = await doughnutChartData.get(t)
+    const doughnutData = await doughnutChartData.get(t)
+    const realTimeData = await realTimeChartData.get(t)
     
     // 從圖表數據中提取 SOC 值
-    if (chartData && chartData.datasets.length > 0) {
+    if (doughnutData && doughnutData.datasets.length > 0) {
       // 從數據集中獲取百分比值
-      const percentage = chartData.datasets[0].data[0]
+      const percentage = doughnutData.datasets[0].data[0]
       // 計算實際的 SOC 值
       currentSoCValue.value = (Number(percentage) / 100) * MAX_SOC
+    }
+
+    // 從實時圖表數據中提取放電量
+    if (realTimeData && realTimeData.datasets.length > 0) {
+      // 找到放電數據集（discharge_amount）
+      const dischargeDataset = realTimeData.datasets.find(dataset => 
+        dataset.label === t('main.dashboard.real_time_chart.discharge_amount')
+      )
+      if (dischargeDataset && dischargeDataset.data) {
+        const socData = dischargeDataset.data as number[]
+        // 只計算放電時間點的數據，並除以1000
+        dischargeAmount.value = DISCHARGE_INDICES.reduce((sum, index) => sum + (socData[index] || 0), 0) / 1000
+      }
     }
   } catch (error) {
     console.error('Error updating SOC value:', error)
@@ -50,20 +69,12 @@ onUnmounted(() => {
 const stats = computed(() => [
   { 
     title: 'current_soc_total_charge',
-    value: currentSoCValue.value.toFixed(2)
+    value: (currentSoCValue.value - dischargeAmount.value).toFixed(2)
   },
   { 
-    title: 'current_remaining_charge',
-    value: Math.max(0, (TARGET_SOC - currentSoCValue.value)).toFixed(2)
-  },
-  { 
-    title: 'total_charge_amount',
-    value: TARGET_SOC.toFixed(2)
-  },
-  { 
-    title: 'output_to_grid_amount',
-    value: Math.max(0, (currentSoCValue.value - TARGET_SOC)).toFixed(2)
-  },
+    title: 'current_discharge_amount',
+    value: dischargeAmount.value.toFixed(2)
+  }
 ])
 </script>
 
