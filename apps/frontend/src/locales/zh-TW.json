@@ -138,7 +138,7 @@
       "abandon_light": "棄光",
       "none": "無",
       "current_soc_total_charge": "當前SOC總充電量",
-      "current_remaining_charge": "當前剩餘充電量",
+      "current_discharge_amount": "當前放電量",
       "total_charge_amount": "總充電量",
       "output_to_grid_amount": "併網輸出量",
       "today_PV_accumulated_amount_kWh": "本日PV累積量(kWh)",
@@ -187,7 +187,14 @@
         "pv_raw": "實際PV",
         "power": "功率 (kW)",
         "soc": "SOC",
-        "feed_in_battery": "充入電池"
+        "feed_in_battery": "充入電池",
+        "discharge_amount": "放電量"
+      },
+      "pvcard": {
+        "current_pv_system_generation": "當前PV系統發電量",
+        "current_new_pv_system_generation": "當前新PV系統發電量",
+        "current_ESS_power": "當前ESS功率",
+        "output_to_grid_amount": "併網輸出量"
       }
     },
     "weather": {

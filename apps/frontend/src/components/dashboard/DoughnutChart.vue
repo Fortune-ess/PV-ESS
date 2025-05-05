@@ -13,10 +13,23 @@ const doughnutOptions = ref<ChartOptions<'doughnut'> | null>(null)
 const socValue = ref(0)
 const socPercentage = ref(0)
 const isTargetReached = ref(false)
+const isDischarging = ref(false)
 
 // 目標值和最大 SOC 值
 const TARGET_SOC = 13.104
 const MAX_SOC = 18.40
+
+// 檢查是否在放電
+const checkDischarging = (data: ChartData<'doughnut'>) => {
+  const dataset = data.datasets?.[0]
+  if (!dataset) return false
+  
+  const bgColor = dataset.backgroundColor
+  if (!bgColor || typeof bgColor === 'string' || typeof bgColor === 'function') return false
+  
+  const firstColor = Array.isArray(bgColor) ? bgColor[0] : null
+  return firstColor === '#F59E0B'
+}
 
 // 初始化圖表
 onMounted(async () => {
@@ -34,6 +47,9 @@ onMounted(async () => {
       // 計算 SOC 百分比
       socPercentage.value = Math.min(Math.round((socValue.value / MAX_SOC) * 100), 100)
       isTargetReached.value = socValue.value >= TARGET_SOC
+      
+      // 檢查是否在放電
+      isDischarging.value = checkDischarging(doughnutData.value)
     }
     
     // 創建圖表選項
@@ -69,6 +85,9 @@ const updateChart = async () => {
       // 計算 SOC 百分比
       socPercentage.value = Math.min(Math.round((socValue.value / MAX_SOC) * 100), 100)
       isTargetReached.value = socValue.value >= TARGET_SOC
+      
+      // 檢查是否在放電
+      isDischarging.value = checkDischarging(doughnutData.value)
     }
   } catch (error) {
     console.error('Error updating doughnut chart:', error)
@@ -95,10 +114,10 @@ setInterval(updateChart, 1000)
       <!-- 目標標記 -->
       <div 
         class="absolute top-1/2 left-0 flex items-center px-2 py-1 rounded text-sm font-bold text-white shadow-sm"
-        :class="isTargetReached ? 'bg-green-500' : 'bg-orange-500'"
+        :class="isTargetReached ? 'bg-green-500' : isDischarging ? 'bg-red-500' : 'bg-amber-500'"
       >
-        <span class="mr-1">{{ isTargetReached ? '✓' : '⟳' }}</span>
-        <span>{{ isTargetReached ? 'Charged' : 'Charging' }}</span>
+        <span class="mr-1">{{ isTargetReached ? '✓' : isDischarging ? '↓' : '⟳' }}</span>
+        <span>{{ isTargetReached ? 'Charged' : isDischarging ? 'Discharging' : 'Charging' }}</span>
       </div>
     </div>
     
@@ -110,7 +129,3 @@ setInterval(updateChart, 1000)
     </div>
   </div>
 </template>
-
-<style scoped>
-/* 移除所有 scoped styles，因為我們現在使用 Tailwind */
-</style>

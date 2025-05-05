@@ -67,8 +67,8 @@ export const useSystemStore = () => {
       '2023-09-30T13:30:00+08:00': 54,
       '2023-09-30T13:45:00+08:00': 55,
       '2023-09-30T14:00:00+08:00': 56,
-      '2023-09-30T14:15:00+08:00': 57
-    };
+      '2023-09-30T14:15:00+08:00': 57,
+    }
 
     // 係數映射
     const coefficientMap: { [key: string]: number } = {
@@ -93,43 +93,43 @@ export const useSystemStore = () => {
       '2023-09-30T13:30:00+08:00': 0.57,
       '2023-09-30T13:45:00+08:00': 0.55,
       '2023-09-30T14:00:00+08:00': 0.42,
-      '2023-09-30T14:15:00+08:00': 0.34
-    };
+      '2023-09-30T14:15:00+08:00': 0.34,
+    }
 
-    for (let i = 0; i < realTimeData.length; i++) {
-      const timestamp = realTimeData[i]?.timestamp;
+    for (let i = 0; i < realTimeData.length; i+=1) {
+      const timestamp = realTimeData[i]?.timestamp
 
       if (timestamp && timeToIndexMap[timestamp] !== undefined) {
-        const index = timeToIndexMap[timestamp];
-        const coefficient = coefficientMap[timestamp];
+        const index = timeToIndexMap[timestamp]
+        const coefficient = coefficientMap[timestamp]
 
         if (i > 0) {
-          socData[index] = (((realTimeData[i - 1]?.PV_raw + realTimeData[i]?.PV_raw) * 1 / 4) / 2) * coefficient || 0;
+          socData[index] = (((realTimeData[i - 1]?.PV_raw + realTimeData[i]?.PV_raw) * 1 / 4) / 2) * coefficient || 0
         } else {
-          socData[index] = (realTimeData[i]?.PV_raw * 1 / 4) * coefficient || 0;
+          socData[index] = (realTimeData[i]?.PV_raw * 1 / 4) * coefficient || 0
         }
       }
     }
 
     // 更新 batteryPower 為最新的 socData 值
-    const latestSocValue = socData.filter(value => value > 0).pop();
+    const latestSocValue = socData.filter(value => value > 0).pop()
 
     // 檢查是否到達最後的時間點 (14:15)
-    const lastTimestamp = realTimeData[realTimeData.length - 1]?.timestamp;
+    const lastTimestamp = realTimeData[realTimeData.length - 1]?.timestamp
     if (lastTimestamp === '2023-09-30T23:45:00+08:00') {
-      batteryPower.value = 0; // 當到達最後時間點時歸零
+      batteryPower.value = 0 // 當到達最後時間點時歸零
     } else if (latestSocValue) {
-      batteryPower.value = Number(latestSocValue.toFixed(2));
+      batteryPower.value = Number(latestSocValue.toFixed(2))
     }
   }
 
   // 初始化時獲取數據
-  getSocData();
+  void getSocData()
 
   // 定期更新數據
   setInterval(() => {
-    getSocData();
-  }, 1000);
+    void getSocData()
+  }, 1000)
 
   // 根據狀態獲取邊框顏色
   const getBorderColor = (status: string) => {
@@ -200,6 +200,6 @@ export const useSystemStore = () => {
     // 方法
     getBorderColor,
     startAnimation,
-    triggerPathAnimation
+    triggerPathAnimation,
   }
 }

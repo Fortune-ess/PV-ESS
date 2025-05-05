@@ -1,30 +1,37 @@
 <script setup lang="ts">
-import { chartData as doughnutChartData } from '@/utils/DoughnutChart'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { useSystemStore } from '@/store/systemStore'
+import { fetchRealTimeData } from '@/services/fetch-realtime-data'
 
-const { t } = useI18n()
+const systemStore = useSystemStore()
 
-// 從 DoughnutChart.ts 中獲取 SOC 值
-const currentSoCValue = ref(0)
-const MAX_SOC = 18.40 // 與 DoughnutChart.ts 中的值保持一致
-const TARGET_SOC = 13.104 // 與 DoughnutChart.ts 中的值保持一致
+// 實時數據
+const pvRawData = ref(0)
+const socData = ref(0)
 
-// 更新 SOC 值的函數
-const updateSoCValue = async () => {
+// 更新數據的函數
+const updateData = async () => {
   try {
-    // 獲取圖表數據
-    const chartData = await doughnutChartData.get(t)
-    
-    // 從圖表數據中提取 SOC 值
-    if (chartData && chartData.datasets.length > 0) {
-      // 從數據集中獲取百分比值
-      const percentage = chartData.datasets[0].data[0]
-      // 計算實際的 SOC 值
-      currentSoCValue.value = (Number(percentage) / 100) * MAX_SOC
+    // 獲取實時數據
+    const realTimeData = await fetchRealTimeData()
+    if (realTimeData && realTimeData.length > 0) {
+      // 檢查是否到達指定時間點
+      const lastTimestamp = realTimeData[realTimeData.length - 1]?.timestamp
+      if (lastTimestamp === '2023-09-30T17:45:00+08:00') {
+        // 當到達指定時間點時歸零
+        pvRawData.value = 0
+        socData.value = 0
+      } else {
+        // 獲取最新的 PV_raw 值
+        pvRawData.value = realTimeData[realTimeData.length - 1]?.PV_raw || 0
+        
+        // 獲取最新的 socData 值
+        const latestSocValue = systemStore.batteryPower.value
+        socData.value = latestSocValue
+      }
     }
   } catch (error) {
-    console.error('Error updating SOC value:', error)
+    console.error('Error updating data:', error)
   }
 }
 
@@ -32,12 +39,12 @@ const updateSoCValue = async () => {
 let updateInterval: ReturnType<typeof setInterval> | null = null
 
 onMounted(async () => {
-  // 初始更新 SOC 值
-  await updateSoCValue()
+  // 初始更新數據
+  await updateData()
   
-  // 每秒更新一次 SOC 值
+  // 每秒更新一次數據
   updateInterval = setInterval(async () => {
-    await updateSoCValue()
+    await updateData()
   }, 1000)
 })
 
@@ -49,20 +56,20 @@ onUnmounted(() => {
 
 const stats = computed(() => [
   { 
-    title: 'current_soc_total_charge',
-    value: currentSoCValue.value.toFixed(2)
+    title: 'current_pv_system_generation',
+    value: pvRawData.value.toFixed(2)
   },
   { 
-    title: 'current_remaining_charge',
-    value: Math.max(0, (TARGET_SOC - currentSoCValue.value)).toFixed(2)
+    title: 'current_new_pv_system_generation',
+    value: '0.00'
   },
   { 
-    title: 'total_charge_amount',
-    value: TARGET_SOC.toFixed(2)
+    title: 'current_ESS_power',
+    value: socData.value.toFixed(2)
   },
   { 
     title: 'output_to_grid_amount',
-    value: Math.max(0, (currentSoCValue.value - TARGET_SOC)).toFixed(2)
+    value: Math.max(0, (pvRawData.value - socData.value)).toFixed(2)
   },
 ])
 </script>
@@ -75,10 +82,10 @@ const stats = computed(() => [
       class="text-black backdrop-blur-[30px] rounded-xl bg-white/70 shadow-2xl shadow-white/90 flex flex-col justify-center p-4"
     >
       <div class="text-xs text-gray-500">
-        {{ $t(`main.dashboard.${stat.title}`) }}
+        {{ $t(`main.dashboard.pvcard.${stat.title}`) }}
       </div>
       <div class="font-bold text-base">
-        {{ stat.value }} MWh
+        {{ stat.value }} kWh
       </div>
     </div>
   </div>
