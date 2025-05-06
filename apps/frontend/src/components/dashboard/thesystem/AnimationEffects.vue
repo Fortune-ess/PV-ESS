@@ -4,8 +4,6 @@ import { Zap } from 'lucide-vue-next'
 
 const {
   animationStep,
-  animationTriggered,
-  currentAnimationSource,
   oldPVStatus,
   status,
   solarStatus,
@@ -47,7 +45,7 @@ const getVerticalAnimationStyle = (index: number) => {
     class="absolute top-[22%] left-[32%] w-[18%] z-20"
   >
     <Zap
-      v-for="(opacity, index) in [1, 0.7, 0.4]"
+      v-for="(opacity, index) in [1, 0.7]"
       :key="index"
       class="w-4 h-4 text-emerald-500 absolute transform -translate-y-1/2"
       :class="[
@@ -64,7 +62,7 @@ const getVerticalAnimationStyle = (index: number) => {
     class="absolute top-[22%] right-[32%] w-[18%] z-20"
   >
     <Zap
-      v-for="(opacity, index) in [1, 0.7, 0.4]"
+      v-for="(opacity, index) in [1, 0.7]"
       :key="index"
       class="w-4 h-4 text-emerald-500 absolute transform -translate-y-1/2"
       :class="[
@@ -81,7 +79,7 @@ const getVerticalAnimationStyle = (index: number) => {
     class="absolute top-[75%] left-[32%] w-[18%] z-20"
   >
     <Zap
-      v-for="(opacity, index) in [1, 0.7, 0.4]"
+      v-for="(opacity, index) in [1, 0.7]"
       :key="index"
       class="w-4 h-4 text-emerald-500 absolute transform -translate-y-1/2"
       :class="[
@@ -98,7 +96,7 @@ const getVerticalAnimationStyle = (index: number) => {
     class="absolute top-[75%] right-[32%] w-[18%] z-20"
   >
     <Zap
-      v-for="(opacity, index) in [1, 0.7, 0.4]"
+      v-for="(opacity, index) in [1, 0.7]"
       :key="index"
       class="w-4 h-4 text-emerald-500 absolute transform -translate-y-1/2"
       :class="[
