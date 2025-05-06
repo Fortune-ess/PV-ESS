@@ -8,9 +8,6 @@ import { useI18n } from 'vue-i18n'
 const MAX_SOC = 18.40
 const TARGET_SOC = 13.104
 
-// 放電時間點索引
-const DISCHARGE_INDICES = [78, 79, 80, 81, 82, 83, 84] // 對應 19:30 到 21:00 的時間點
-
 // 中心文字 plugin
 export const centerTextPlugin = {
   id: 'centerText',
