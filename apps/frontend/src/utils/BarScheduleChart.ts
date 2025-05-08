@@ -113,9 +113,11 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
   const dataPoints = await fetchData()
 
   // 檢查數據是否有變化，如果沒有變化則直接返回緩存的圖表數據
-  if (dataPoints.length === lastProcessedData.length &&
+  if (
+    dataPoints.length === lastProcessedData.length &&
     JSON.stringify(dataPoints) === JSON.stringify(lastProcessedData) &&
-    lastProcessedResult) {
+    lastProcessedResult
+  ) {
     return lastProcessedResult
   }
 
@@ -132,8 +134,12 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
   // 修改資料處理邏輯 - 使用更高效的方式
   if (dataPoints && dataPoints.length > 0) {
     // 找到目標時間的索引
-    const targetIndex = dataPoints.findIndex(item => String(item.data.timestamp) === targetTime)
-    const endIndex = dataPoints.findIndex(item => String(item.data.timestamp) === endTime)
+    const targetIndex = dataPoints.findIndex(
+      (item) => String(item.data.timestamp) === targetTime,
+    )
+    const endIndex = dataPoints.findIndex(
+      (item) => String(item.data.timestamp) === endTime,
+    )
 
     if (targetIndex !== -1) {
       // 直接從目標時間開始處理數據
@@ -198,7 +204,7 @@ export const chartData = {
     lastUpdateTime.value = Date.now()
     chartDataRef.value = await processChartData(t)
     return chartDataRef.value
-  }
+  },
 }
 
 export const getChartOptions = (t: any): ChartOptions<'bar'> => {
@@ -245,16 +251,16 @@ export const getChartOptions = (t: any): ChartOptions<'bar'> => {
         usePointStyle: true,
         callbacks: {
           label: function (context) {
-            let label = context.dataset.label || '';
+            let label = context.dataset.label || ''
             if (label) {
-              label += ': ';
+              label += ': '
             }
             if (context.parsed.y !== null) {
-              label += context.parsed.y.toFixed(2) + ' kW';
+              label += `${context.parsed.y.toFixed(2)} kW`
             }
-            return label;
-          }
-        }
+            return label
+          },
+        },
       },
     },
     scales: {
@@ -292,7 +298,7 @@ export const getChartOptions = (t: any): ChartOptions<'bar'> => {
             size: 10,
           },
           callback: function (value) {
-            return value + ' kW';
+            return `${value} kW`
           },
         },
         border: {

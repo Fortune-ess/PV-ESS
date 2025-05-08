@@ -38,8 +38,8 @@ const calculateSoc = () => {
     '2023-09-30T13:30:00+08:00': 54,
     '2023-09-30T13:45:00+08:00': 55,
     '2023-09-30T14:00:00+08:00': 56,
-    '2023-09-30T14:15:00+08:00': 57
-  };
+    '2023-09-30T14:15:00+08:00': 57,
+  }
 
   // 係數映射
   const coefficientMap: { [key: string]: number } = {
@@ -59,42 +59,49 @@ const calculateSoc = () => {
     '2023-09-30T12:15:00+08:00': 0.45,
     '2023-09-30T12:30:00+08:00': 0.54,
     '2023-09-30T12:45:00+08:00': 0.97,
-    '2023-09-30T13:00:00+08:00': 1.00,
+    '2023-09-30T13:00:00+08:00': 1.0,
     '2023-09-30T13:15:00+08:00': 0.76,
     '2023-09-30T13:30:00+08:00': 0.57,
     '2023-09-30T13:45:00+08:00': 0.55,
     '2023-09-30T14:00:00+08:00': 0.42,
-    '2023-09-30T14:15:00+08:00': 0.34
-  };
+    '2023-09-30T14:15:00+08:00': 0.34,
+  }
 
-  const tempSocData = Array(96).fill(0);
+  const tempSocData = Array(96).fill(0)
 
   for (let i = 0; i < realTimeData.value.length; i++) {
-    const timestamp = realTimeData.value[i]?.timestamp;
+    const timestamp = realTimeData.value[i]?.timestamp
 
     if (timestamp && timeToIndexMap[timestamp] !== undefined) {
-      const index = timeToIndexMap[timestamp];
-      const coefficient = coefficientMap[timestamp];
+      const index = timeToIndexMap[timestamp]
+      const coefficient = coefficientMap[timestamp]
 
       if (i > 0) {
-        tempSocData[index] = (((realTimeData.value[i - 1]?.PV_raw + realTimeData.value[i]?.PV_raw) * 1 / 4) / 2) * coefficient || 0;
+        tempSocData[index] =
+          (((realTimeData.value[i - 1]?.PV_raw +
+            realTimeData.value[i]?.PV_raw) *
+            1) /
+            4 /
+            2) *
+            coefficient || 0
       } else {
-        tempSocData[index] = (realTimeData.value[i]?.PV_raw * 1 / 4) * coefficient || 0;
+        tempSocData[index] =
+          ((realTimeData.value[i]?.PV_raw * 1) / 4) * coefficient || 0
       }
     }
   }
-  
+
   // 計算總和並更新 socData
-  const total = tempSocData.reduce((acc, curr) => acc + curr, 0) / 1000;
-  socData.value = tempSocData;
-  totalSocValue.value = total;
-  return total;
+  const total = tempSocData.reduce((acc, curr) => acc + curr, 0) / 1000
+  socData.value = tempSocData
+  totalSocValue.value = total
+  return total
 }
 
 // 從 DoughnutChart.ts 中獲取 SOC 值
 const currentSoCValue = ref(0)
 const currentSoCPercentage = ref(0)
-const MAX_SOC = 18.40 // 與 DoughnutChart.ts 中的值保持一致
+const MAX_SOC = 18.4 // 與 DoughnutChart.ts 中的值保持一致
 const TARGET_SOC = 13.104 // 與 DoughnutChart.ts 中的值保持一致
 
 // 確保百分比值有效
@@ -114,7 +121,7 @@ const updateSoCValue = async () => {
   try {
     // 獲取圖表數據
     const doughnutData = await chartData.update(t)
-    
+
     // 從圖表數據中提取 SOC 值
     if (doughnutData && doughnutData.datasets.length > 0) {
       // 從數據集中獲取百分比值
@@ -122,11 +129,14 @@ const updateSoCValue = async () => {
       // 計算實際的 SOC 值
       currentSoCValue.value = (percentage / 100) * MAX_SOC
       // 設置百分比值 - 使用 TARGET_SOC 作為 100% 的基準
-      currentSoCPercentage.value = Math.min(Math.round((currentSoCValue.value / TARGET_SOC) * 100), 100)
-      
+      currentSoCPercentage.value = Math.min(
+        Math.round((currentSoCValue.value / TARGET_SOC) * 100),
+        100,
+      )
+
       // 更新總能量值
       if (realTimeData.value && realTimeData.value.length > 0) {
-        calculateSoc();
+        calculateSoc()
       }
     } else {
       console.warn('Invalid chart data structure:', doughnutData)
@@ -144,7 +154,7 @@ const initData = async () => {
   try {
     realTimeData.value = await fetchRealTimeData()
     if (realTimeData.value && realTimeData.value.length > 0) {
-      calculateSoc();
+      calculateSoc()
     }
     await updateSoCValue()
   } catch (error) {
@@ -155,7 +165,7 @@ const initData = async () => {
 onMounted(async () => {
   // 初始化數據
   await initData()
-  
+
   // 每秒更新一次 SOC 值
   batteryChargingTimer = window.setInterval(async () => {
     await updateSoCValue()
@@ -175,7 +185,8 @@ onUnmounted(() => {
       class="flex flex-col sm:flex-row justify-between text-black text-sm mb-2"
     >
       <span class="mb-1 sm:mb-0">
-        {{ $t('main.dashboard.total_energy') }}: {{ safeTotalSocValue.toFixed(2) }}MWh
+        {{ $t('main.dashboard.total_energy') }}:
+        {{ safeTotalSocValue.toFixed(2) }}MWh
       </span>
       <span>
         {{ $t('main.dashboard.current_charge') }}: {{ safePercentage }}%

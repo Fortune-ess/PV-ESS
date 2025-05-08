@@ -18,11 +18,11 @@ export interface ScheduleData {
   data: {
     dayAheadPrediction: number
     timestamp: Date
-    status: number  // 0: normal 1: abnormal
-    esHSL: number  // ESS最大功率
-    pvEnergy: number  // ESS自排程PV發電量
-    esEnergy: number  // ESS自排程ES發電量
-    soc: number  // ESS自排程預計電量
+    status: number // 0: normal 1: abnormal
+    esHSL: number // ESS最大功率
+    pvEnergy: number // ESS自排程PV發電量
+    esEnergy: number // ESS自排程ES發電量
+    soc: number // ESS自排程預計電量
   }
 }
 

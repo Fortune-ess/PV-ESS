@@ -4,7 +4,6 @@ import { ref, watch } from 'vue'
 
 // 系統狀態
 export const useSystemStore = () => {
-
   // 固定數據
   const frequency = ref(60)
   const solarPower = ref(0)
@@ -35,8 +34,10 @@ export const useSystemStore = () => {
     const realTimeData = await fetchRealTimeData()
 
     // 檢查數據是否有變化
-    if (realTimeData.length === lastProcessedData.length &&
-      JSON.stringify(realTimeData) === JSON.stringify(lastProcessedData)) {
+    if (
+      realTimeData.length === lastProcessedData.length &&
+      JSON.stringify(realTimeData) === JSON.stringify(lastProcessedData)
+    ) {
       return
     }
 
@@ -88,7 +89,7 @@ export const useSystemStore = () => {
       '2023-09-30T12:15:00+08:00': 0.45,
       '2023-09-30T12:30:00+08:00': 0.54,
       '2023-09-30T12:45:00+08:00': 0.97,
-      '2023-09-30T13:00:00+08:00': 1.00,
+      '2023-09-30T13:00:00+08:00': 1.0,
       '2023-09-30T13:15:00+08:00': 0.76,
       '2023-09-30T13:30:00+08:00': 0.57,
       '2023-09-30T13:45:00+08:00': 0.55,
@@ -96,7 +97,7 @@ export const useSystemStore = () => {
       '2023-09-30T14:15:00+08:00': 0.34,
     }
 
-    for (let i = 0; i < realTimeData.length; i+=1) {
+    for (let i = 0; i < realTimeData.length; i += 1) {
       const timestamp = realTimeData[i]?.timestamp
 
       if (timestamp && timeToIndexMap[timestamp] !== undefined) {
@@ -104,15 +105,20 @@ export const useSystemStore = () => {
         const coefficient = coefficientMap[timestamp]
 
         if (i > 0) {
-          socData[index] = (((realTimeData[i - 1]?.PV_raw + realTimeData[i]?.PV_raw) * 1 / 4) / 2) * coefficient || 0
+          socData[index] =
+            (((realTimeData[i - 1]?.PV_raw + realTimeData[i]?.PV_raw) * 1) /
+              4 /
+              2) *
+              coefficient || 0
         } else {
-          socData[index] = (realTimeData[i]?.PV_raw * 1 / 4) * coefficient || 0
+          socData[index] =
+            ((realTimeData[i]?.PV_raw * 1) / 4) * coefficient || 0
         }
       }
     }
 
     // 更新 batteryPower 為最新的 socData 值
-    const latestSocValue = socData.filter(value => value > 0).pop()
+    const latestSocValue = socData.filter((value) => value > 0).pop()
 
     // 檢查是否到達最後的時間點 (14:15)
     const lastTimestamp = realTimeData[realTimeData.length - 1]?.timestamp
@@ -150,7 +156,6 @@ export const useSystemStore = () => {
     animationInterval.value = setInterval(() => {
       animationStep.value = (animationStep.value + 1) % 3
     }, 500) as unknown as number
-
   }
 
   // 觸發特定路徑的動畫

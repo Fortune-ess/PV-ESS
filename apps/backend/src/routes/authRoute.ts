@@ -58,4 +58,12 @@ router.post('/reset-password', async (req: Request, res: Response) => {
   }
 })
 
+router.get('/verify-email', async (req: Request, res: Response) => {
+  try {
+    await authController.verifyEmail(req, res)
+  } catch (error) {
+    res.status(500).json({ message: (error as Error).message })
+  }
+})
+
 export default router

@@ -19,7 +19,7 @@ export interface RealTimeData {
   }
   status: number
   timestamp: string // Timestamp of the daily record collection
-  date: string      // Date of the daily record
+  date: string // Date of the daily record
   payload: {
     qseId: string
     groupId: number

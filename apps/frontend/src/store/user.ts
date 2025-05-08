@@ -12,7 +12,6 @@ export const useUserStore = defineStore('user', {
       try {
         const { getUserProfile } = useUserApi()
         this.user = await getUserProfile()
-        console.log(this.user)
         return this.user
       } catch (error) {
         console.error('Error fetching user:', error)

@@ -98,6 +98,12 @@ export const routes: Array<RouteRecordRaw> = [
     },
   },
   {
+    path: '/verify-email',
+    name: 'VerifyEmail',
+    component: () => import('@/pages/auth/VerifyEmailPage.vue'),
+    meta: { isPublic: true, requiresGuest: true },
+  },
+  {
     path: '/terms-conditions',
     name: 'TermsConditions',
     component: () => import('@/pages/auth/TermsConditions.vue'),

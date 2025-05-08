@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useSystemStore } from '@/store/systemStore';
+import { useSystemStore } from '@/store/systemStore'
 
 const props = defineProps<{
   title: string

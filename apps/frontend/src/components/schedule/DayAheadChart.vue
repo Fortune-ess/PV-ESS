@@ -47,7 +47,7 @@ const chartOptions = getChartOptions(t)
 // 防抖動函數
 const debounce = (fn: Function, delay: number) => {
   let timer: number | null = null
-  return function(this: any, ...args: any[]) {
+  return function (this: any, ...args: any[]) {
     if (timer) clearTimeout(timer)
     timer = window.setTimeout(() => {
       fn.apply(this, args)

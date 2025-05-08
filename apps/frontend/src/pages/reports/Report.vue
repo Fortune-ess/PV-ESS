@@ -43,15 +43,36 @@ const tableData = computed(() => {
   const data = []
   if (reportType.value === 'monthly') {
     for (let day = 1; day <= 30; day += 1) {
-      data.push({ date: `Day ${day}`, value: 'Sample Data' })
+      data.push({
+        date: `Day ${day}`,
+        revenue: (Math.random() * 10000).toFixed(2),
+        cost: (Math.random() * 5000).toFixed(2),
+        profit: (Math.random() * 5000).toFixed(2),
+        efficiency: (Math.random() * 100).toFixed(2),
+        roi: (Math.random() * 20).toFixed(2),
+      })
     }
   } else if (reportType.value === 'quarterly') {
     for (let month = 1; month <= 4; month += 1) {
-      data.push({ date: `Q${month}`, value: 'Sample Data' })
+      data.push({
+        date: `Q${month}`,
+        revenue: (Math.random() * 100000).toFixed(2),
+        cost: (Math.random() * 50000).toFixed(2),
+        profit: (Math.random() * 50000).toFixed(2),
+        efficiency: (Math.random() * 100).toFixed(2),
+        roi: (Math.random() * 20).toFixed(2),
+      })
     }
   } else {
     for (let month = 1; month <= 12; month += 1) {
-      data.push({ date: `Month ${month}`, value: 'Sample Data' })
+      data.push({
+        date: `Month ${month}`,
+        revenue: (Math.random() * 100000).toFixed(2),
+        cost: (Math.random() * 50000).toFixed(2),
+        profit: (Math.random() * 50000).toFixed(2),
+        efficiency: (Math.random() * 100).toFixed(2),
+        roi: (Math.random() * 20).toFixed(2),
+      })
     }
   }
   return data
@@ -149,7 +170,7 @@ const tableData = computed(() => {
     <!-- 詳細數據表格 -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
       <h2 class="text-base font-semibold text-gray-800 mb-3">
-        Detailed Report
+        Financial Report
       </h2>
       <div class="max-h-[320px] overflow-y-auto">
         <table class="w-full border-collapse">
@@ -163,7 +184,27 @@ const tableData = computed(() => {
               <th
                 class="px-3 py-2 text-left text-xs font-medium text-gray-600 border-b border-gray-200"
               >
-                Value
+                Revenue ($)
+              </th>
+              <th
+                class="px-3 py-2 text-left text-xs font-medium text-gray-600 border-b border-gray-200"
+              >
+                Cost ($)
+              </th>
+              <th
+                class="px-3 py-2 text-left text-xs font-medium text-gray-600 border-b border-gray-200"
+              >
+                Profit ($)
+              </th>
+              <th
+                class="px-3 py-2 text-left text-xs font-medium text-gray-600 border-b border-gray-200"
+              >
+                Efficiency (%)
+              </th>
+              <th
+                class="px-3 py-2 text-left text-xs font-medium text-gray-600 border-b border-gray-200"
+              >
+                ROI (%)
               </th>
             </tr>
           </thead>
@@ -174,7 +215,15 @@ const tableData = computed(() => {
               class="hover:bg-gray-50"
             >
               <td class="px-3 py-2 text-sm text-gray-700">{{ item.date }}</td>
-              <td class="px-3 py-2 text-sm text-gray-700">{{ item.value }}</td>
+              <td class="px-3 py-2 text-sm text-gray-700">
+                {{ item.revenue }}
+              </td>
+              <td class="px-3 py-2 text-sm text-gray-700">{{ item.cost }}</td>
+              <td class="px-3 py-2 text-sm text-gray-700">{{ item.profit }}</td>
+              <td class="px-3 py-2 text-sm text-gray-700">
+                {{ item.efficiency }}
+              </td>
+              <td class="px-3 py-2 text-sm text-gray-700">{{ item.roi }}</td>
             </tr>
           </tbody>
         </table>

@@ -15,7 +15,7 @@ let dataUpdateInterval = ref<number | null>(null)
 const useRealTimeData = async () => {
   const data = await fetchRealTimeData()
   for (let i = 0; i < data.length; i++) {
-    if(data[i].timestamp){
+    if (data[i].timestamp) {
       oldPVPower.value = data[data.length - 1].PV_raw
     }
   }
@@ -37,7 +37,7 @@ const {
 onMounted(() => {
   useRealTimeData()
   startAnimation()
-  
+
   // 每秒更新一次 oldPVPower
   dataUpdateInterval.value = setInterval(async () => {
     await useRealTimeData()
@@ -62,7 +62,7 @@ onUnmounted(() => {
         :icon="SolarpanelIcon"
       />
 
-      <SystemComponent title="Grid Output" :status="status" :icon="TowerIcon"/>
+      <SystemComponent title="Grid Output" :status="status" :icon="TowerIcon" />
 
       <SystemComponent
         title="New PV System"

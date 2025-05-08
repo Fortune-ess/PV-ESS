@@ -13,6 +13,7 @@ import userRoutes from './routes/userRoute'
 import socketEvent from './socket/socket-event'
 import { startDataInsertion } from './utils/insert-data'
 import { startRealTimeDataInsertion } from './utils/insert-rt-data'
+import { verifyApiKey } from './middleware/authMiddleware'
 
 dotenv.config()
 
@@ -22,15 +23,21 @@ const port = process.env.PORT || 3000
 // CORS 設定
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'http://192.168.41.63:5173'],
+    origin: ['http://192.168.41.63:5173'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-Requested-With',
+      'x-api-key',
+    ],
   }),
 )
 app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use(verifyApiKey)
 
 // 初始化 PostgreSQL 連線
 AppDataSource.initialize()
@@ -47,9 +54,9 @@ connectMongo()
   .then(() => {
     console.log('✅ MongoDB connected')
     // 每秒insert一次ScheduleData
-    startDataInsertion()
+    void startDataInsertion()
     console.log('Schedule data started')
-    startRealTimeDataInsertion()
+    void startRealTimeDataInsertion()
     console.log('Real time data started')
   })
   .catch((error: Error) => {
@@ -66,10 +73,15 @@ app.use(`${apiPrefix}/schedule`, scheduleRoutes)
 const server = http.createServer(app)
 const io = new SocketIOServer(server, {
   cors: {
-    origin: ['http://localhost:5173', 'http://192.168.41.63:5173'],
+    origin: ['http://192.168.41.63:5173'],
     methods: ['GET', 'POST'],
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-Requested-With',
+      'x-api-key',
+    ],
   },
   transports: ['websocket', 'polling'],
   pingTimeout: 60000,

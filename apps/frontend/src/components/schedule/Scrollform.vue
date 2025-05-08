@@ -99,7 +99,7 @@ const times = ref([
   '23:00 -> 23:15',
   '23:15 -> 23:30',
   '23:30 -> 23:45',
-  '23:45 -> 00:00'
+  '23:45 -> 00:00',
 ])
 
 // 模擬 PV 發電量數據
@@ -111,24 +111,24 @@ times.value.forEach((time, index) => {
   // 從時間段中提取開始時間
   const startTime = time.split(' -> ')[0]
   const [hour, minute] = startTime.split(':')
-  
+
   // 構建與數據中相同格式的時間戳 (2023-09-30T00:00:00+08:00)
   const formattedTime = `2023-09-30T${hour.padStart(2, '0')}:${minute.padStart(2, '0')}:00+08:00`
   timeMap[time] = formattedTime
 })
 
 // 填充pvPower數據
-data.forEach(element => {
+data.forEach((element) => {
   const timestamp = element.data.timestamp
   // 找到對應的時間段
-  const timeKey = Object.keys(timeMap).find(key => timeMap[key] === timestamp)
+  const timeKey = Object.keys(timeMap).find((key) => timeMap[key] === timestamp)
   if (timeKey) {
     pvPower.value[timeKey] = element.data.pvEnergy * 1000
   }
 })
 
 // 確保所有時間段都有值，沒有對應數據的設為0
-times.value.forEach(time => {
+times.value.forEach((time) => {
   if (pvPower.value[time] === undefined) {
     pvPower.value[time] = 0
   }
@@ -137,32 +137,46 @@ times.value.forEach(time => {
 
 <template>
   <div class="flex flex-col p-2 md:p-4 h-96">
-    <div class="rounded-2xl bg-white shadow-lg border border-gray-100 overflow-hidden flex flex-col h-full">
-        <div class="grid grid-cols-2 w-full text-gray-700 h-full">
-          <!-- Header -->
-          <div class="sticky top-0 z-10 col-span-2 grid grid-cols-2">
-            <div class="bg-gradient-to-r from-cyan-500 to-cyan-600 p-2 md:p-4 text-center text-white font-medium text-xs md:text-sm uppercase tracking-wider">
-              Schedule Time
-            </div>
-            <div class="bg-gradient-to-r from-cyan-500 to-cyan-600 p-2 md:p-4 text-center text-white font-medium text-xs md:text-sm uppercase tracking-wider">
-              PV Power (kW)
-            </div>
+    <div
+      class="rounded-2xl bg-white shadow-lg border border-gray-100 overflow-hidden flex flex-col h-full"
+    >
+      <div class="grid grid-cols-2 w-full text-gray-700 h-full">
+        <!-- Header -->
+        <div class="sticky top-0 z-10 col-span-2 grid grid-cols-2">
+          <div
+            class="bg-gradient-to-r from-cyan-500 to-cyan-600 p-2 md:p-4 text-center text-white font-medium text-xs md:text-sm uppercase tracking-wider"
+          >
+            Schedule Time
           </div>
-          
-          <!-- Content -->
-          <div class="col-span-2 grid grid-cols-2 w-full overflow-y-auto max-h-screen">
-            <div v-for="time in times" :key="time" class="contents">
-              <div class="p-2 md:p-4 text-center border-b border-gray-100 text-gray-600 font-medium text-xs md:text-sm even:bg-gray-50">
-                {{ time }}
-              </div>
-              <div class="p-2 md:p-4 text-center border-b border-gray-100 even:bg-gray-50">
-                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs md:text-sm font-medium bg-cyan-100 text-cyan-800">
-                  {{ pvPower[time] || 0 }} kW
-                </span>
-              </div>
+          <div
+            class="bg-gradient-to-r from-cyan-500 to-cyan-600 p-2 md:p-4 text-center text-white font-medium text-xs md:text-sm uppercase tracking-wider"
+          >
+            PV Power (kW)
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div
+          class="col-span-2 grid grid-cols-2 w-full overflow-y-auto max-h-screen"
+        >
+          <div v-for="time in times" :key="time" class="contents">
+            <div
+              class="p-2 md:p-4 text-center border-b border-gray-100 text-gray-600 font-medium text-xs md:text-sm even:bg-gray-50"
+            >
+              {{ time }}
+            </div>
+            <div
+              class="p-2 md:p-4 text-center border-b border-gray-100 even:bg-gray-50"
+            >
+              <span
+                class="inline-flex items-center px-2 py-1 rounded-full text-xs md:text-sm font-medium bg-cyan-100 text-cyan-800"
+              >
+                {{ pvPower[time] || 0 }} kW
+              </span>
             </div>
           </div>
         </div>
+      </div>
     </div>
   </div>
 </template>
