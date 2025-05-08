@@ -23,7 +23,7 @@ let chargeInterval: ReturnType<typeof setInterval> | null = null // 用於存儲
 
 // 從 DoughnutChart.ts 中獲取 SOC 值
 const currentSoCValue = ref(0)
-const MAX_SOC = 18.40 // 與 DoughnutChart.ts 中的值保持一致
+const MAX_SOC = 18.4 // 與 DoughnutChart.ts 中的值保持一致
 const TARGET_SOC = 13.104 // 與 DoughnutChart.ts 中的值保持一致
 
 // 更新 SOC 值的函數
@@ -31,7 +31,7 @@ const updateSoCValue = async () => {
   try {
     // 獲取圖表數據
     const doughnutData = await chartData.update(t)
-    
+
     // 從圖表數據中提取 SOC 值
     if (doughnutData && doughnutData.datasets.length > 0) {
       // 從數據集中獲取百分比值
@@ -39,7 +39,10 @@ const updateSoCValue = async () => {
       // 計算實際的 SOC 值
       currentSoCValue.value = (percentage / 100) * MAX_SOC
       // 設置百分比值 - 使用 TARGET_SOC 作為 100% 的基準
-      currentCharge.value = Math.min(Math.round((currentSoCValue.value / TARGET_SOC) * 100), 100)
+      currentCharge.value = Math.min(
+        Math.round((currentSoCValue.value / TARGET_SOC) * 100),
+        100,
+      )
     }
   } catch (error) {
     console.error('Error updating SOC value:', error)
@@ -50,7 +53,7 @@ const updateSoCValue = async () => {
 onMounted(async () => {
   // 初始更新 SOC 值
   await updateSoCValue()
-  
+
   // 每1秒更新一次 SOC 值，與 DoughnutChart 保持同步
   chargeInterval = setInterval(async () => {
     await updateSoCValue()
@@ -81,9 +84,7 @@ const chargedData = computed(() => {
       config.maxValue,
     )
 
-    return Number(
-      Math.max(0, Math.min(100, adjustedCharge)).toFixed(1),
-    )
+    return Number(Math.max(0, Math.min(100, adjustedCharge)).toFixed(1))
   })
 })
 

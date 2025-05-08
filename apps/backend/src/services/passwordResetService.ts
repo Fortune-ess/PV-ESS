@@ -10,11 +10,22 @@ dotenv.config()
 
 export class PasswordResetService {
   private userRepository = appDataSource.getRepository(User)
+  // private transporter = nodemailer.createTransport({
+  //   service: 'gmail',
+  //   auth: {
+  //     user: process.env.EMAIL_USER,
+  //     pass: process.env.EMAIL_PASS,
+  //   },
+  // })
   private transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'mail.fortune.com.tw',
+    port: 587,
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
+    },
+    tls: {
+      rejectUnauthorized: false,
     },
   })
 

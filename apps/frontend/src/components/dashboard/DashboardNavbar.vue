@@ -209,14 +209,18 @@ onBeforeUnmount(() => {
         <div class="text-xs sm:text-sm w-[80px] sm:w-[100px] text-right">
           {{ currentTime }}
         </div>
-        <div class="flex items-center gap-1 sm:gap-2 min-w-[80px] sm:min-w-[100px]">
+        <div
+          class="flex items-center gap-1 sm:gap-2 min-w-[80px] sm:min-w-[100px]"
+        >
           <component
             v-if="currentWeather.weather"
             :is="weatherIcon"
             class="h-4 w-4 sm:h-5 sm:w-5"
             :class="weatherIconColor"
           />
-          <span class="min-w-[40px] sm:min-w-[50px] text-xs sm:text-sm">{{ currentWeather.temperature }}</span>
+          <span class="min-w-[40px] sm:min-w-[50px] text-xs sm:text-sm">{{
+            currentWeather.temperature
+          }}</span>
         </div>
       </div>
     </div>
@@ -229,7 +233,7 @@ onBeforeUnmount(() => {
           <h2 class="text-base sm:text-lg md:text-xl font-semibold">PV ESS</h2>
         </router-link>
       </div>
-      
+
       <!-- Center - Main Navigation Items -->
       <div class="flex items-center justify-center gap-2 sm:gap-4 md:gap-6">
         <template v-for="item in menuItems" :key="item.id">
@@ -243,7 +247,10 @@ onBeforeUnmount(() => {
                     route.path.startsWith('/main/system'),
                 }"
               >
-                <component :is="item.lucideIcon" class="h-4 w-4 sm:h-5 sm:w-5" />
+                <component
+                  :is="item.lucideIcon"
+                  class="h-4 w-4 sm:h-5 sm:w-5"
+                />
                 <span>{{ $t(`main.sidebar.${item.id}`) }}</span>
                 <component
                   :is="expandedSubmenu === item.id ? ChevronUp : ChevronDown"
@@ -273,7 +280,9 @@ onBeforeUnmount(() => {
               v-else
               :to="item.link"
               class="flex items-center gap-1 sm:gap-2 p-1 sm:p-2 text-sm sm:text-base text-black hover:text-gray-600 transition-colors duration-200 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-gray-400 hover:after:w-full after:transition-all after:duration-300"
-              :class="{ 'text-gray-600 after:w-full': route.path === item.link }"
+              :class="{
+                'text-gray-600 after:w-full': route.path === item.link,
+              }"
               @click="expandedSubmenu = ''"
             >
               <component :is="item.lucideIcon" class="h-4 w-4 sm:h-5 sm:w-5" />
@@ -282,7 +291,7 @@ onBeforeUnmount(() => {
           </template>
         </template>
       </div>
-      
+
       <!-- End - Settings and Logout -->
       <div class="flex items-center justify-end gap-2 sm:gap-4 md:gap-6">
         <template v-for="item in menuItems" :key="item.id">
@@ -296,7 +305,10 @@ onBeforeUnmount(() => {
                     route.path.startsWith('/main/system'),
                 }"
               >
-                <component :is="item.lucideIcon" class="h-4 w-4 sm:h-5 sm:w-5" />
+                <component
+                  :is="item.lucideIcon"
+                  class="h-4 w-4 sm:h-5 sm:w-5"
+                />
                 <span>{{ $t(`main.sidebar.${item.id}`) }}</span>
                 <component
                   :is="expandedSubmenu === item.id ? ChevronUp : ChevronDown"
@@ -334,7 +346,9 @@ onBeforeUnmount(() => {
               v-else
               :to="item.link"
               class="flex items-center gap-1 sm:gap-2 p-1 sm:p-2 text-sm sm:text-base text-black hover:text-gray-600 transition-colors duration-200 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-gray-400 hover:after:w-full after:transition-all after:duration-300"
-              :class="{ 'text-gray-600 after:w-full': route.path === item.link }"
+              :class="{
+                'text-gray-600 after:w-full': route.path === item.link,
+              }"
               @click="expandedSubmenu = ''"
             >
               <component :is="item.lucideIcon" class="h-4 w-4 sm:h-5 sm:w-5" />
@@ -363,17 +377,21 @@ onBeforeUnmount(() => {
                     item.id === 'logout'
                       ? handleLogout()
                       : item.hasSubmenu
-                      ? toggleSubmenu(item.id)
-                      : navigateTo(item.link)
+                        ? toggleSubmenu(item.id)
+                        : navigateTo(item.link)
                   "
                   class="flex items-center w-full p-1 sm:p-2 text-sm sm:text-base text-black hover:text-gray-600 transition-colors duration-200 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-gray-400 hover:after:w-full after:transition-all after:duration-300"
                   :class="{
                     'text-gray-600 after:w-full':
                       route.path === item.link ||
-                      (item.hasSubmenu && route.path.startsWith('/main/system')),
+                      (item.hasSubmenu &&
+                        route.path.startsWith('/main/system')),
                   }"
                 >
-                  <component :is="item.lucideIcon" class="h-4 w-4 sm:h-5 sm:w-5 mr-2 sm:mr-3" />
+                  <component
+                    :is="item.lucideIcon"
+                    class="h-4 w-4 sm:h-5 sm:w-5 mr-2 sm:mr-3"
+                  />
                   <span>{{ $t(`main.sidebar.${item.id}`) }}</span>
                   <component
                     v-if="item.hasSubmenu"
@@ -401,7 +419,9 @@ onBeforeUnmount(() => {
             </li>
           </ul>
         </nav>
-        <div class="absolute bottom-0 w-full border-t border-gray-200 p-2 sm:p-4">
+        <div
+          class="absolute bottom-0 w-full border-t border-gray-200 p-2 sm:p-4"
+        >
           <ul class="flex justify-around">
             <li v-for="item in footerNavItems" :key="item.name">
               <button
@@ -411,7 +431,10 @@ onBeforeUnmount(() => {
                   'text-gray-600 after:w-full': route.path === item.link,
                 }"
               >
-                <component :is="item.icon" class="h-4 w-4 sm:h-5 sm:w-5 mb-0.5 sm:mb-1" />
+                <component
+                  :is="item.icon"
+                  class="h-4 w-4 sm:h-5 sm:w-5 mb-0.5 sm:mb-1"
+                />
                 <span class="text-xs">{{ item.name }}</span>
               </button>
             </li>
@@ -428,7 +451,7 @@ onBeforeUnmount(() => {
   .transition-colors {
     transition-duration: 150ms;
   }
-  
+
   .after\:transition-all {
     transition-duration: 150ms;
   }
@@ -438,7 +461,7 @@ onBeforeUnmount(() => {
   .transition-colors {
     transition-duration: 200ms;
   }
-  
+
   .after\:transition-all {
     transition-duration: 200ms;
   }

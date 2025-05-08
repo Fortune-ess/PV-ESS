@@ -104,9 +104,9 @@ const timeLabels = [
 const processChartData = (): ChartData<'bar' | 'line'> => {
   let dayAheadPredictionData: number[] = []
   let feedInBSData: number[] = []
-  data.forEach(elements => {
-    dayAheadPredictionData.push(elements.data.pvEnergy*1000)
-    feedInBSData.push(-elements.data.esEnergy*1000)
+  data.forEach((elements) => {
+    dayAheadPredictionData.push(elements.data.pvEnergy * 1000)
+    feedInBSData.push(-elements.data.esEnergy * 1000)
   })
 
   // 創建新的圖表數據

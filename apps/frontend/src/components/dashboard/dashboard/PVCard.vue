@@ -24,7 +24,7 @@ const updateData = async () => {
       } else {
         // 獲取最新的 PV_raw 值
         pvRawData.value = realTimeData[realTimeData.length - 1]?.PV_raw || 0
-        
+
         // 獲取最新的 socData 值
         const latestSocValue = systemStore.batteryPower.value
         socData.value = latestSocValue
@@ -41,7 +41,7 @@ let updateInterval: ReturnType<typeof setInterval> | null = null
 onMounted(async () => {
   // 初始更新數據
   await updateData()
-  
+
   // 每秒更新一次數據
   updateInterval = setInterval(async () => {
     await updateData()
@@ -55,21 +55,21 @@ onUnmounted(() => {
 })
 
 const stats = computed(() => [
-  { 
+  {
     title: 'current_pv_system_generation',
-    value: pvRawData.value.toFixed(2)
+    value: pvRawData.value.toFixed(2),
   },
-  { 
+  {
     title: 'current_new_pv_system_generation',
-    value: '0.00'
+    value: '0.00',
   },
-  { 
+  {
     title: 'current_ESS_power',
-    value: socData.value.toFixed(2)
+    value: socData.value.toFixed(2),
   },
-  { 
+  {
     title: 'output_to_grid_amount',
-    value: Math.max(0, (pvRawData.value - socData.value)).toFixed(2)
+    value: Math.max(0, pvRawData.value - socData.value).toFixed(2),
   },
 ])
 </script>
@@ -84,9 +84,7 @@ const stats = computed(() => [
       <div class="text-xs text-gray-500">
         {{ $t(`main.dashboard.pvcard.${stat.title}`) }}
       </div>
-      <div class="font-bold text-base">
-        {{ stat.value }} kWh
-      </div>
+      <div class="font-bold text-base">{{ stat.value }} kWh</div>
     </div>
   </div>
 </template>

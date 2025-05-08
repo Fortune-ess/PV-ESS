@@ -139,4 +139,18 @@ export class AuthController {
       errorResponse(res, (error as Error).message)
     }
   }
+
+  async verifyEmail(req: Request, res: Response) {
+    try {
+      const { token } = req.query
+      if (!token || typeof token !== 'string') {
+        return errorResponse(res, 'Invalid verification token')
+      }
+
+      const result = await this.authService.verifyEmail(token as string)
+      successResponse(res, result)
+    } catch (error) {
+      errorResponse(res, (error as Error).message)
+    }
+  }
 }

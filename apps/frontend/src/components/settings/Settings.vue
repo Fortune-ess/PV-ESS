@@ -81,38 +81,58 @@ onMounted(async () => {
     <!-- 設定內容區塊 -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
       <!-- 語言設定卡片 -->
-      <div class="bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md p-6 transition-all duration-300 hover:shadow-lg">
-        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+      <div
+        class="bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md p-6 transition-all duration-300 hover:shadow-lg"
+      >
+        <h2
+          class="text-xl font-semibold text-gray-800 dark:text-white mb-4 flex items-center"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 mr-2 text-emerald-500"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"
+            />
           </svg>
           {{ $t('main.settings.language') }}
         </h2>
         <div class="mt-4 relative z-10">
-          <div 
+          <div
             class="w-full px-4 py-3 bg-white dark:bg-gray-600 text-gray-800 dark:text-white rounded-lg border border-gray-300 dark:border-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors flex justify-between items-center cursor-pointer"
             @click="isLanguageDropdownOpen = !isLanguageDropdownOpen"
           >
             <span>{{ languages[selectedLanguage] }}</span>
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              class="h-5 w-5 transition-transform" 
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 transition-transform"
               :class="{ 'transform rotate-180': isLanguageDropdownOpen }"
-              fill="none" 
-              viewBox="0 0 24 24" 
+              fill="none"
+              viewBox="0 0 24 24"
               stroke="currentColor"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
             </svg>
           </div>
-          
-          <div 
-            v-if="isLanguageDropdownOpen" 
+
+          <div
+            v-if="isLanguageDropdownOpen"
             class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-600 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700"
           >
-            <div 
-              v-for="(label, lang) in languages" 
-              :key="lang" 
+            <div
+              v-for="(label, lang) in languages"
+              :key="lang"
               class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-gray-800 dark:text-white"
               @click="selectLanguage(lang as LanguageKey)"
             >
@@ -126,7 +146,11 @@ onMounted(async () => {
 
   <!-- 載入中狀態 -->
   <div v-else class="flex flex-col items-center justify-center min-h-[60vh]">
-    <div class="animate-spin rounded-full h-12 w-12 border-4 border-emerald-500 border-t-transparent"></div>
-    <p class="text-lg text-gray-700 dark:text-gray-300 mt-4">{{ $t('main.loading') || '載入中...' }}</p>
+    <div
+      class="animate-spin rounded-full h-12 w-12 border-4 border-emerald-500 border-t-transparent"
+    ></div>
+    <p class="text-lg text-gray-700 dark:text-gray-300 mt-4">
+      {{ $t('main.loading') || '載入中...' }}
+    </p>
   </div>
 </template>

@@ -31,3 +31,15 @@ export const authMiddleware = async (
     errorResponse(res, 'Invalid token', 401)
   }
 }
+
+export const verifyApiKey = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const apiKey = req.headers['x-api-key'] as string
+  if (apiKey !== process.env.API_KEY) {
+    return errorResponse(res, 'Invalid API key', 401)
+  }
+  next()
+}

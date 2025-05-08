@@ -47,7 +47,7 @@ const chartOptions = getChartOptions(t)
 // 防抖動函數
 const debounce = (fn: Function, delay: number) => {
   let timer: number | null = null
-  return function(this: any, ...args: any[]) {
+  return function (this: any, ...args: any[]) {
     if (timer) clearTimeout(timer)
     timer = window.setTimeout(() => {
       fn.apply(this, args)
@@ -77,7 +77,11 @@ onMounted(async () => {
   try {
     isLoading.value = true
     const initialData = await chartData.get(t)
-    if (initialData && initialData.datasets && initialData.datasets.length > 0) {
+    if (
+      initialData &&
+      initialData.datasets &&
+      initialData.datasets.length > 0
+    ) {
       chartDataValue.value = initialData
     }
     isLoading.value = false
@@ -97,16 +101,20 @@ onUnmounted(() => {
 })
 
 // 監聽數據變化
-watch(chartDataValue, () => {
-}, { deep: true })
+watch(chartDataValue, () => {}, { deep: true })
 </script>
 
 <template>
   <div class="flex w-full h-96">
     <div v-if="isLoading" class="flex items-center justify-center h-full">
-      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      <div
+        class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"
+      ></div>
     </div>
-    <div v-else-if="!chartDataValue.datasets.length" class="flex items-center justify-center h-full">
+    <div
+      v-else-if="!chartDataValue.datasets.length"
+      class="flex items-center justify-center h-full"
+    >
       <p class="text-gray-500">No data available</p>
     </div>
     <Chart

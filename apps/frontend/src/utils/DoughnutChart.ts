@@ -1,15 +1,19 @@
 import { fetchRealTimeData } from '@/services/fetch-realtime-data'
 import type { RealTimeData } from '@/types'
-import { ArcElement, ChartData, Chart as ChartJS, ChartOptions, Legend, Tooltip } from 'chart.js'
+import {
+  ArcElement,
+  ChartData,
+  Chart as ChartJS,
+  ChartOptions,
+  Legend,
+  Tooltip,
+} from 'chart.js'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 // 定義最大 SOC 值
-const MAX_SOC = 18.40
+const MAX_SOC = 18.4
 const TARGET_SOC = 13.104
-
-// 放電時間點索引
-const DISCHARGE_INDICES = [78, 79, 80, 81, 82, 83, 84] // 對應 19:30 到 21:00 的時間點
 
 // 中心文字 plugin
 export const centerTextPlugin = {
@@ -85,13 +89,17 @@ let accumulatedSoc = 0 // 累加的 SOC 值
 let dischargeAmount = 0 // 放電量
 
 // 處理圖表數據
-const processChartData = async (t: ReturnType<typeof useI18n>['t']): Promise<ChartData<'doughnut'>> => {
+const processChartData = async (
+  t: ReturnType<typeof useI18n>['t'],
+): Promise<ChartData<'doughnut'>> => {
   const realTimeData = await fetchRealTimeData()
 
   // 檢查數據是否有變化，如果沒有變化則直接返回緩存的圖表數據
-  if (realTimeData.length === lastProcessedData.length &&
+  if (
+    realTimeData.length === lastProcessedData.length &&
     JSON.stringify(realTimeData) === JSON.stringify(lastProcessedData) &&
-    lastProcessedResult) {
+    lastProcessedResult
+  ) {
     return lastProcessedResult
   }
 
@@ -132,14 +140,16 @@ const processChartData = async (t: ReturnType<typeof useI18n>['t']): Promise<Cha
     }
 
     // 放電時間映射與權重
-    const dischargeTimeMap: { [key: string]: { index: number; weight: number } } = {
-      '2023-09-30T19:30:00+08:00': { index: 78, weight: 0.1 },  // 10%
+    const dischargeTimeMap: {
+      [key: string]: { index: number; weight: number }
+    } = {
+      '2023-09-30T19:30:00+08:00': { index: 78, weight: 0.1 }, // 10%
       '2023-09-30T19:45:00+08:00': { index: 79, weight: 0.15 }, // 15%
-      '2023-09-30T20:00:00+08:00': { index: 80, weight: 0.2 },  // 20%
-      '2023-09-30T20:15:00+08:00': { index: 81, weight: 0.2 },  // 20%
+      '2023-09-30T20:00:00+08:00': { index: 80, weight: 0.2 }, // 20%
+      '2023-09-30T20:15:00+08:00': { index: 81, weight: 0.2 }, // 20%
       '2023-09-30T20:30:00+08:00': { index: 82, weight: 0.15 }, // 15%
-      '2023-09-30T20:45:00+08:00': { index: 83, weight: 0.1 },  // 10%
-      '2023-09-30T21:00:00+08:00': { index: 84, weight: 0.1 },  // 10%
+      '2023-09-30T20:45:00+08:00': { index: 83, weight: 0.1 }, // 10%
+      '2023-09-30T21:00:00+08:00': { index: 84, weight: 0.1 }, // 10%
     }
 
     // 係數映射
@@ -160,7 +170,7 @@ const processChartData = async (t: ReturnType<typeof useI18n>['t']): Promise<Cha
       '2023-09-30T12:15:00+08:00': 0.45,
       '2023-09-30T12:30:00+08:00': 0.54,
       '2023-09-30T12:45:00+08:00': 0.97,
-      '2023-09-30T13:00:00+08:00': 1.00,
+      '2023-09-30T13:00:00+08:00': 1.0,
       '2023-09-30T13:15:00+08:00': 0.76,
       '2023-09-30T13:30:00+08:00': 0.57,
       '2023-09-30T13:45:00+08:00': 0.55,
@@ -176,8 +186,17 @@ const processChartData = async (t: ReturnType<typeof useI18n>['t']): Promise<Cha
         const index = timeToIndexMap[timestamp]
         const coefficient = coefficientMap[timestamp]
 
-        if (i > 0 && timestamp >= '2023-09-30T09:00:00+08:00' && timestamp <= '2023-09-30T14:15:00+08:00') {
-          const currentSoc = (((realTimeData[i - 1]?.PV_raw + realTimeData[i]?.PV_raw) * 1 / 4) / 2) * coefficient / 1000 || 0
+        if (
+          i > 0 &&
+          timestamp >= '2023-09-30T09:00:00+08:00' &&
+          timestamp <= '2023-09-30T14:15:00+08:00'
+        ) {
+          const currentSoc =
+            ((((realTimeData[i - 1]?.PV_raw + realTimeData[i]?.PV_raw) * 1) /
+              4 /
+              2) *
+              coefficient) /
+              1000 || 0
           socData[index] = currentSoc
           accumulatedSoc += currentSoc
         } else {
@@ -202,7 +221,9 @@ const processChartData = async (t: ReturnType<typeof useI18n>['t']): Promise<Cha
     if (hasReachedDischargeTime) {
       const currentTime = realTimeData[realTimeData.length - 1]?.timestamp
       if (currentTime) {
-        for (const [timestamp, { index, weight }] of Object.entries(dischargeTimeMap)) {
+        for (const [timestamp, { index, weight }] of Object.entries(
+          dischargeTimeMap,
+        )) {
           if (currentTime >= timestamp) {
             const dischargeEnergy = accumulatedSoc * weight
             socData[index] = dischargeEnergy
@@ -235,7 +256,9 @@ const processChartData = async (t: ReturnType<typeof useI18n>['t']): Promise<Cha
     ],
     datasets: [
       {
-        backgroundColor: isTargetReached ? ['#10B981', '#E5E7EB'] : ['#F59E0B', '#E5E7EB'],
+        backgroundColor: isTargetReached
+          ? ['#10B981', '#E5E7EB']
+          : ['#F59E0B', '#E5E7EB'],
         borderWidth: 0,
         data: [charged, remaining],
         hoverOffset: 4,
@@ -250,13 +273,17 @@ const processChartData = async (t: ReturnType<typeof useI18n>['t']): Promise<Cha
 
 // 圖表數據 API
 export const chartData = {
-  async get(t: ReturnType<typeof useI18n>['t']): Promise<ChartData<'doughnut'>> {
+  async get(
+    t: ReturnType<typeof useI18n>['t'],
+  ): Promise<ChartData<'doughnut'>> {
     if (!chartDataRef.value) {
       chartDataRef.value = await processChartData(t)
     }
     return chartDataRef.value
   },
-  async update(t: ReturnType<typeof useI18n>['t']): Promise<ChartData<'doughnut'>> {
+  async update(
+    t: ReturnType<typeof useI18n>['t'],
+  ): Promise<ChartData<'doughnut'>> {
     lastUpdateTime.value = Date.now()
     chartDataRef.value = await processChartData(t)
     return chartDataRef.value

@@ -3,7 +3,6 @@ import Schedule from '../entities/Schedule'
 import Measurement from '../entities/RealTimeSchedule'
 
 export default function socketEvent(io: Server) {
-
   io.on('connection', (socket) => {
     console.log(`🔌 Client connected: ${socket.id}`)
 
@@ -12,7 +11,9 @@ export default function socketEvent(io: Server) {
 
     scheduleChangeStream.on('change', async (change) => {
       if (['insert', 'update', 'replace'].includes(change.operationType)) {
-        const scheduleData = await Schedule.find({ date: '2023-09-30' }).sort({ 'data.timestamp': 1 })
+        const scheduleData = await Schedule.find({ date: '2023-09-30' }).sort({
+          'data.timestamp': 1,
+        })
         socket.emit('scheduleData', scheduleData)
       }
     })
@@ -29,8 +30,8 @@ export default function socketEvent(io: Server) {
 
     socket.on('disconnect', () => {
       console.log(`❌ Client disconnected: ${socket.id}`)
-      scheduleChangeStream.close()
-      measurementChangeStream.close()
+      void scheduleChangeStream.close()
+      void measurementChangeStream.close()
     })
 
     socket.on('error', (error) => {

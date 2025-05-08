@@ -1,0 +1,12 @@
+{
+  "indexes": [
+    {
+      "v": { "$numberInt": "2" },
+      "key": { "_id": { "$numberInt": "1" } },
+      "name": "_id_"
+    }
+  ],
+  "uuid": "5e6d72c2048d49458234a5e4f81074e6",
+  "collectionName": "schedule_DA",
+  "type": "collection"
+}

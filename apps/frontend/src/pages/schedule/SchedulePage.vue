@@ -34,7 +34,6 @@ const handleDateChange = (date: string) => {
   selectedDate.value = date
   console.log('選擇的日期:', selectedDate.value)
 
-
   // 重置原始功率值
   Object.keys(powerValues.value).forEach((key) => {
     originalPowerValues.value[key] = powerValues.value[key]

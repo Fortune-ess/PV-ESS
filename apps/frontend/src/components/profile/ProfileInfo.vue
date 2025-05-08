@@ -147,10 +147,7 @@ onMounted(async () => {
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
       <!-- 左側個人資訊 -->
       <div class="lg:col-span-1">
-        <UserInfoCard
-          :is-loading="isLoading"
-          @delete-user="handleDeleteUser"
-        />
+        <UserInfoCard :is-loading="isLoading" @delete-user="handleDeleteUser" />
       </div>
 
       <!-- 右側更新資訊 -->
@@ -167,8 +164,12 @@ onMounted(async () => {
 
   <!-- 載入中狀態 -->
   <div v-else class="flex flex-col items-center justify-center min-h-[60vh]">
-    <div class="animate-spin rounded-full h-10 w-10 border-4 border-emerald-500 border-t-transparent"></div>
-    <p class="text-base text-emerald-700 mt-3">{{ $t('main.profile.loading') }}</p>
+    <div
+      class="animate-spin rounded-full h-10 w-10 border-4 border-emerald-500 border-t-transparent"
+    ></div>
+    <p class="text-base text-emerald-700 mt-3">
+      {{ $t('main.profile.loading') }}
+    </p>
   </div>
 
   <!-- 修改密碼彈窗 -->

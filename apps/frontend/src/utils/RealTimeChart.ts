@@ -111,9 +111,11 @@ let lastProcessedResult: ChartData<'bar' | 'line'> | null = null
 const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
   const realTimeData = await fetchRealTimeData()
 
-  if (realTimeData.length === lastProcessedData.length &&
+  if (
+    realTimeData.length === lastProcessedData.length &&
     JSON.stringify(realTimeData) === JSON.stringify(lastProcessedData) &&
-    lastProcessedResult) {
+    lastProcessedResult
+  ) {
     return lastProcessedResult
   }
 
@@ -124,6 +126,7 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
   const pvDAData: number[] = []
   const pvRawData: number[] = []
   const socData: number[] = Array(96).fill(0) // 初始化為96個0，對應每15分鐘一個時間點
+  const dischargeData: number[] = Array(96).fill(0) // 新增放電數據數組
 
   const calculateSoc = () => {
     // 充電時間映射
@@ -153,14 +156,16 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
     }
 
     // 放電時間映射與權重
-    const dischargeTimeMap: { [key: string]: { index: number; weight: number } } = {
-      '2023-09-30T19:30:00+08:00': { index: 78, weight: 0.1 },  // 10%
+    const dischargeTimeMap: {
+      [key: string]: { index: number; weight: number }
+    } = {
+      '2023-09-30T19:30:00+08:00': { index: 78, weight: 0.1 }, // 10%
       '2023-09-30T19:45:00+08:00': { index: 79, weight: 0.15 }, // 15%
-      '2023-09-30T20:00:00+08:00': { index: 80, weight: 0.2 },  // 20%
-      '2023-09-30T20:15:00+08:00': { index: 81, weight: 0.2 },  // 20%
+      '2023-09-30T20:00:00+08:00': { index: 80, weight: 0.2 }, // 20%
+      '2023-09-30T20:15:00+08:00': { index: 81, weight: 0.2 }, // 20%
       '2023-09-30T20:30:00+08:00': { index: 82, weight: 0.15 }, // 15%
-      '2023-09-30T20:45:00+08:00': { index: 83, weight: 0.1 },  // 10%
-      '2023-09-30T21:00:00+08:00': { index: 84, weight: 0.1 },  // 10%
+      '2023-09-30T20:45:00+08:00': { index: 83, weight: 0.1 }, // 10%
+      '2023-09-30T21:00:00+08:00': { index: 84, weight: 0.1 }, // 10%
     }
 
     // 充電係數映射
@@ -181,7 +186,7 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
       '2023-09-30T12:15:00+08:00': 0.45,
       '2023-09-30T12:30:00+08:00': 0.54,
       '2023-09-30T12:45:00+08:00': 0.97,
-      '2023-09-30T13:00:00+08:00': 1.00,
+      '2023-09-30T13:00:00+08:00': 1.0,
       '2023-09-30T13:15:00+08:00': 0.76,
       '2023-09-30T13:30:00+08:00': 0.57,
       '2023-09-30T13:45:00+08:00': 0.55,
@@ -199,11 +204,16 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
         const coefficient = chargeCoefficientMap[timestamp]
 
         if (i > 0) {
-          const chargeEnergy = (((realTimeData[i - 1]?.PV_raw + realTimeData[i]?.PV_raw) * 1 / 4) / 2) * coefficient || 0
+          const chargeEnergy =
+            (((realTimeData[i - 1]?.PV_raw + realTimeData[i]?.PV_raw) * 1) /
+              4 /
+              2) *
+              coefficient || 0
           socData[index] = chargeEnergy
           totalChargeEnergy += chargeEnergy
         } else {
-          const chargeEnergy = (realTimeData[i]?.PV_raw * 1 / 4) * coefficient || 0
+          const chargeEnergy =
+            ((realTimeData[i]?.PV_raw * 1) / 4) * coefficient || 0
           socData[index] = chargeEnergy
           totalChargeEnergy += chargeEnergy
         }
@@ -227,17 +237,19 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
       // 找出當前時間對應的放電時間點
       const currentTime = realTimeData[realTimeData.length - 1]?.timestamp
       if (currentTime) {
-        for (const [timestamp, { index, weight }] of Object.entries(dischargeTimeMap)) {
+        for (const [timestamp, { index, weight }] of Object.entries(
+          dischargeTimeMap,
+        )) {
           // 如果當前時間已經到達或超過該放電時間點，就顯示該時間點的放電數據
           if (currentTime >= timestamp) {
             const dischargeEnergy = totalChargeEnergy * weight
-            socData[index] = dischargeEnergy
+            dischargeData[index] = dischargeEnergy // 使用新的放電數據數組
           }
         }
       }
     }
 
-    return socData
+    return { socData, dischargeData }
   }
 
   // 處理實時數據
@@ -247,7 +259,10 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
       pvDAData.push(realTimeData[i]?.PV_pDA || 0)
       pvRawData.push(realTimeData[i]?.PV_raw || 0)
     }
-    calculateSoc()
+    const { socData: updatedSocData, dischargeData: updatedDischargeData } =
+      calculateSoc()
+    Object.assign(socData, updatedSocData)
+    Object.assign(dischargeData, updatedDischargeData)
   }
 
   const newChartData: ChartData<'bar' | 'line'> = {
@@ -295,10 +310,10 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
       {
         label: t('main.dashboard.real_time_chart.discharge_amount'),
         type: 'bar',
-        backgroundColor: 'rgba(52, 152, 219, 0.3)',
-        borderColor: 'rgba(52, 152, 219, 0.9)',
+        backgroundColor: 'rgba(161, 3, 252, 0.3)',
+        borderColor: 'rgba(161, 3, 252, 0.9)',
         borderWidth: 1,
-        data: socData,
+        data: dischargeData, // 使用新的放電數據數組
         yAxisID: 'y',
         barPercentage: 0.85,
         categoryPercentage: 0.92,
@@ -352,7 +367,7 @@ export const getChartOptions = (t: any): ChartOptions<'bar'> => {
         font: {
           size: 18,
           weight: 'bold',
-          family: '\'Helvetica Neue\', \'Helvetica\', \'Arial\', sans-serif',
+          family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
         },
         padding: {
           top: 12,
@@ -407,7 +422,7 @@ export const getChartOptions = (t: any): ChartOptions<'bar'> => {
           maxTicksLimit: 48,
           font: {
             size: 10,
-            family: '\'Helvetica Neue\', \'Helvetica\', \'Arial\', sans-serif',
+            family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
           },
           padding: 8,
         },
@@ -428,7 +443,7 @@ export const getChartOptions = (t: any): ChartOptions<'bar'> => {
           color: '#7f8c8d',
           font: {
             size: 11,
-            family: '\'Helvetica Neue\', \'Helvetica\', \'Arial\', sans-serif',
+            family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
           },
           padding: 8,
           callback: function (value) {
@@ -447,7 +462,7 @@ export const getChartOptions = (t: any): ChartOptions<'bar'> => {
           font: {
             size: 13,
             weight: 'bold',
-            family: '\'Helvetica Neue\', \'Helvetica\', \'Arial\', sans-serif',
+            family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
           },
           padding: {
             top: 0,

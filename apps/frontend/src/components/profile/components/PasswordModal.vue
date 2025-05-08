@@ -3,7 +3,7 @@ import { ref } from 'vue'
 
 const props = defineProps({
   isLoading: Boolean,
-  show: Boolean
+  show: Boolean,
 })
 
 const emit = defineEmits(['close', 'update-password'])
@@ -16,7 +16,7 @@ const showNewPassword = ref(false)
 const handleUpdatePassword = () => {
   emit('update-password', {
     oldPassword: oldPassword.value,
-    newPassword: newPassword.value
+    newPassword: newPassword.value,
   })
   oldPassword.value = ''
   newPassword.value = ''
@@ -24,10 +24,7 @@ const handleUpdatePassword = () => {
 </script>
 
 <template>
-  <div
-    v-if="show"
-    class="fixed inset-0 z-50 flex items-center justify-center"
-  >
+  <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center">
     <div
       class="absolute inset-0 bg-black/50 backdrop-blur-sm"
       @click="$emit('close')"
@@ -172,7 +169,7 @@ const handleUpdatePassword = () => {
             class="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"
           ></div>
         </button>
-        
+
         <router-link
           to="/forgot-password"
           class="block text-center text-sm text-emerald-600 hover:text-emerald-800 hover:underline transition-colors duration-300"
@@ -182,4 +179,4 @@ const handleUpdatePassword = () => {
       </div>
     </div>
   </div>
-</template> 
+</template>

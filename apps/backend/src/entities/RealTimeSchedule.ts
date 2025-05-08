@@ -5,7 +5,7 @@ export interface MeasurementDocument extends Document {
   qseId: string
   groupId: number
   measurementDate: string // The date the measurement belongs to (e.g., '2023-09-30')
-  timestamp: string       // The specific timestamp of this measurement (Keep as String)
+  timestamp: string // The specific timestamp of this measurement (Keep as String)
   PV_pImm: number
   PV_pDA: number
   PV_raw: number
@@ -34,4 +34,8 @@ const MeasurementSchema: Schema = new Schema<MeasurementDocument>({
 })
 
 // Create and export the Mongoose model
-export default model<MeasurementDocument>('Measurement', MeasurementSchema, 'PV_R_D_I')
+export default model<MeasurementDocument>(
+  'Measurement',
+  MeasurementSchema,
+  'PV_R_D_I',
+)

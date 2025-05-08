@@ -40,9 +40,9 @@ const handleSubmit = async () => {
       await Swal.fire({
         icon: 'success',
         title: 'Success!',
-        text: res.data.message,
-        timer: 1500,
-        showConfirmButton: false,
+        text: res.data,
+        showConfirmButton: true,
+        confirmButtonText: 'OK',
       })
       await router.push('/login')
     }

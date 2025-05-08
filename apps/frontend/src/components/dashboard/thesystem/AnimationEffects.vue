@@ -2,15 +2,8 @@
 import { useSystemStore } from '@/store/systemStore'
 import { Zap } from 'lucide-vue-next'
 
-const {
-  animationStep,
-  animationTriggered,
-  currentAnimationSource,
-  oldPVStatus,
-  status,
-  solarStatus,
-  batteryStatus,
-} = useSystemStore()
+const { animationStep, oldPVStatus, status, solarStatus, batteryStatus } =
+  useSystemStore()
 
 const getAnimationStyle = (index: number, direction: 'left' | 'right') => {
   const positions = {
@@ -47,7 +40,7 @@ const getVerticalAnimationStyle = (index: number) => {
     class="absolute top-[22%] left-[32%] w-[18%] z-20"
   >
     <Zap
-      v-for="(opacity, index) in [1, 0.7, 0.4]"
+      v-for="(opacity, index) in [1, 0.7]"
       :key="index"
       class="w-4 h-4 text-emerald-500 absolute transform -translate-y-1/2"
       :class="[
@@ -64,7 +57,7 @@ const getVerticalAnimationStyle = (index: number) => {
     class="absolute top-[22%] right-[32%] w-[18%] z-20"
   >
     <Zap
-      v-for="(opacity, index) in [1, 0.7, 0.4]"
+      v-for="(opacity, index) in [1, 0.7]"
       :key="index"
       class="w-4 h-4 text-emerald-500 absolute transform -translate-y-1/2"
       :class="[
@@ -81,7 +74,7 @@ const getVerticalAnimationStyle = (index: number) => {
     class="absolute top-[75%] left-[32%] w-[18%] z-20"
   >
     <Zap
-      v-for="(opacity, index) in [1, 0.7, 0.4]"
+      v-for="(opacity, index) in [1, 0.7]"
       :key="index"
       class="w-4 h-4 text-emerald-500 absolute transform -translate-y-1/2"
       :class="[
@@ -98,7 +91,7 @@ const getVerticalAnimationStyle = (index: number) => {
     class="absolute top-[75%] right-[32%] w-[18%] z-20"
   >
     <Zap
-      v-for="(opacity, index) in [1, 0.7, 0.4]"
+      v-for="(opacity, index) in [1, 0.7]"
       :key="index"
       class="w-4 h-4 text-emerald-500 absolute transform -translate-y-1/2"
       :class="[
@@ -117,10 +110,7 @@ const getVerticalAnimationStyle = (index: number) => {
       v-for="(opacity, index) in [1, 0.7, 0.4]"
       :key="index"
       class="w-4 h-4 text-emerald-500 absolute transform -translate-x-1/2"
-      :class="[
-        `opacity-${opacity * 100}`,
-        { 'animate-pulse': true }
-      ]"
+      :class="[`opacity-${opacity * 100}`, { 'animate-pulse': true }]"
       :style="getVerticalAnimationStyle(index)"
     />
   </div>

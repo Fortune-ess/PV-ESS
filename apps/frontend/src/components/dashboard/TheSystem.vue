@@ -15,7 +15,7 @@ let dataUpdateInterval = ref<number | null>(null)
 const useRealTimeData = async () => {
   const data = await fetchRealTimeData()
   for (let i = 0; i < data.length; i++) {
-    if(data[i].timestamp){
+    if (data[i].timestamp) {
       oldPVPower.value = data[data.length - 1].PV_raw
     }
   }
@@ -37,7 +37,7 @@ const {
 onMounted(() => {
   useRealTimeData()
   startAnimation()
-  
+
   // 每秒更新一次 oldPVPower
   dataUpdateInterval.value = setInterval(async () => {
     await useRealTimeData()
@@ -54,37 +54,27 @@ onUnmounted(() => {
 
 <template>
   <div class="rounded-xl text-black flex justify-center items-center">
-    <div class="grid grid-cols-2 gap-4 relative">
+    <div class="grid grid-cols-2 gap-6 relative">
       <!-- 系統組件 -->
       <SystemComponent
         title="PV System"
         :status="oldPVStatus"
         :icon="SolarpanelIcon"
-      >
-        {{ $t('main.dashboard.generation_amount') }}: {{ oldPVPower }}kWp
-      </SystemComponent>
+      />
 
-      <SystemComponent title="Grid Output" :status="status" :icon="TowerIcon">
-        {{ $t('main.dashboard.frequency') }}: {{ frequency }}Hz |
-        {{ $t('main.dashboard.generation_amount') }}:
-        {{ totalPower.toFixed(2) }}kW
-      </SystemComponent>
+      <SystemComponent title="Grid Output" :status="status" :icon="TowerIcon" />
 
       <SystemComponent
         title="New PV System"
         :status="solarStatus"
         :icon="SolarpanelIcon"
-      >
-        {{ $t('main.dashboard.generation_amount') }}: {{ solarPower }}kWp
-      </SystemComponent>
+      />
 
       <SystemComponent
         title="Energy Storage System"
         :status="batteryStatus"
         :icon="BatteryIcon"
-      >
-        Power: {{ batteryPower }}kW
-      </SystemComponent>
+      />
 
       <!-- 連接線 -->
       <ConnectionLines />

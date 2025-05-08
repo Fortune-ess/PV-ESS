@@ -24,18 +24,17 @@ export async function startDataInsertion() {
 
         const rawData: ScheduleData = scheduleData[counter]
         await insertData(rawData)
-        counter++
+        counter += 1
 
         // 在 1 秒後執行下一次資料插入
         setTimeout(insertDataWithDelay, 1000)
-
       } catch (error) {
         console.error('Error in data insertion:', error)
       }
     }
 
     // 啟動資料插入
-    insertDataWithDelay()
+    void insertDataWithDelay()
   } catch (error) {
     console.error('Error during initialization:', error)
   }

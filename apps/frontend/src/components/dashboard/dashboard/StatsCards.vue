@@ -1,67 +1,85 @@
 <script setup lang="ts">
-import { fetchRealTimeData } from '@/services/fetch-realtime-data';
-import { chartData as realTimeChartData } from '@/utils/RealTimeChart';
-import { computed, onMounted, onUnmounted, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { fetchRealTimeData } from '@/services/fetch-realtime-data'
+import { chartData as realTimeChartData } from '@/utils/RealTimeChart'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n();
+const { t } = useI18n()
 
-const today_accumulated_income = ref(0);
-const this_month_accumulated_income = ref(0);
-const today_electricity_value = ref(0);
-const abandonLightValue = ref('None');
-let updateInterval: ReturnType<typeof setInterval> | null = null;
-let lastProcessedData = ref<any>(null);
+const today_accumulated_income = ref(0)
+const this_month_accumulated_income = ref(0)
+const today_electricity_value = ref(0)
+const abandonLightValue = ref('None')
+let updateInterval: ReturnType<typeof setInterval> | null = null
+let lastProcessedData = ref<any>(null)
 
 const updateData = async () => {
-  const realtime_data = await fetchRealTimeData();
+  const realtime_data = await fetchRealTimeData()
   if (!realtime_data || realtime_data.length === 0) {
-    return;
+    return
   }
 
-  const latestData = realtime_data[realtime_data.length - 1];
-  const chartData = await realTimeChartData.get(t);
-  const socData = chartData.datasets.find(dataset => dataset.label === t('main.dashboard.real_time_chart.feed_in_battery'))?.data[chartData.datasets[0].data.length - 1] || 0;
+  const latestData = realtime_data[realtime_data.length - 1]
+  const chartData = await realTimeChartData.get(t)
+  const socData =
+    chartData.datasets.find(
+      (dataset) =>
+        dataset.label === t('main.dashboard.real_time_chart.feed_in_battery'),
+    )?.data[chartData.datasets[0].data.length - 1] || 0
   // 如果是新數據
-  if (!lastProcessedData.value || lastProcessedData.value.PV_raw !== latestData.PV_raw) {
-
+  if (
+    !lastProcessedData.value ||
+    lastProcessedData.value.PV_raw !== latestData.PV_raw
+  ) {
     // 更新發電量
-    today_electricity_value.value = parseFloat((today_electricity_value.value + latestData.PV_raw).toFixed(2));
+    today_electricity_value.value = parseFloat(
+      (today_electricity_value.value + latestData.PV_raw).toFixed(2),
+    )
     // 更新收益（使用實際發電量計算）
-    today_accumulated_income.value = parseFloat((today_accumulated_income.value + (latestData.PV_raw - Number(socData)) * 9.39).toFixed(2));
+    today_accumulated_income.value = parseFloat(
+      (
+        today_accumulated_income.value +
+        (latestData.PV_raw - Number(socData)) * 9.39
+      ).toFixed(2),
+    )
     // 更新月收益
-    this_month_accumulated_income.value = parseFloat((today_accumulated_income.value * 30).toFixed(2));
+    this_month_accumulated_income.value = parseFloat(
+      (today_accumulated_income.value * 30).toFixed(2),
+    )
     // 更新最後處理的數據
-    lastProcessedData.value = latestData;
+    lastProcessedData.value = latestData
   }
-};
+}
 
 onMounted(() => {
   // 初始化時重置數據
-  today_accumulated_income.value = 0;
-  this_month_accumulated_income.value = 0;
-  today_electricity_value.value = 0;
-  lastProcessedData.value = null;
-  
+  today_accumulated_income.value = 0
+  this_month_accumulated_income.value = 0
+  today_electricity_value.value = 0
+  lastProcessedData.value = null
+
   // Initial update
-  updateData();
-  
+  updateData()
+
   // 每秒更新一次
-  updateInterval = setInterval(updateData, 1000);
-});
+  updateInterval = setInterval(updateData, 1000)
+})
 
 onUnmounted(() => {
   if (updateInterval) {
-    clearInterval(updateInterval);
+    clearInterval(updateInterval)
   }
-});
+})
 
 const stats = computed(() => [
   { title: 'today_accumulated_income', value: today_accumulated_income.value },
-  { title: 'this_month_accumulated_income', value: this_month_accumulated_income.value },
+  {
+    title: 'this_month_accumulated_income',
+    value: this_month_accumulated_income.value,
+  },
   { title: 'today_generation_degree', value: today_electricity_value.value },
   { title: 'abandon_light', value: abandonLightValue.value },
-]);
+])
 </script>
 
 <template>

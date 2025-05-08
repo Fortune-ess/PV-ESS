@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="relative overflow-hidden hero-section"
-  >
+  <div class="relative overflow-hidden hero-section">
     <div class="max-w-7xl mx-auto">
       <div class="relative z-10 pb-8 sm:pb-16 md:pb-20 lg:pb-28 xl:pb-32">
         <main
@@ -25,9 +23,7 @@
             >
               {{ $t('home.hero.description') }}
             </p>
-            <div
-              class="mt-5 sm:mt-8 sm:flex sm:justify-center"
-            >
+            <div class="mt-5 sm:mt-8 sm:flex sm:justify-center">
               <div class="rounded-md shadow">
                 <router-link
                   to="/main/dashboard"
@@ -44,5 +40,4 @@
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
