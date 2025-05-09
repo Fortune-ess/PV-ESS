@@ -143,7 +143,7 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
 
     if (targetIndex !== -1) {
       // 直接從目標時間開始處理數據
-      for (let i = targetIndex; i < dataPoints.length; i++) {
+      for (let i = targetIndex; i < dataPoints.length; i += 1) {
         const item = dataPoints[i]
         dayAheadPredictionData.push(item.data.pvEnergy)
         feedInFeederData.push(item.data.esHSL)

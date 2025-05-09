@@ -101,8 +101,8 @@ const calculateSoc = () => {
 // 從 DoughnutChart.ts 中獲取 SOC 值
 const currentSoCValue = ref(0)
 const currentSoCPercentage = ref(0)
-const MAX_SOC = 18.4 // 與 DoughnutChart.ts 中的值保持一致
-const TARGET_SOC = 13.104 // 與 DoughnutChart.ts 中的值保持一致
+const MAX_SOC = 73.847 // 與 DoughnutChart.ts 中的值保持一致
+const TARGET_SOC = 52.335 // 與 DoughnutChart.ts 中的值保持一致
 
 // 確保百分比值有效
 const safePercentage = computed(() => {

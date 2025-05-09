@@ -159,13 +159,37 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
     const dischargeTimeMap: {
       [key: string]: { index: number; weight: number }
     } = {
-      '2023-09-30T19:30:00+08:00': { index: 78, weight: 0.1 }, // 10%
-      '2023-09-30T19:45:00+08:00': { index: 79, weight: 0.15 }, // 15%
-      '2023-09-30T20:00:00+08:00': { index: 80, weight: 0.2 }, // 20%
-      '2023-09-30T20:15:00+08:00': { index: 81, weight: 0.2 }, // 20%
-      '2023-09-30T20:30:00+08:00': { index: 82, weight: 0.15 }, // 15%
-      '2023-09-30T20:45:00+08:00': { index: 83, weight: 0.1 }, // 10%
-      '2023-09-30T21:00:00+08:00': { index: 84, weight: 0.1 }, // 10%
+      '2023-09-30T14:30:00+08:00': { index: 58, weight: 0.01 },
+      '2023-09-30T14:45:00+08:00': { index: 59, weight: 0.015 },
+      '2023-09-30T15:00:00+08:00': { index: 60, weight: 0.02 },
+      '2023-09-30T15:15:00+08:00': { index: 61, weight: 0.025 },
+      '2023-09-30T15:30:00+08:00': { index: 62, weight: 0.03 },
+      '2023-09-30T15:45:00+08:00': { index: 63, weight: 0.035 },
+      '2023-09-30T16:00:00+08:00': { index: 64, weight: 0.04 },
+      '2023-09-30T16:15:00+08:00': { index: 65, weight: 0.042 },
+      '2023-09-30T16:30:00+08:00': { index: 66, weight: 0.042 },
+      '2023-09-30T16:45:00+08:00': { index: 67, weight: 0.042 },
+      '2023-09-30T17:00:00+08:00': { index: 68, weight: 0.042 },
+      '2023-09-30T17:15:00+08:00': { index: 69, weight: 0.042 },
+      '2023-09-30T17:30:00+08:00': { index: 70, weight: 0.042 },
+      '2023-09-30T17:45:00+08:00': { index: 71, weight: 0.042 },
+      '2023-09-30T18:00:00+08:00': { index: 72, weight: 0.042 },
+      '2023-09-30T18:15:00+08:00': { index: 73, weight: 0.042 },
+      '2023-09-30T18:30:00+08:00': { index: 74, weight: 0.042 },
+      '2023-09-30T18:45:00+08:00': { index: 75, weight: 0.042 },
+      '2023-09-30T19:00:00+08:00': { index: 76, weight: 0.042 },
+      '2023-09-30T19:15:00+08:00': { index: 77, weight: 0.042 },
+      '2023-09-30T19:30:00+08:00': { index: 78, weight: 0.042 },
+      '2023-09-30T19:45:00+08:00': { index: 79, weight: 0.042 },
+      '2023-09-30T20:00:00+08:00': { index: 80, weight: 0.04 },
+      '2023-09-30T20:15:00+08:00': { index: 81, weight: 0.035 },
+      '2023-09-30T20:30:00+08:00': { index: 82, weight: 0.03 },
+      '2023-09-30T20:45:00+08:00': { index: 83, weight: 0.025 },
+      '2023-09-30T21:00:00+08:00': { index: 84, weight: 0.02 },
+      '2023-09-30T21:15:00+08:00': { index: 85, weight: 0.015 },
+      '2023-09-30T21:30:00+08:00': { index: 86, weight: 0.01 },
+      '2023-09-30T21:45:00+08:00': { index: 87, weight: 0.005 },
+      '2023-09-30T22:00:00+08:00': { index: 88, weight: 0.005 },
     }
 
     // 充電係數映射
@@ -202,26 +226,14 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
       if (timestamp && chargeTimeMap[timestamp] !== undefined) {
         const index = chargeTimeMap[timestamp]
         const coefficient = chargeCoefficientMap[timestamp]
-
-        if (i > 0) {
-          const chargeEnergy =
-            (((realTimeData[i - 1]?.PV_raw + realTimeData[i]?.PV_raw) * 1) /
-              4 /
-              2) *
-              coefficient || 0
-          socData[index] = chargeEnergy
-          totalChargeEnergy += chargeEnergy
-        } else {
-          const chargeEnergy =
-            ((realTimeData[i]?.PV_raw * 1) / 4) * coefficient || 0
-          socData[index] = chargeEnergy
-          totalChargeEnergy += chargeEnergy
-        }
+        const chargeEnergy = realTimeData[i]?.PV_raw * coefficient || 0
+        socData[index] = chargeEnergy
+        totalChargeEnergy += chargeEnergy
       }
     }
 
     // 處理放電數據
-    const dischargeStartTime = '2023-09-30T19:30:00+08:00'
+    const dischargeStartTime = '2023-09-30T14:30:00+08:00'
     let hasReachedDischargeTime = false
 
     // 檢查是否已到達放電時間
@@ -280,6 +292,7 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
         fill: false,
         data: pvImmData,
         yAxisID: 'y',
+        pointStyle: 'line',
       },
       {
         label: t('main.dashboard.real_time_chart.feed_in_battery'),
@@ -293,19 +306,21 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
         categoryPercentage: 0.92,
         stack: 'stack0',
         order: 2,
+        pointStyle: 'rect',
       },
       {
         label: t('main.dashboard.real_time_chart.pv_raw'),
-        type: 'bar',
+        type: 'line',
         backgroundColor: 'rgba(52, 152, 219, 0.3)',
         borderColor: 'rgba(52, 152, 219, 0.9)',
-        borderWidth: 1,
+        borderWidth: 2.5,
+        pointRadius: 0,
+        pointHoverRadius: 6,
+        tension: 0.4,
+        fill: false,
         data: pvRawData,
         yAxisID: 'y',
-        barPercentage: 0.85,
-        categoryPercentage: 0.92,
-        stack: 'stack0',
-        order: 1,
+        pointStyle: 'line',
       },
       {
         label: t('main.dashboard.real_time_chart.discharge_amount'),
@@ -313,12 +328,13 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
         backgroundColor: 'rgba(161, 3, 252, 0.3)',
         borderColor: 'rgba(161, 3, 252, 0.9)',
         borderWidth: 1,
-        data: dischargeData, // 使用新的放電數據數組
+        data: dischargeData,
         yAxisID: 'y',
         barPercentage: 0.85,
         categoryPercentage: 0.92,
         stack: 'stack0',
         order: 3,
+        pointStyle: 'rect',
       },
     ],
   }
@@ -358,6 +374,7 @@ export const getChartOptions = (t: any): ChartOptions<'bar'> => {
           padding: 18,
           usePointStyle: true,
           boxWidth: 10,
+          boxHeight: 10,
         },
       },
       title: {
@@ -367,7 +384,7 @@ export const getChartOptions = (t: any): ChartOptions<'bar'> => {
         font: {
           size: 18,
           weight: 'bold',
-          family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+          family: '\'Helvetica Neue\', \'Helvetica\', \'Arial\', sans-serif',
         },
         padding: {
           top: 12,
@@ -419,10 +436,10 @@ export const getChartOptions = (t: any): ChartOptions<'bar'> => {
           maxRotation: 90,
           minRotation: 0,
           autoSkip: true,
-          maxTicksLimit: 48,
+          maxTicksLimit: 96, // 96個時間點
           font: {
             size: 10,
-            family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+            family: '\'Helvetica Neue\', \'Helvetica\', \'Arial\', sans-serif',
           },
           padding: 8,
         },
@@ -443,7 +460,7 @@ export const getChartOptions = (t: any): ChartOptions<'bar'> => {
           color: '#7f8c8d',
           font: {
             size: 11,
-            family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+            family: '\'Helvetica Neue\', \'Helvetica\', \'Arial\', sans-serif',
           },
           padding: 8,
           callback: function (value) {
@@ -462,7 +479,7 @@ export const getChartOptions = (t: any): ChartOptions<'bar'> => {
           font: {
             size: 13,
             weight: 'bold',
-            family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+            family: '\'Helvetica Neue\', \'Helvetica\', \'Arial\', sans-serif',
           },
           padding: {
             top: 0,

@@ -23,8 +23,8 @@ let chargeInterval: ReturnType<typeof setInterval> | null = null // 用於存儲
 
 // 從 DoughnutChart.ts 中獲取 SOC 值
 const currentSoCValue = ref(0)
-const MAX_SOC = 18.4 // 與 DoughnutChart.ts 中的值保持一致
-const TARGET_SOC = 13.104 // 與 DoughnutChart.ts 中的值保持一致
+const MAX_SOC = 73.847 // 與 DoughnutChart.ts 中的值保持一致
+const TARGET_SOC = 52.335 // 與 DoughnutChart.ts 中的值保持一致
 
 // 更新 SOC 值的函數
 const updateSoCValue = async () => {
@@ -67,7 +67,7 @@ onUnmounted(() => {
   }
 })
 
-// 修改 batteryConfigs，只保留前4個配置
+// BatteryConfigs 運行數量配置
 const batteryConfigs = [
   { initialOffset: 0, maxValue: 100 },
   { initialOffset: 0, maxValue: 100 },

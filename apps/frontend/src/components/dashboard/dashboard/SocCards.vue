@@ -9,8 +9,8 @@ const { t } = useI18n()
 // 從 DoughnutChart.ts 中獲取 SOC 值
 const currentSoCValue = ref(0)
 const dischargeAmount = ref(0)
-const MAX_SOC = 18.4 // 與 DoughnutChart.ts 中的值保持一致
-const TARGET_SOC = 13.104 // 與 DoughnutChart.ts 中的值保持一致
+const MAX_SOC = 73.847 // 與 DoughnutChart.ts 中的值保持一致
+const TARGET_SOC = 52.335 // 與 DoughnutChart.ts 中的值保持一致
 
 // 放電時間點索引
 const DISCHARGE_INDICES = [78, 79, 80, 81, 82, 83, 84] // 對應 19:30 到 21:00 的時間點
