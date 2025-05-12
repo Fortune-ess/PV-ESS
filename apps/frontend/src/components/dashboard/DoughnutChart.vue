@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { chartData, chartOptions } from '@/utils/DoughnutChart'
 import { ChartData, ChartOptions } from 'chart.js'
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { Doughnut } from 'vue-chartjs'
 import { useI18n } from 'vue-i18n'
-import { fetchRealTimeData } from '@/services/fetch-realtime-data'
+import {
+  MAX_SOC,
+  TARGET_SOC,
+} from '@/config/timeMaps'
+import { chartData as realTimeChartData } from '@/utils/RealTimeChart'
 
 const { t } = useI18n()
 
@@ -17,83 +21,15 @@ const isTargetReached = ref(false)
 const isDischarging = ref(false)
 const isCharging = ref(false)
 
-// 目標值和最大 SOC 值
-const MAX_SOC = 73.847
-const TARGET_SOC = 52.335
-
-// 充電時間映射
-const chargingTimeMap: { [key: string]: number } = {
-  '2023-09-30T09:00:00+08:00': 36,
-  '2023-09-30T09:15:00+08:00': 37,
-  '2023-09-30T09:30:00+08:00': 38,
-  '2023-09-30T09:45:00+08:00': 39,
-  '2023-09-30T10:00:00+08:00': 40,
-  '2023-09-30T10:15:00+08:00': 41,
-  '2023-09-30T10:30:00+08:00': 42,
-  '2023-09-30T10:45:00+08:00': 43,
-  '2023-09-30T11:00:00+08:00': 44,
-  '2023-09-30T11:15:00+08:00': 45,
-  '2023-09-30T11:30:00+08:00': 46,
-  '2023-09-30T11:45:00+08:00': 47,
-  '2023-09-30T12:00:00+08:00': 48,
-  '2023-09-30T12:15:00+08:00': 49,
-  '2023-09-30T12:30:00+08:00': 50,
-  '2023-09-30T12:45:00+08:00': 51,
-  '2023-09-30T13:00:00+08:00': 52,
-  '2023-09-30T13:15:00+08:00': 53,
-  '2023-09-30T13:30:00+08:00': 54,
-  '2023-09-30T13:45:00+08:00': 55,
-  '2023-09-30T14:00:00+08:00': 56,
-  '2023-09-30T14:15:00+08:00': 57,
-}
-
-// 放電時間映射
-const dischargeTimeMap: { [key: string]: { index: number; weight: number } } = {
-  '2023-09-30T14:30:00+08:00': { index: 58, weight: 0.01 },
-  '2023-09-30T14:45:00+08:00': { index: 59, weight: 0.015 },
-  '2023-09-30T15:00:00+08:00': { index: 60, weight: 0.02 },
-  '2023-09-30T15:15:00+08:00': { index: 61, weight: 0.025 },
-  '2023-09-30T15:30:00+08:00': { index: 62, weight: 0.03 },
-  '2023-09-30T15:45:00+08:00': { index: 63, weight: 0.035 },
-  '2023-09-30T16:00:00+08:00': { index: 64, weight: 0.04 },
-  '2023-09-30T16:15:00+08:00': { index: 65, weight: 0.042 },
-  '2023-09-30T16:30:00+08:00': { index: 66, weight: 0.042 },
-  '2023-09-30T16:45:00+08:00': { index: 67, weight: 0.042 },
-  '2023-09-30T17:00:00+08:00': { index: 68, weight: 0.042 },
-  '2023-09-30T17:15:00+08:00': { index: 69, weight: 0.042 },
-  '2023-09-30T17:30:00+08:00': { index: 70, weight: 0.042 },
-  '2023-09-30T17:45:00+08:00': { index: 71, weight: 0.042 },
-  '2023-09-30T18:00:00+08:00': { index: 72, weight: 0.042 },
-  '2023-09-30T18:15:00+08:00': { index: 73, weight: 0.042 },
-  '2023-09-30T18:30:00+08:00': { index: 74, weight: 0.042 },
-  '2023-09-30T18:45:00+08:00': { index: 75, weight: 0.042 },
-  '2023-09-30T19:00:00+08:00': { index: 76, weight: 0.042 },
-  '2023-09-30T19:15:00+08:00': { index: 77, weight: 0.042 },
-  '2023-09-30T19:30:00+08:00': { index: 78, weight: 0.042 },
-  '2023-09-30T19:45:00+08:00': { index: 79, weight: 0.042 },
-  '2023-09-30T20:00:00+08:00': { index: 80, weight: 0.04 },
-  '2023-09-30T20:15:00+08:00': { index: 81, weight: 0.035 },
-  '2023-09-30T20:30:00+08:00': { index: 82, weight: 0.03 },
-  '2023-09-30T20:45:00+08:00': { index: 83, weight: 0.025 },
-  '2023-09-30T21:00:00+08:00': { index: 84, weight: 0.02 },
-  '2023-09-30T21:15:00+08:00': { index: 85, weight: 0.015 },
-  '2023-09-30T21:30:00+08:00': { index: 86, weight: 0.01 },
-  '2023-09-30T21:45:00+08:00': { index: 87, weight: 0.005 },
-  '2023-09-30T22:00:00+08:00': { index: 88, weight: 0.005 },
-}
-
-// 檢查當前狀態
-const checkStatus = (currentTime: string) => {
-  // 檢查是否在充電時間範圍內
-  if (chargingTimeMap[currentTime]) {
-    return 'charging'
+// 獲取最新的非零值
+const getLatestNonZeroValue = (data: any[]): number => {
+  for (let i = data.length - 1; i >= 0; i--) {
+    const value = Number(data[i]) || 0
+    if (value > 0) {
+      return value
+    }
   }
-  // 檢查是否在放電時間範圍內
-  if (dischargeTimeMap[currentTime]) {
-    return 'discharging'
-  }
-  // 其他時間為閒置
-  return 'idle'
+  return 0
 }
 
 // 初始化圖表
@@ -114,22 +50,39 @@ onMounted(async () => {
         Math.round((socValue.value / MAX_SOC) * 100),
         100,
       )
-      isTargetReached.value = socValue.value >= TARGET_SOC
 
-      // 獲取實時數據
-      const realTimeData = await fetchRealTimeData()
-      const currentTime = realTimeData[realTimeData.length - 1]?.timestamp
-      if (currentTime) {
-        const status = checkStatus(currentTime)
+      // 從 RealTimeChart 獲取數據來判斷狀態
+      const realTimeData = await realTimeChartData.get(t)
+      const chargeDataset = realTimeData.datasets.find(ds => ds.label === t('main.dashboard.real_time_chart.feed_in_battery'))
+      const dischargeDataset = realTimeData.datasets.find(ds => ds.label === t('main.dashboard.real_time_chart.discharge_amount'))
 
-        // 設置狀態
-        isCharging.value = status === 'charging'
-        isDischarging.value = status === 'discharging'
+      if (chargeDataset && dischargeDataset) {
+        const lastChargeValue = getLatestNonZeroValue(chargeDataset.data)
+        const lastDischargeValue = getLatestNonZeroValue(dischargeDataset.data)
+
+        // 判斷充電和放電狀態
+        isCharging.value = lastChargeValue > 0 && lastDischargeValue === 0
+        isDischarging.value = lastDischargeValue > 0
+        
+        // 只有在沒有充電和放電時才判斷是否達到目標
+        isTargetReached.value = !isCharging.value && !isDischarging.value && socValue.value >= TARGET_SOC
       }
     }
 
     // 創建圖表選項
     doughnutOptions.value = chartOptions(socValue.value)
+
+    // 開始自動更新
+    chartData.startAutoUpdate(t)
+
+    // 設置定期更新圖表
+    const updateInterval = setInterval(updateChart, 1000)
+    
+    // 在組件卸載時清理
+    onUnmounted(() => {
+      clearInterval(updateInterval)
+      chartData.stopAutoUpdate()
+    })
   } catch (error) {
     console.error('Error initializing doughnut chart:', error)
   }
@@ -139,7 +92,10 @@ onMounted(async () => {
 watch(socValue, (newValue) => {
   // 計算 SOC 百分比
   socPercentage.value = Math.min(Math.round((newValue / MAX_SOC) * 100), 100)
+  // 只有在沒有充電和放電時才更新目標狀態
+  if (!isCharging.value && !isDischarging.value) {
   isTargetReached.value = newValue >= TARGET_SOC
+  }
   if (doughnutOptions.value) {
     doughnutOptions.value = chartOptions(newValue)
   }
@@ -163,26 +119,28 @@ const updateChart = async () => {
         Math.round((socValue.value / MAX_SOC) * 100),
         100,
       )
-      isTargetReached.value = socValue.value >= TARGET_SOC
 
-      // 獲取實時數據
-      const realTimeData = await fetchRealTimeData()
-      const currentTime = realTimeData[realTimeData.length - 1]?.timestamp
-      if (currentTime) {
-        const status = checkStatus(currentTime)
+      // 從 RealTimeChart 獲取數據來判斷狀態
+      const realTimeData = await realTimeChartData.get(t)
+      const chargeDataset = realTimeData.datasets.find(ds => ds.label === t('main.dashboard.real_time_chart.feed_in_battery'))
+      const dischargeDataset = realTimeData.datasets.find(ds => ds.label === t('main.dashboard.real_time_chart.discharge_amount'))
 
-        // 設置狀態
-        isCharging.value = status === 'charging'
-        isDischarging.value = status === 'discharging'
+      if (chargeDataset && dischargeDataset) {
+        const lastChargeValue = getLatestNonZeroValue(chargeDataset.data)
+        const lastDischargeValue = getLatestNonZeroValue(dischargeDataset.data)
+
+        // 判斷充電和放電狀態
+        isCharging.value = lastChargeValue > 0 && lastDischargeValue === 0
+        isDischarging.value = lastDischargeValue > 0
+        
+        // 只有在沒有充電和放電時才判斷是否達到目標
+        isTargetReached.value = !isCharging.value && !isDischarging.value && socValue.value >= TARGET_SOC
       }
     }
   } catch (error) {
     console.error('Error updating doughnut chart:', error)
   }
 }
-
-// 每秒更新一次圖表
-setInterval(updateChart, 1000)
 </script>
 
 <template>
@@ -209,25 +167,25 @@ setInterval(updateChart, 1000)
       <div
         class="absolute top-1/2 left-0 flex items-center px-2 py-1 rounded text-sm font-bold text-white shadow-sm"
         :class="
-          isTargetReached
-            ? 'bg-green-500'
-            : isDischarging
+          isDischarging
               ? 'bg-red-500'
               : isCharging
                 ? 'bg-amber-500'
+              : isTargetReached
+                ? 'bg-green-500'
                 : 'bg-gray-500'
         "
       >
         <span class="mr-1">{{
-          isTargetReached ? '✓' : isDischarging ? '↓' : isCharging ? '↑' : '⟳'
+          isDischarging ? '↓' : isCharging ? '↑' : isTargetReached ? '✓' : '⟳'
         }}</span>
         <span>{{
-          isTargetReached
-            ? 'Charged'
-            : isDischarging
+          isDischarging
               ? 'Discharging'
               : isCharging
                 ? 'Charging'
+              : isTargetReached
+                ? 'Charged'
                 : 'Idle'
         }}</span>
       </div>

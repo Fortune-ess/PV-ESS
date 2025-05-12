@@ -1,52 +1,39 @@
 <script setup lang="ts">
-import { chartData as doughnutChartData } from '@/utils/DoughnutChart'
-import { chartData as realTimeChartData } from '@/utils/RealTimeChart'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { chartData as realTimeChartData } from '@/utils/RealTimeChart'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
-// 從 DoughnutChart.ts 中獲取 SOC 值
+// 從 RealTimeChart 中獲取數據
 const currentSoCValue = ref(0)
 const dischargeAmount = ref(0)
-const MAX_SOC = 73.847 // 與 DoughnutChart.ts 中的值保持一致
-const TARGET_SOC = 52.335 // 與 DoughnutChart.ts 中的值保持一致
-
-// 放電時間點索引
-const DISCHARGE_INDICES = [78, 79, 80, 81, 82, 83, 84] // 對應 19:30 到 21:00 的時間點
 
 // 更新 SOC 值的函數
 const updateSoCValue = async () => {
   try {
-    // 獲取圖表數據
-    const doughnutData = await doughnutChartData.get(t)
     const realTimeData = await realTimeChartData.get(t)
+    
+    // 找到充電和放電數據集
+    const chargeDataset = realTimeData.datasets.find(ds => ds.label === t('main.dashboard.real_time_chart.feed_in_battery'))
+    const dischargeDataset = realTimeData.datasets.find(ds => ds.label === t('main.dashboard.real_time_chart.discharge_amount'))
 
-    // 從圖表數據中提取 SOC 值
-    if (doughnutData && doughnutData.datasets.length > 0) {
-      // 從數據集中獲取百分比值
-      const percentage = doughnutData.datasets[0].data[0]
-      // 計算實際的 SOC 值
-      currentSoCValue.value = (Number(percentage) / 100) * MAX_SOC
-    }
+    if (chargeDataset && dischargeDataset) {
+      // 計算總充電量
+      const totalCharge = chargeDataset.data.reduce((sum: number, value: any) => {
+        const numValue = Number(value) || 0
+        return sum + numValue
+      }, 0)
+      
+      // 計算總放電量
+      const totalDischarge = dischargeDataset.data.reduce((sum: number, value: any) => {
+        const numValue = Number(value) || 0
+        return sum + numValue
+      }, 0)
 
-    // 從實時圖表數據中提取放電量
-    if (realTimeData && realTimeData.datasets.length > 0) {
-      // 找到放電數據集（discharge_amount）
-      const dischargeDataset = realTimeData.datasets.find(
-        (dataset) =>
-          dataset.label ===
-          t('main.dashboard.real_time_chart.discharge_amount'),
-      )
-      if (dischargeDataset && dischargeDataset.data) {
-        const socData = dischargeDataset.data as number[]
-        // 只計算放電時間點的數據，並除以1000
-        dischargeAmount.value =
-          DISCHARGE_INDICES.reduce(
-            (sum, index) => sum + (socData[index] || 0),
-            0,
-          ) / 1000
-      }
+      // 更新 SOC 值和放電量
+      currentSoCValue.value = Math.max(0, totalCharge - totalDischarge) / 1000
+      dischargeAmount.value = totalDischarge / 1000
     }
   } catch (error) {
     console.error('Error updating SOC value:', error)
@@ -75,7 +62,7 @@ onUnmounted(() => {
 const stats = computed(() => [
   {
     title: 'current_soc_total_charge',
-    value: (currentSoCValue.value - dischargeAmount.value).toFixed(2),
+    value: currentSoCValue.value.toFixed(2),
   },
   {
     title: 'current_discharge_amount',

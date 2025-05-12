@@ -38,9 +38,9 @@ const updateSoCValue = async () => {
       const percentage = doughnutData.datasets[0].data[0]
       // 計算實際的 SOC 值
       currentSoCValue.value = (percentage / 100) * MAX_SOC
-      // 設置百分比值 - 使用 TARGET_SOC 作為 100% 的基準
+      // 設置百分比值 - 使用 MAX_SOC 作為 100% 的基準
       currentCharge.value = Math.min(
-        Math.round((currentSoCValue.value / TARGET_SOC) * 100),
+        Math.round((currentSoCValue.value / MAX_SOC) * 100),
         100,
       )
     }

@@ -1,228 +1,40 @@
-import { fetchRealTimeData } from '@/services/fetch-realtime-data'
-import type { RealTimeData } from '@/types'
 import { ChartData, ChartOptions } from 'chart.js'
 import { ref } from 'vue'
+import { useScheduleApi } from '@/api/scheduleApi'
+import { timeLabels, chargeTimeMap, dischargeTimeMap, chargeCoefficientMap } from '@/config/timeMaps'
 
-// 時間標籤
-const timeLabels = [
-  '00:00',
-  '00:15',
-  '00:30',
-  '00:45',
-  '01:00',
-  '01:15',
-  '01:30',
-  '01:45',
-  '02:00',
-  '02:15',
-  '02:30',
-  '02:45',
-  '03:00',
-  '03:15',
-  '03:30',
-  '03:45',
-  '04:00',
-  '04:15',
-  '04:30',
-  '04:45',
-  '05:00',
-  '05:15',
-  '05:30',
-  '05:45',
-  '06:00',
-  '06:15',
-  '06:30',
-  '06:45',
-  '07:00',
-  '07:15',
-  '07:30',
-  '07:45',
-  '08:00',
-  '08:15',
-  '08:30',
-  '08:45',
-  '09:00',
-  '09:15',
-  '09:30',
-  '09:45',
-  '10:00',
-  '10:15',
-  '10:30',
-  '10:45',
-  '11:00',
-  '11:15',
-  '11:30',
-  '11:45',
-  '12:00',
-  '12:15',
-  '12:30',
-  '12:45',
-  '13:00',
-  '13:15',
-  '13:30',
-  '13:45',
-  '14:00',
-  '14:15',
-  '14:30',
-  '14:45',
-  '15:00',
-  '15:15',
-  '15:30',
-  '15:45',
-  '16:00',
-  '16:15',
-  '16:30',
-  '16:45',
-  '17:00',
-  '17:15',
-  '17:30',
-  '17:45',
-  '18:00',
-  '18:15',
-  '18:30',
-  '18:45',
-  '19:00',
-  '19:15',
-  '19:30',
-  '19:45',
-  '20:00',
-  '20:15',
-  '20:30',
-  '20:45',
-  '21:00',
-  '21:15',
-  '21:30',
-  '21:45',
-  '22:00',
-  '22:15',
-  '22:30',
-  '22:45',
-  '23:00',
-  '23:15',
-  '23:30',
-  '23:45',
-]
-
+const scheduleData = useScheduleApi()
 const chartDataRef = ref<ChartData<'bar' | 'line'> | null>(null)
-let lastProcessedData: RealTimeData[] = []
 let lastProcessedResult: ChartData<'bar' | 'line'> | null = null
+let currentDataIndex = ref(0)
+let updateInterval: NodeJS.Timeout | null = null
 
 // Function to process data and create chart datasets
 const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
-  const realTimeData = await fetchRealTimeData()
-
-  if (
-    realTimeData.length === lastProcessedData.length &&
-    JSON.stringify(realTimeData) === JSON.stringify(lastProcessedData) &&
-    lastProcessedResult
-  ) {
-    return lastProcessedResult
-  }
-
-  lastProcessedData = JSON.parse(JSON.stringify(realTimeData))
+  const response = await scheduleData.realTimeData('2023-09-30')
+  const realTimeData = response.data[0].data
 
   // 初始化數據陣列
-  const pvImmData: number[] = []
-  const pvDAData: number[] = []
-  const pvRawData: number[] = []
-  const socData: number[] = Array(96).fill(0) // 初始化為96個0，對應每15分鐘一個時間點
-  const dischargeData: number[] = Array(96).fill(0) // 新增放電數據數組
+  const pvImmData: number[] = Array(96).fill(null)
+  const pvDAData: number[] = Array(96).fill(null)
+  const pvRawData: number[] = Array(96).fill(null)
+  const socData: number[] = Array(96).fill(null)
+  const dischargeData: number[] = Array(96).fill(null)
+  // 只處理到當前索引的數據
+  for (let i = 0; i <= currentDataIndex.value; i+=1) {
+    const timePoint = realTimeData[i]
+    if (timePoint) {
+      pvImmData[i] = timePoint.PV_pImm || 0
+      pvDAData[i] = timePoint.PV_pDA || 0
+      pvRawData[i] = timePoint.PV_raw || 0
+    }
+  }
 
   const calculateSoc = () => {
-    // 充電時間映射
-    const chargeTimeMap: { [key: string]: number } = {
-      '2023-09-30T09:00:00+08:00': 36,
-      '2023-09-30T09:15:00+08:00': 37,
-      '2023-09-30T09:30:00+08:00': 38,
-      '2023-09-30T09:45:00+08:00': 39,
-      '2023-09-30T10:00:00+08:00': 40,
-      '2023-09-30T10:15:00+08:00': 41,
-      '2023-09-30T10:30:00+08:00': 42,
-      '2023-09-30T10:45:00+08:00': 43,
-      '2023-09-30T11:00:00+08:00': 44,
-      '2023-09-30T11:15:00+08:00': 45,
-      '2023-09-30T11:30:00+08:00': 46,
-      '2023-09-30T11:45:00+08:00': 47,
-      '2023-09-30T12:00:00+08:00': 48,
-      '2023-09-30T12:15:00+08:00': 49,
-      '2023-09-30T12:30:00+08:00': 50,
-      '2023-09-30T12:45:00+08:00': 51,
-      '2023-09-30T13:00:00+08:00': 52,
-      '2023-09-30T13:15:00+08:00': 53,
-      '2023-09-30T13:30:00+08:00': 54,
-      '2023-09-30T13:45:00+08:00': 55,
-      '2023-09-30T14:00:00+08:00': 56,
-      '2023-09-30T14:15:00+08:00': 57,
-    }
-
-    // 放電時間映射與權重
-    const dischargeTimeMap: {
-      [key: string]: { index: number; weight: number }
-    } = {
-      '2023-09-30T14:30:00+08:00': { index: 58, weight: 0.01 },
-      '2023-09-30T14:45:00+08:00': { index: 59, weight: 0.015 },
-      '2023-09-30T15:00:00+08:00': { index: 60, weight: 0.02 },
-      '2023-09-30T15:15:00+08:00': { index: 61, weight: 0.025 },
-      '2023-09-30T15:30:00+08:00': { index: 62, weight: 0.03 },
-      '2023-09-30T15:45:00+08:00': { index: 63, weight: 0.035 },
-      '2023-09-30T16:00:00+08:00': { index: 64, weight: 0.04 },
-      '2023-09-30T16:15:00+08:00': { index: 65, weight: 0.042 },
-      '2023-09-30T16:30:00+08:00': { index: 66, weight: 0.042 },
-      '2023-09-30T16:45:00+08:00': { index: 67, weight: 0.042 },
-      '2023-09-30T17:00:00+08:00': { index: 68, weight: 0.042 },
-      '2023-09-30T17:15:00+08:00': { index: 69, weight: 0.042 },
-      '2023-09-30T17:30:00+08:00': { index: 70, weight: 0.042 },
-      '2023-09-30T17:45:00+08:00': { index: 71, weight: 0.042 },
-      '2023-09-30T18:00:00+08:00': { index: 72, weight: 0.042 },
-      '2023-09-30T18:15:00+08:00': { index: 73, weight: 0.042 },
-      '2023-09-30T18:30:00+08:00': { index: 74, weight: 0.042 },
-      '2023-09-30T18:45:00+08:00': { index: 75, weight: 0.042 },
-      '2023-09-30T19:00:00+08:00': { index: 76, weight: 0.042 },
-      '2023-09-30T19:15:00+08:00': { index: 77, weight: 0.042 },
-      '2023-09-30T19:30:00+08:00': { index: 78, weight: 0.042 },
-      '2023-09-30T19:45:00+08:00': { index: 79, weight: 0.042 },
-      '2023-09-30T20:00:00+08:00': { index: 80, weight: 0.04 },
-      '2023-09-30T20:15:00+08:00': { index: 81, weight: 0.035 },
-      '2023-09-30T20:30:00+08:00': { index: 82, weight: 0.03 },
-      '2023-09-30T20:45:00+08:00': { index: 83, weight: 0.025 },
-      '2023-09-30T21:00:00+08:00': { index: 84, weight: 0.02 },
-      '2023-09-30T21:15:00+08:00': { index: 85, weight: 0.015 },
-      '2023-09-30T21:30:00+08:00': { index: 86, weight: 0.01 },
-      '2023-09-30T21:45:00+08:00': { index: 87, weight: 0.005 },
-      '2023-09-30T22:00:00+08:00': { index: 88, weight: 0.005 },
-    }
-
-    // 充電係數映射
-    const chargeCoefficientMap: { [key: string]: number } = {
-      '2023-09-30T09:00:00+08:00': 0.4,
-      '2023-09-30T09:15:00+08:00': 0.81,
-      '2023-09-30T09:30:00+08:00': 0.45,
-      '2023-09-30T09:45:00+08:00': 0.41,
-      '2023-09-30T10:00:00+08:00': 0.43,
-      '2023-09-30T10:15:00+08:00': 0.64,
-      '2023-09-30T10:30:00+08:00': 0.71,
-      '2023-09-30T10:45:00+08:00': 0.54,
-      '2023-09-30T11:00:00+08:00': 0.39,
-      '2023-09-30T11:15:00+08:00': 0.36,
-      '2023-09-30T11:30:00+08:00': 0.46,
-      '2023-09-30T11:45:00+08:00': 0.49,
-      '2023-09-30T12:00:00+08:00': 0.44,
-      '2023-09-30T12:15:00+08:00': 0.45,
-      '2023-09-30T12:30:00+08:00': 0.54,
-      '2023-09-30T12:45:00+08:00': 0.97,
-      '2023-09-30T13:00:00+08:00': 1.0,
-      '2023-09-30T13:15:00+08:00': 0.76,
-      '2023-09-30T13:30:00+08:00': 0.57,
-      '2023-09-30T13:45:00+08:00': 0.55,
-      '2023-09-30T14:00:00+08:00': 0.42,
-      '2023-09-30T14:15:00+08:00': 0.34,
-    }
-
     // 處理充電數據
-    let totalChargeEnergy = 0 // 追蹤總充電量
-    for (let i = 0; i < realTimeData.length; i += 1) {
+    let totalChargeEnergy = 0
+    for (let i = 0; i <= currentDataIndex.value; i+=1) {
       const timestamp = realTimeData[i]?.timestamp
-
       if (timestamp && chargeTimeMap[timestamp] !== undefined) {
         const index = chargeTimeMap[timestamp]
         const coefficient = chargeCoefficientMap[timestamp]
@@ -237,8 +49,8 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
     let hasReachedDischargeTime = false
 
     // 檢查是否已到達放電時間
-    for (const data of realTimeData) {
-      if (data.timestamp >= dischargeStartTime) {
+    for (let i = 0; i <= currentDataIndex.value; i+=1) {
+      if (realTimeData[i].timestamp >= dischargeStartTime) {
         hasReachedDischargeTime = true
         break
       }
@@ -246,16 +58,12 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
 
     // 只有當到達放電時間才顯示放電數據
     if (hasReachedDischargeTime) {
-      // 找出當前時間對應的放電時間點
-      const currentTime = realTimeData[realTimeData.length - 1]?.timestamp
+      const currentTime = realTimeData[currentDataIndex.value]?.timestamp
       if (currentTime) {
-        for (const [timestamp, { index, weight }] of Object.entries(
-          dischargeTimeMap,
-        )) {
-          // 如果當前時間已經到達或超過該放電時間點，就顯示該時間點的放電數據
+        for (const [timestamp, { index, weight }] of Object.entries(dischargeTimeMap)) {
           if (currentTime >= timestamp) {
             const dischargeEnergy = totalChargeEnergy * weight
-            dischargeData[index] = dischargeEnergy // 使用新的放電數據數組
+            dischargeData[index] = dischargeEnergy
           }
         }
       }
@@ -264,18 +72,9 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
     return { socData, dischargeData }
   }
 
-  // 處理實時數據
-  if (realTimeData && realTimeData.length > 0) {
-    for (let i = 0; i < realTimeData.length; i += 1) {
-      pvImmData.push(realTimeData[i]?.PV_pImm || 0)
-      pvDAData.push(realTimeData[i]?.PV_pDA || 0)
-      pvRawData.push(realTimeData[i]?.PV_raw || 0)
-    }
-    const { socData: updatedSocData, dischargeData: updatedDischargeData } =
-      calculateSoc()
-    Object.assign(socData, updatedSocData)
-    Object.assign(dischargeData, updatedDischargeData)
-  }
+  const { socData: updatedSocData, dischargeData: updatedDischargeData } = calculateSoc()
+  Object.assign(socData, updatedSocData)
+  Object.assign(dischargeData, updatedDischargeData)
 
   const newChartData: ChartData<'bar' | 'line'> = {
     labels: timeLabels,
@@ -339,7 +138,6 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
     ],
   }
 
-  // 緩存處理結果
   lastProcessedResult = newChartData
   return newChartData
 }
@@ -354,6 +152,42 @@ export const chartData = {
   async update(t: any): Promise<ChartData<'bar' | 'line'>> {
     chartDataRef.value = await processChartData(t)
     return chartDataRef.value
+  },
+  startAutoUpdate(t: any) {
+    // 清除現有的定時器
+    if (updateInterval) {
+      clearInterval(updateInterval)
+    }
+
+    // 重置索引
+    currentDataIndex.value = 0
+
+    // 設置新的定時器
+    updateInterval = setInterval(async () => {
+      if (currentDataIndex.value < 95) { // 96個數據點，索引從0到95
+        currentDataIndex.value+=1
+        await chartData.update(t)
+      } else {
+        // 當到達最後一個數據點時，重置所有數據並重新開始
+        currentDataIndex.value = 0
+        chartDataRef.value = null
+        lastProcessedResult = null
+        await chartData.update(t)
+      }
+    }, 1000) // 每秒更新一次
+  },
+  stopAutoUpdate() {
+    if (updateInterval) {
+      clearInterval(updateInterval)
+      updateInterval = null
+    }
+  },
+  reset() {
+    currentDataIndex.value = 0
+    if (updateInterval) {
+      clearInterval(updateInterval)
+      updateInterval = null
+    }
   },
 }
 
