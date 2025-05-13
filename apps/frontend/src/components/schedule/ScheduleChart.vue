@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { chartData, chartOptions } from '@/utils/StaticSchedule'
+import { chartData, getChartOptions } from '@/utils/ScheduleChart'
 import type { ChartData } from 'chart.js'
 import {
   BarController,
@@ -15,8 +15,11 @@ import {
   Title,
   Tooltip,
 } from 'chart.js'
-import { onMounted, ref, shallowRef } from 'vue'
+import { onMounted, onUnmounted, ref, shallowRef } from 'vue'
 import { Chart } from 'vue-chartjs'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 ChartJS.register(
   BarController,
@@ -38,11 +41,32 @@ const chartDataValue = shallowRef<ChartData<'bar' | 'line'>>({
   datasets: [],
 })
 
+const chartOptions = getChartOptions(t)
+
 onMounted(async () => {
   try {
     isLoading.value = true
-    chartDataValue.value = await chartData.get()
+    chartDataValue.value = await chartData.get(t)
     isLoading.value = false
+   // 開始自動更新
+   chartData.startAutoUpdate(t)
+    
+    // 設置數據更新監聽
+    const updateData = async () => {
+      const newData = await chartData.update(t)
+      if (newData && newData.datasets && newData.datasets.length > 0) {
+        chartDataValue.value = { ...newData }
+      }
+    }
+    
+    // 每秒更新一次數據
+    const interval = setInterval(updateData, 1000)
+    
+    // 在組件卸載時清理
+    onUnmounted(() => {
+      clearInterval(interval)
+      chartData.stopAutoUpdate()
+    })
   } catch (error) {
     console.error('Failed to initialize chart data:', error)
     isLoading.value = false
