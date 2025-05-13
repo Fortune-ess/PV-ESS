@@ -15,7 +15,7 @@ import {
   Title,
   Tooltip,
 } from 'chart.js'
-import { onMounted, onUnmounted, ref, shallowRef, watch } from 'vue'
+import { onMounted, onUnmounted, ref, shallowRef } from 'vue'
 import { Chart } from 'vue-chartjs'
 import { useI18n } from 'vue-i18n'
 
@@ -36,7 +36,6 @@ ChartJS.register(
 )
 
 const isLoading = ref(true)
-// 使用 shallowRef 代替 ref，減少深度監聽
 const chartDataValue = shallowRef<ChartData<'bar' | 'line'>>({
   labels: [],
   datasets: [],
@@ -44,64 +43,39 @@ const chartDataValue = shallowRef<ChartData<'bar' | 'line'>>({
 
 const chartOptions = getChartOptions(t)
 
-// 防抖動函數
-const debounce = (fn: Function, delay: number) => {
-  let timer: number | null = null
-  return function (this: any, ...args: any[]) {
-    if (timer) clearTimeout(timer)
-    timer = window.setTimeout(() => {
-      fn.apply(this, args)
-    }, delay)
-  }
-}
-
-// 使用防抖動包裝更新函數，但減少延遲時間
-const debouncedUpdateChartData = debounce(async () => {
-  try {
-    const newData = await chartData.update(t)
-    if (newData && newData.datasets && newData.datasets.length > 0) {
-      chartDataValue.value = newData
-    }
-  } catch (error) {
-    console.error('Failed to update chart data:', error)
-  }
-}, 100) // 減少延遲時間
-
-const updateChartData = () => {
-  debouncedUpdateChartData()
-}
-
-let updateInterval: number | null = null
-
 onMounted(async () => {
   try {
     isLoading.value = true
     const initialData = await chartData.get(t)
-    if (
-      initialData &&
-      initialData.datasets &&
-      initialData.datasets.length > 0
-    ) {
+    if (initialData && initialData.datasets && initialData.datasets.length > 0) {
       chartDataValue.value = initialData
     }
     isLoading.value = false
-    // 保持每秒更新一次
-    updateInterval = window.setInterval(updateChartData, 1000)
+    
+    // 開始自動更新
+    chartData.startAutoUpdate(t)
+    
+    // 設置數據更新監聽
+    const updateData = async () => {
+      const newData = await chartData.update(t)
+      if (newData && newData.datasets && newData.datasets.length > 0) {
+        chartDataValue.value = { ...newData }
+      }
+    }
+    
+    // 每秒更新一次數據
+    const interval = setInterval(updateData, 1000)
+    
+    // 在組件卸載時清理
+    onUnmounted(() => {
+      clearInterval(interval)
+      chartData.stopAutoUpdate()
+    })
   } catch (error) {
     console.error('Failed to initialize chart data:', error)
     isLoading.value = false
   }
 })
-
-onUnmounted(() => {
-  if (updateInterval !== null) {
-    clearInterval(updateInterval)
-    updateInterval = null
-  }
-})
-
-// 監聽數據變化
-watch(chartDataValue, () => {}, { deep: true })
 </script>
 
 <template>

@@ -149,7 +149,7 @@ export function startRealTimeDataInsertion() {
     console.log(
       `Starting insertion cycle for ${targetMeasurements.length} records from ${TARGET_DATE}. Delay: ${INSERTION_DELAY_MS / 1000}s.`,
     )
-    void scheduleNextInsertion()
+    scheduleNextInsertion()
   } catch (error) {
     console.error('Error during insertion process initialization:', error)
   }

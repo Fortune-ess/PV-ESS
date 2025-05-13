@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { fetchRealTimeData } from '@/services/fetch-realtime-data'
 import { chartData as realTimeChartData } from '@/utils/RealTimeChart'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -9,45 +8,72 @@ const { t } = useI18n()
 const today_accumulated_income = ref(0)
 const this_month_accumulated_income = ref(0)
 const today_electricity_value = ref(0)
-const abandonLightValue = ref('None')
+const abandonLightValue = ref(0)
 let updateInterval: ReturnType<typeof setInterval> | null = null
 let lastProcessedData = ref<any>(null)
 
-const updateData = async () => {
-  const realtime_data = await fetchRealTimeData()
-  if (!realtime_data || realtime_data.length === 0) {
-    return
-  }
+// 實時數據
+const pvRawData = ref(0)
+const socData = ref(0)
+const outputToGrid = ref(0)
 
-  const latestData = realtime_data[realtime_data.length - 1]
-  const chartData = await realTimeChartData.get(t)
-  const socData =
-    chartData.datasets.find(
-      (dataset) =>
-        dataset.label === t('main.dashboard.real_time_chart.feed_in_battery'),
-    )?.data[chartData.datasets[0].data.length - 1] || 0
-  // 如果是新數據
-  if (
-    !lastProcessedData.value ||
-    lastProcessedData.value.PV_raw !== latestData.PV_raw
-  ) {
-    // 更新發電量
-    today_electricity_value.value = parseFloat(
-      (today_electricity_value.value + latestData.PV_raw).toFixed(2),
-    )
-    // 更新收益（使用實際發電量計算）
-    today_accumulated_income.value = parseFloat(
-      (
-        today_accumulated_income.value +
-        (latestData.PV_raw - Number(socData)) * 9.39
-      ).toFixed(2),
-    )
-    // 更新月收益
-    this_month_accumulated_income.value = parseFloat(
-      (today_accumulated_income.value * 30).toFixed(2),
-    )
-    // 更新最後處理的數據
-    lastProcessedData.value = latestData
+// 更新數據的函數
+const updateData = async () => {
+  try {
+    const realTimeData = await realTimeChartData.get(t)
+    
+    // 找到相關數據集
+    const pvRawDataset = realTimeData.datasets.find(ds => ds.label === t('main.dashboard.real_time_chart.pv_raw'))
+    const chargeDataset = realTimeData.datasets.find(ds => ds.label === t('main.dashboard.real_time_chart.feed_in_battery'))
+    const dischargeDataset = realTimeData.datasets.find(ds => ds.label === t('main.dashboard.real_time_chart.discharge_amount'))
+
+    if (pvRawDataset && chargeDataset && dischargeDataset) {
+      // 獲取最新的值
+      const getLatestValue = (data: any[]) => {
+        for (let i = data.length - 1; i >= 0; i--) {
+          const value = Number(data[i]) || 0
+          if (value > 0) {
+            return value
+          }
+        }
+        return 0
+      }
+
+      // 更新 PV_raw 值
+      pvRawData.value = getLatestValue(pvRawDataset.data)
+      today_electricity_value.value = pvRawData.value
+
+      // 獲取最新的充電和放電值
+      let lastChargeValue = getLatestValue(chargeDataset.data)
+      const lastDischargeValue = getLatestValue(dischargeDataset.data)
+
+      // 檢查是否已超過充電時間
+      if ( lastDischargeValue>0 ) {
+        lastChargeValue = 0
+      }
+
+      // 更新 SOC 值
+      socData.value = lastChargeValue
+
+      // 計算輸出到電網的電量
+      if (lastChargeValue > 0) {
+        // 充電時，輸出到電網的電量為 PV_raw - 充電量
+        outputToGrid.value = Math.max(0, pvRawData.value - lastChargeValue)
+        today_accumulated_income.value = today_accumulated_income.value + outputToGrid.value * 9.39
+        
+      } else if (lastDischargeValue > 0) {
+        // 放電時，輸出到電網的電量就是放電量
+        outputToGrid.value = pvRawData.value + lastDischargeValue
+        today_accumulated_income.value = today_accumulated_income.value + outputToGrid.value * 9.39
+      } else {
+        // 非充放電時間
+        outputToGrid.value = pvRawData.value
+        today_accumulated_income.value = today_accumulated_income.value + outputToGrid.value * 9.39
+      }
+      this_month_accumulated_income.value = today_accumulated_income.value * 30
+    }
+  } catch (error) {
+    console.error('Error updating data:', error)
   }
 }
 
@@ -72,13 +98,14 @@ onUnmounted(() => {
 })
 
 const stats = computed(() => [
-  { title: 'today_accumulated_income', value: today_accumulated_income.value },
+  { title: 'today_accumulated_income', value: today_accumulated_income.value.toFixed(2), unit: 'TWD' },
   {
     title: 'this_month_accumulated_income',
-    value: this_month_accumulated_income.value,
+    value: this_month_accumulated_income.value.toFixed(2),
+    unit: 'TWD',
   },
-  { title: 'today_generation_degree', value: today_electricity_value.value },
-  { title: 'abandon_light', value: abandonLightValue.value },
+  { title: 'today_generation_degree', value: today_electricity_value.value.toFixed(2), unit: 'kWh' },
+  { title: 'abandon_light', value: abandonLightValue.value, unit: '%' },
 ])
 </script>
 
@@ -93,7 +120,7 @@ const stats = computed(() => [
         {{ $t(`main.dashboard.${stat.title}`) }}
       </div>
       <div class="font-bold text-base">
-        {{ stat.value }}
+        {{ stat.value }} {{ stat.unit }}
       </div>
     </div>
   </div>

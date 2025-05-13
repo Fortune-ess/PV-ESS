@@ -53,11 +53,9 @@ const connectMongo = async () => {
 connectMongo()
   .then(() => {
     console.log('✅ MongoDB connected')
-    // 每秒insert一次ScheduleData
-    void startDataInsertion()
-    console.log('Schedule data started')
-    void startRealTimeDataInsertion()
-    console.log('Real time data started')
+    // // 每秒insert一次ScheduleData
+    // void startDataInsertion()
+    // void startRealTimeDataInsertion()
   })
   .catch((error: Error) => {
     console.error('❌ Error connecting to MongoDB:', error)
@@ -69,26 +67,29 @@ app.use(`${apiPrefix}/auth`, authRoutes)
 app.use(`${apiPrefix}/users`, userRoutes)
 app.use(`${apiPrefix}/schedule`, scheduleRoutes)
 
+app.listen(port, () => {
+  console.log(`Express Server is running on http://localhost:${port}/api`)
+})
 // 創建 HTTP Server 來支援 WebSocket
-const server = http.createServer(app)
-const io = new SocketIOServer(server, {
-  cors: {
-    origin: ['http://192.168.41.63:5173'],
-    methods: ['GET', 'POST'],
-    credentials: true,
-    allowedHeaders: [
-      'Content-Type',
-      'Authorization',
-      'X-Requested-With',
-      'x-api-key',
-    ],
-  },
-  transports: ['websocket', 'polling'],
-  pingTimeout: 60000,
-})
+// const server = http.createServer(app)
+// const io = new SocketIOServer(server, {
+//   cors: {
+//     origin: ['http://192.168.41.63:5173'],
+//     methods: ['GET', 'POST'],
+//     credentials: true,
+//     allowedHeaders: [
+//       'Content-Type',
+//       'Authorization',
+//       'X-Requested-With',
+//       'x-api-key',
+//     ],
+//   },
+//   transports: ['websocket', 'polling'],
+//   pingTimeout: 60000,
+// })
 
-socketEvent(io)
+// socketEvent(io)
 
-server.listen(port, () => {
-  console.log(`🚀 Server is running on http://localhost:${port}/api`)
-})
+// server.listen(port, () => {
+//   console.log(`🚀 Server is running on http://localhost:${port}/api`)
+// })

@@ -5,7 +5,7 @@ const router = express.Router()
 const scheduleController = new ScheduleController()
 
 // Day ahead schedule
-router.get('/day-ahead/:date', async (req: Request, res: Response) => {
+router.post('/day-ahead', async (req: Request, res: Response) => {
   try {
     await scheduleController.getDayAheadSchedule(req, res)
   } catch (error) {
@@ -14,7 +14,7 @@ router.get('/day-ahead/:date', async (req: Request, res: Response) => {
 })
 
 // real-time schedule
-router.get('/real-time/:date', async (req: Request, res: Response) => {
+router.post('/real-time', async (req: Request, res: Response) => {
   try {
     await scheduleController.getRealTimeSchedule(req, res)
   } catch (error) {

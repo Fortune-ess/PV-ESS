@@ -39,13 +39,13 @@ import Weather from '@/components/dashboard/Weather.vue'
         <div class="w-full sm:w-1/3 z-10">
           <PVCard />
         </div>
-        <div class="w-full sm:w-1/3 z-10">
-          <SocCards />
-        </div>
         <div class="w-full sm:w-1/3 flex items-center justify-center z-50">
           <DoughnutChart
             class="w-full h-full max-w-[120px] sm:max-w-[150px] md:max-w-[180px] lg:max-w-[200px]"
           />
+        </div>
+        <div class="w-full sm:w-1/3 z-10">
+          <SocCards />
         </div>
       </div>
       <BatteryStatus />

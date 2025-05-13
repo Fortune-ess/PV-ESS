@@ -1,33 +1,62 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { useSystemStore } from '@/store/systemStore'
-import { fetchRealTimeData } from '@/services/fetch-realtime-data'
+import { chartData as realTimeChartData } from '@/utils/RealTimeChart'
+import { useI18n } from 'vue-i18n'
 
-const systemStore = useSystemStore()
+const { t } = useI18n()
 
 // 實時數據
 const pvRawData = ref(0)
 const socData = ref(0)
+const outputToGrid = ref(0)
 
 // 更新數據的函數
 const updateData = async () => {
   try {
-    // 獲取實時數據
-    const realTimeData = await fetchRealTimeData()
-    if (realTimeData && realTimeData.length > 0) {
-      // 檢查是否到達指定時間點
-      const lastTimestamp = realTimeData[realTimeData.length - 1]?.timestamp
-      if (lastTimestamp === '2023-09-30T17:45:00+08:00') {
-        // 當到達指定時間點時歸零
-        pvRawData.value = 0
-        socData.value = 0
-      } else {
-        // 獲取最新的 PV_raw 值
-        pvRawData.value = realTimeData[realTimeData.length - 1]?.PV_raw || 0
+    const realTimeData = await realTimeChartData.get(t)
+    
+    // 找到相關數據集
+    const pvRawDataset = realTimeData.datasets.find(ds => ds.label === t('main.dashboard.real_time_chart.pv_raw'))
+    const chargeDataset = realTimeData.datasets.find(ds => ds.label === t('main.dashboard.real_time_chart.feed_in_battery'))
+    const dischargeDataset = realTimeData.datasets.find(ds => ds.label === t('main.dashboard.real_time_chart.discharge_amount'))
 
-        // 獲取最新的 socData 值
-        const latestSocValue = systemStore.batteryPower.value
-        socData.value = latestSocValue
+    if (pvRawDataset && chargeDataset && dischargeDataset) {
+      // 獲取最新的值
+      const getLatestValue = (data: any[]) => {
+        for (let i = data.length - 1; i >= 0; i--) {
+          const value = Number(data[i]) || 0
+          if (value > 0) {
+            return value
+          }
+        }
+        return 0
+      }
+
+      // 更新 PV_raw 值
+      pvRawData.value = getLatestValue(pvRawDataset.data)
+
+      // 獲取最新的充電和放電值
+      let lastChargeValue = getLatestValue(chargeDataset.data)
+      const lastDischargeValue = getLatestValue(dischargeDataset.data)
+
+      // 檢查是否已超過充電時間
+      if ( lastDischargeValue>0 ) {
+        lastChargeValue = 0
+      }
+
+      // 更新 SOC 值
+      socData.value = lastChargeValue
+
+      // 計算輸出到電網的電量
+      if (lastChargeValue > 0) {
+        // 充電時，輸出到電網的電量為 PV_raw - 充電量
+        outputToGrid.value = Math.max(0, pvRawData.value - lastChargeValue)
+      } else if (lastDischargeValue > 0) {
+        // 放電時，輸出到電網的電量就是放電量
+        outputToGrid.value = pvRawData.value + lastDischargeValue
+      } else {
+        // 非充放電時間
+        outputToGrid.value = pvRawData.value
       }
     }
   } catch (error) {
@@ -45,7 +74,7 @@ onMounted(async () => {
   // 每秒更新一次數據
   updateInterval = setInterval(async () => {
     await updateData()
-  }, 1000)
+  }, 0)
 })
 
 onUnmounted(() => {
@@ -69,7 +98,7 @@ const stats = computed(() => [
   },
   {
     title: 'output_to_grid_amount',
-    value: Math.max(0, pvRawData.value - socData.value).toFixed(2),
+    value: outputToGrid.value.toFixed(2),
   },
 ])
 </script>

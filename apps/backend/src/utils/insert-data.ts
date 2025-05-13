@@ -34,7 +34,7 @@ export async function startDataInsertion() {
     }
 
     // 啟動資料插入
-    void insertDataWithDelay()
+    insertDataWithDelay()
   } catch (error) {
     console.error('Error during initialization:', error)
   }
