@@ -14,8 +14,13 @@ const processStaticData = () => {
   let dayAheadPredictionData: number[] = []
   let feedInBSData: number[] = []
   data.forEach((elements) => {
-    dayAheadPredictionData.push(elements.data.pvEnergy * 1000)
-    feedInBSData.push(-elements.data.esEnergy * 1000)
+    const pvEnergy = elements.data.pvEnergy * 1000
+    dayAheadPredictionData.push(pvEnergy)
+    
+    // 根據時間戳獲取對應的充電係數
+    const timestamp = elements.data.timestamp
+    const coefficient = chargeCoefficientMap[timestamp] || 0
+    feedInBSData.push(pvEnergy * coefficient)
   })
   return { dayAheadPredictionData, feedInBSData }
 }
@@ -114,7 +119,7 @@ const processCombinedChartData = async (t: any): Promise<ChartData<'bar' | 'line
         order: 2,
         pointStyle: 'rect',
       },
-      // 新增動態數據集
+      // 動態數據集
       {
         label: t('main.dashboard.real_time_chart.pv_raw'),
         type: 'line',
@@ -193,7 +198,7 @@ export const chartData = {
   },
 }
 
-export const getChartOptions = (t: any): ChartOptions<'bar'> => {
+export const getChartOptions = (): ChartOptions<'bar'> => {
   return {
     responsive: true,
     maintainAspectRatio: false,

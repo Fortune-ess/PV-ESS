@@ -10,9 +10,9 @@ export const data = {
       type: 'bar', // 添加type以顯示為bar
     },
     {
-      label: 'remain',
+      label: 'remaining',
       data: [100, 100, 100, 100, 100, 100],
-      backgroundColor: '#ffc107', // 添加背景顏色以便於顯示
+      backgroundColor: '#E5E7EB',
       borderWidth: 1,
       barPercentage: 0.7,
       type: 'bar', // 確保remain也顯示為bar

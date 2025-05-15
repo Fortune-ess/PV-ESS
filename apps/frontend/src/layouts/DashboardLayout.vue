@@ -4,11 +4,11 @@ import DashboardNavbar from '@/components/dashboard/DashboardNavbar.vue'
 
 <template>
   <div
-    class="flex h-screen w-full overflow-hidden bg-gradient-to-br from-white via-cyan-100/40 to-cyan-200/30"
+    class="flex h-svh w-full overflow-hidden bg-gradient-to-br from-white via-cyan-100/40 to-cyan-200/30"
   >
     <div class="flex-1 flex flex-col overflow-hidden">
       <DashboardNavbar class="z-50" />
-      <main class="overflow-y-auto p-3 sm:p-4 md:p-5 lg:p-6">
+      <main class="overflow-y-auto p-3">
         <router-view v-slot="{ Component }">
           <transition name="fade" mode="out-in">
             <div :key="$route.name" class="w-full max-w-8xl mx-auto">

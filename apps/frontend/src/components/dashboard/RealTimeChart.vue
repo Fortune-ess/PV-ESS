@@ -42,6 +42,16 @@ const chartDataValue = shallowRef<ChartData<'bar' | 'line'>>({
 })
 
 const chartOptions = getChartOptions(t)
+let updateInterval: number | null = null
+
+// Register cleanup function before any async operations
+onUnmounted(() => {
+  if (updateInterval) {
+    clearInterval(updateInterval)
+    updateInterval = null
+  }
+  chartData.stopAutoUpdate()
+})
 
 onMounted(async () => {
   try {
@@ -64,13 +74,7 @@ onMounted(async () => {
     }
     
     // 每秒更新一次數據
-    const interval = setInterval(updateData, 1000)
-    
-    // 在組件卸載時清理
-    onUnmounted(() => {
-      clearInterval(interval)
-      chartData.stopAutoUpdate()
-    })
+    updateInterval = setInterval(updateData, 1000) as unknown as number
   } catch (error) {
     console.error('Failed to initialize chart data:', error)
     isLoading.value = false

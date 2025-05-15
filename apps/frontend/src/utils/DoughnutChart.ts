@@ -45,6 +45,9 @@ export const centerTextPlugin = {
     const textMetrics = ctx.measureText(text)
     const padding = fontSize * 0.5
 
+    // 將 ctx 圖層往下移動
+    ctx.globalCompositeOperation = 'destination-over'
+    
     ctx.beginPath()
     ctx.arc(
       centerX,
@@ -56,6 +59,9 @@ export const centerTextPlugin = {
     ctx.fillStyle = 'rgba(255, 255, 255, 0.9)'
     ctx.fill()
 
+    // 恢復正常繪製模式
+    ctx.globalCompositeOperation = 'source-over'
+    
     ctx.fillStyle = '#1f2937'
     ctx.fillText(text, centerX, centerY)
 

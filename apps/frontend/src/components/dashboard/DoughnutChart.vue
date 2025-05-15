@@ -20,6 +20,16 @@ const socPercentage = ref(0)
 const isTargetReached = ref(false)
 const isDischarging = ref(false)
 const isCharging = ref(false)
+let updateInterval: number | null = null
+
+// Register cleanup function before any async operations
+onUnmounted(() => {
+  if (updateInterval) {
+    clearInterval(updateInterval)
+    updateInterval = null
+  }
+  chartData.stopAutoUpdate()
+})
 
 // 獲取最新的非零值
 const getLatestNonZeroValue = (data: any[]): number => {
@@ -64,8 +74,8 @@ onMounted(async () => {
         isCharging.value = lastChargeValue > 0 && lastDischargeValue === 0
         isDischarging.value = lastDischargeValue > 0
         
-        // 只有在沒有充電和放電時才判斷是否達到目標
-        isTargetReached.value = !isCharging.value && !isDischarging.value && socValue.value >= TARGET_SOC
+        // 判斷是否達到目標 - 修正邏輯，不再限制只有在沒有充電和放電時才判斷
+        isTargetReached.value = socValue.value >= TARGET_SOC
       }
     }
 
@@ -76,13 +86,7 @@ onMounted(async () => {
     chartData.startAutoUpdate(t)
 
     // 設置定期更新圖表
-    const updateInterval = setInterval(updateChart, 1000)
-    
-    // 在組件卸載時清理
-    onUnmounted(() => {
-      clearInterval(updateInterval)
-      chartData.stopAutoUpdate()
-    })
+    updateInterval = setInterval(updateChart, 1000) as unknown as number
   } catch (error) {
     console.error('Error initializing doughnut chart:', error)
   }
@@ -92,10 +96,8 @@ onMounted(async () => {
 watch(socValue, (newValue) => {
   // 計算 SOC 百分比
   socPercentage.value = Math.min(Math.round((newValue / MAX_SOC) * 100), 100)
-  // 只有在沒有充電和放電時才更新目標狀態
-  if (!isCharging.value && !isDischarging.value) {
+  // 修正邏輯，不再限制只有在沒有充電和放電時才更新目標狀態
   isTargetReached.value = newValue >= TARGET_SOC
-  }
   if (doughnutOptions.value) {
     doughnutOptions.value = chartOptions(newValue)
   }
@@ -133,8 +135,8 @@ const updateChart = async () => {
         isCharging.value = lastChargeValue > 0 && lastDischargeValue === 0
         isDischarging.value = lastDischargeValue > 0
         
-        // 只有在沒有充電和放電時才判斷是否達到目標
-        isTargetReached.value = !isCharging.value && !isDischarging.value && socValue.value >= TARGET_SOC
+        // 修正邏輯，不再限制只有在沒有充電和放電時才判斷是否達到目標
+        isTargetReached.value = socValue.value >= TARGET_SOC
       }
     }
   } catch (error) {
@@ -145,7 +147,6 @@ const updateChart = async () => {
 
 <template>
   <div class="w-full h-full flex flex-col items-center justify-center p-4">
-    <!-- 添加標題 -->
     <h3 class="text-xl font-semibold text-gray-800 mb-4 text-center">
       {{ t('main.dashboard.doughnut_chart.title') }}
     </h3>
@@ -163,7 +164,6 @@ const updateChart = async () => {
         Loading...
       </div>
 
-      <!-- 目標標記 -->
       <div
         class="absolute top-1/2 left-0 flex items-center px-2 py-1 rounded text-sm font-bold text-white shadow-sm"
         :class="
@@ -191,11 +191,5 @@ const updateChart = async () => {
       </div>
     </div>
 
-    <!-- 當前 SOC 值顯示 -->
-    <div class="mt-2.5 flex flex-wrap items-center text-sm text-gray-600">
-      <span class="mr-1">Current SOC:</span>
-      <span class="font-bold text-blue-500">{{ socValue.toFixed(2) }} MWh</span>
-      <span class="ml-1 text-gray-500">({{ socPercentage }}%)</span>
-    </div>
   </div>
 </template>

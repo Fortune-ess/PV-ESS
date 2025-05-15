@@ -104,7 +104,9 @@ const data = computed<ChartData<'bar'>>(() => ({
       label: t('main.dashboard.bar_chart.charged'),
       // 只使用前4個數據，後面補 null
       data: [...chargedData.value.slice(0, 4), null, null],
-      backgroundColor: '#eb9234',
+      backgroundColor: chargedData.value.slice(0, 4).map(charge => {
+        return charge >= 100 ? '#10B981' : '#eb9234';
+      }),
       borderWidth: 0,
       barPercentage: 0.7,
     },
@@ -112,7 +114,7 @@ const data = computed<ChartData<'bar'>>(() => ({
       label: t('main.dashboard.bar_chart.remaining'),
       // 只使用前4個數據，後面補 null
       data: [...remainingData.value.slice(0, 4), null, null],
-      backgroundColor: '#37eb34',
+      backgroundColor: '#E5E7EB',
       borderWidth: 1,
       barPercentage: 0.7,
     },

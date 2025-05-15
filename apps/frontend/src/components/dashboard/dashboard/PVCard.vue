@@ -1,87 +1,90 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { chartData as realTimeChartData } from '@/utils/RealTimeChart'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { useRealTimeDataStore } from '@/store/realTimeDataStore'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
+const realTimeStore = useRealTimeDataStore()
 
-// 實時數據
 const pvRawData = ref(0)
 const socData = ref(0)
+const dischargeData = ref(0)
 const outputToGrid = ref(0)
+const isCharging = ref(true)
 
-// 更新數據的函數
-const updateData = async () => {
+const processLocalStats = () => {
+  const currentChartData = realTimeStore.chartData
+  if (!currentChartData || !currentChartData.datasets || currentChartData.datasets.length === 0) {
+    pvRawData.value = 0
+    socData.value = 0
+    dischargeData.value = 0
+    outputToGrid.value = 0
+    isCharging.value = true
+   return
+  }
+
   try {
-    const realTimeData = await realTimeChartData.get(t)
-    
-    // 找到相關數據集
-    const pvRawDataset = realTimeData.datasets.find(ds => ds.label === t('main.dashboard.real_time_chart.pv_raw'))
-    const chargeDataset = realTimeData.datasets.find(ds => ds.label === t('main.dashboard.real_time_chart.feed_in_battery'))
-    const dischargeDataset = realTimeData.datasets.find(ds => ds.label === t('main.dashboard.real_time_chart.discharge_amount'))
+    const pvRawDataset = currentChartData.datasets.find(ds => ds.label === t('main.dashboard.real_time_chart.pv_raw'))
+    const chargeDataset = currentChartData.datasets.find(ds => ds.label === t('main.dashboard.real_time_chart.feed_in_battery'))
+    const dischargeDataset = currentChartData.datasets.find(ds => ds.label === t('main.dashboard.real_time_chart.discharge_amount'))
 
     if (pvRawDataset && chargeDataset && dischargeDataset) {
-      // 獲取最新的值
-      const getLatestValue = (data: any[]) => {
-        for (let i = data.length - 1; i >= 0; i--) {
-          const value = Number(data[i]) || 0
-          if (value > 0) {
-            return value
-          }
+      const getCurrentValue = (data: any[] | undefined | null, index: number): number => {
+        if (!data || index < 0 || index >= data.length) {
+          return 0;
         }
-        return 0
+        return Number(data[index]) || 0;
       }
 
-      // 更新 PV_raw 值
-      pvRawData.value = getLatestValue(pvRawDataset.data)
+      const currentIdx = realTimeStore.currentDataIndex;
 
-      // 獲取最新的充電和放電值
-      let lastChargeValue = getLatestValue(chargeDataset.data)
-      const lastDischargeValue = getLatestValue(dischargeDataset.data)
-
-      // 檢查是否已超過充電時間
-      if ( lastDischargeValue>0 ) {
-        lastChargeValue = 0
+      const rawPv = getCurrentValue(pvRawDataset.data as any[], currentIdx)
+      const rawCharge = getCurrentValue(chargeDataset.data as any[], currentIdx)
+      const rawDischarge = getCurrentValue(dischargeDataset.data as any[], currentIdx)
+  
+      pvRawData.value = rawPv * 0.25
+      socData.value = rawCharge
+      dischargeData.value = rawDischarge
+      outputToGrid.value = rawPv * 0.25
+      
+      isCharging.value = rawDischarge === 0 || rawCharge > rawDischarge
+      
+      if (rawCharge > 0 && rawDischarge === 0) {
+        outputToGrid.value = (rawPv - rawCharge) * 0.25
+      } else if (rawDischarge > 0) {
+        outputToGrid.value = (rawPv + rawDischarge) * 0.25
       }
-
-      // 更新 SOC 值
-      socData.value = lastChargeValue
-
-      // 計算輸出到電網的電量
-      if (lastChargeValue > 0) {
-        // 充電時，輸出到電網的電量為 PV_raw - 充電量
-        outputToGrid.value = Math.max(0, pvRawData.value - lastChargeValue)
-      } else if (lastDischargeValue > 0) {
-        // 放電時，輸出到電網的電量就是放電量
-        outputToGrid.value = pvRawData.value + lastDischargeValue
-      } else {
-        // 非充放電時間
-        outputToGrid.value = pvRawData.value
-      }
+    } else {
+      pvRawData.value = 0
+      socData.value = 0
+      dischargeData.value = 0
+      outputToGrid.value = 0
+      isCharging.value = true
     }
   } catch (error) {
-    console.error('Error updating data:', error)
+    console.error('Error processing local stats in PVCard:', error)
   }
 }
 
-// 定時器 ID
-let updateInterval: ReturnType<typeof setInterval> | null = null
-
 onMounted(async () => {
-  // 初始更新數據
-  await updateData()
-
-  // 每秒更新一次數據
-  updateInterval = setInterval(async () => {
-    await updateData()
-  }, 0)
+  await realTimeStore.getChartData(t)
+  processLocalStats()
+  realTimeStore.startAutoUpdate(t)
 })
 
 onUnmounted(() => {
-  if (updateInterval) {
-    clearInterval(updateInterval)
-  }
+  realTimeStore.stopAutoUpdate()
 })
+
+watch(
+  () => realTimeStore.chartData,
+  (newChartData) => {
+    if (newChartData) {
+      processLocalStats()
+    }
+  },
+  { deep: true }
+)
 
 const stats = computed(() => [
   {
@@ -94,7 +97,11 @@ const stats = computed(() => [
   },
   {
     title: 'current_ESS_power',
-    value: socData.value.toFixed(2),
+    value: isCharging.value 
+      ? `${socData.value.toFixed(2)}` 
+      : `${dischargeData.value.toFixed(2)}`,
+    icon: isCharging.value ? '↓' : '↑',
+    iconColor: isCharging.value ? 'text-green-500' : 'text-red-500',
   },
   {
     title: 'output_to_grid_amount',
@@ -113,7 +120,16 @@ const stats = computed(() => [
       <div class="text-xs text-gray-500">
         {{ $t(`main.dashboard.pvcard.${stat.title}`) }}
       </div>
-      <div class="font-bold text-base">{{ stat.value }} kWh</div>
+      <div class="font-bold text-base flex items-center">
+        <template v-if="stat.title === 'current_ESS_power'">
+          <span :class="stat.iconColor" class="mr-1 text-lg">{{ stat.icon }}</span>
+          {{ stat.value }}
+          <span class="ml-1">kW</span>
+        </template>
+        <template v-else>
+          {{ stat.value }} kWh
+        </template>
+      </div>
     </div>
   </div>
 </template>

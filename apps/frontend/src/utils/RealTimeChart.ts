@@ -8,7 +8,6 @@ const chartDataRef = ref<ChartData<'bar' | 'line'> | null>(null)
 let lastProcessedResult: ChartData<'bar' | 'line'> | null = null
 let currentDataIndex = ref(0)
 let updateInterval: NodeJS.Timeout | null = null
-
 // Function to process data and create chart datasets
 const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
   const response = await scheduleData.realTimeData('2023-09-30')
@@ -29,7 +28,6 @@ const processChartData = async (t: any): Promise<ChartData<'bar' | 'line'>> => {
       pvRawData[i] = timePoint.PV_raw || 0
     }
   }
-
   const calculateSoc = () => {
     // 處理充電數據
     let totalChargeEnergy = 0

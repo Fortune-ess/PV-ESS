@@ -11,10 +11,10 @@ import Weather from '@/components/dashboard/Weather.vue'
 </script>
 
 <template>
-  <div class="flex flex-col lg:flex-row gap-2 sm:gap-3 md:gap-4">
+  <div class="flex flex-col 2xl:flex-row gap-2 sm:gap-3 md:gap-4 p-4">
     <!-- 左側系統監控區域 -->
     <div
-      class="flex flex-col w-full lg:w-5/12 bg-white/40 rounded-2xl p-2 sm:p-3 md:p-4"
+      class="flex flex-col w-full 2xl:w-5/12 bg-white/40 rounded-2xl p-2 sm:p-3 md:p-4"
     >
       <div class="flex flex-col gap-2 sm:gap-3 md:gap-4">
         <h1
@@ -33,7 +33,7 @@ import Weather from '@/components/dashboard/Weather.vue'
 
     <!-- 中間圓餅圖區域 -->
     <div
-      class="w-full lg:w-5/12 flex flex-col bg-white/40 rounded-2xl p-2 sm:p-3 md:p-4 gap-2 sm:gap-3 md:gap-4"
+      class="w-full 2xl:w-5/12 flex flex-col bg-white/40 rounded-2xl p-2 sm:p-3 md:p-4 gap-2 sm:gap-3 md:gap-4"
     >
       <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4">
         <div class="w-full sm:w-1/3 z-10">
@@ -62,7 +62,7 @@ import Weather from '@/components/dashboard/Weather.vue'
 
     <!-- 右側邊欄 -->
     <div
-      class="w-full lg:w-2/12 flex flex-col bg-white/40 rounded-2xl p-2 sm:p-3 md:p-4 gap-2 sm:gap-3 md:gap-4"
+      class="w-full 2xl:w-2/12 flex flex-col bg-white/40 rounded-2xl p-2 sm:p-3 md:p-4 gap-2 sm:gap-3 md:gap-4"
     >
       <div class="flex h-1/2 gap-2 sm:gap-3 md:gap-4">
         <StatsCards />

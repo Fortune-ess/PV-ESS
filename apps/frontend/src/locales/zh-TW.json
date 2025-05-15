@@ -224,6 +224,65 @@
         "power_on": "功率逆變器(PCS)開啟",
         "power_off": "功率逆變器(PCS)關閉"
       }
+    },
+    "report": {
+      "header": {
+        "title": "太陽能財務報告",
+        "export_report": "匯出報告"
+      },
+      "kpi_dashboard": {
+        "title": "系統KPI儀表板",
+        "compare_yesterday": "與昨日相比",
+        "target_achievement_rate": "目標達成率",
+        "electricity_sales_price": "售電價格",
+        "taipower_contract_price": "台電合約價格",
+        "monthly_roi_progress": "月度ROI進度",
+        "accumulated_roi": "累計ROI",
+        "investment_recovery_period": "投資回收期",
+        "shortened_by_months": "縮短 {months} 個月"
+      },
+      "revenue_analytics": {
+        "title": "營收分析",
+        "period_day": "日",
+        "period_week": "週",
+        "period_month": "月",
+        "revenue_trend": "營收趨勢",
+        "actual_revenue": "實際營收",
+        "estimated_revenue": "預估營收",
+        "weather_generation_correlation": "天氣與發電量關聯",
+        "legend_sunny": "晴朗",
+        "legend_cloudy": "多雲",
+        "legend_rainy": "雨天"
+      },
+      "detailed_financial_report": {
+        "title": "詳細財務報告",
+        "export_excel": "匯出Excel",
+        "date": "日期",
+        "generation_kwh": "發電量 (kWh)",
+        "price": "價格",
+        "total_revenue": "總營收",
+        "storage_usage_kwh": "儲能用量 (kWh)",
+        "net_revenue": "淨營收",
+        "weather": "天氣",
+        "showing_entries": "顯示 {start}-{end} 筆，共 {total} 筆記錄"
+      },
+      "optimization_suggestions": {
+        "title": "系統優化建議",
+        "smart_discharge_title": "智能放電時機調整",
+        "smart_discharge_description": "過去7天光照較少。建議將放電延遲至晚間高峰時段（19:00-22:00），預計可提升營收8.5%。",
+        "performance_evaluation_title": "系統性能評估",
+        "performance_evaluation_description": "與其他案場相比，您的系統效率位於前25%，每平方米發電量高出平均值12%。",
+        "maintenance_alert_title": "設備維護警示",
+        "maintenance_alert_description": "偵測到D儲能單元效率下降8%。建議進行檢查。預估維修成本：新台幣12,000元，可能提升系統效率5%。"
+      },
+      "operating_cost_analysis": {
+        "title": "營運成本分析",
+        "monthly_operating_cost": "月度營運成本",
+        "compare_last_month": "與上月相比",
+        "average_gross_profit_per_kwh": "每度電平均毛利",
+        "gross_margin_percentage": "毛利率 {percentage}%",
+        "monthly_net_profit": "月度淨利潤"
+      }
     }
   }
 }

@@ -224,6 +224,65 @@
         "power_on": "Power Control on",
         "power_off": "Power Control off"
       }
+    },
+    "report": {
+      "header": {
+        "title": "Solar Financial Report",
+        "export_report": "Export Report"
+      },
+      "kpi_dashboard": {
+        "title": "System KPI Dashboard",
+        "compare_yesterday": "Compared to Yesterday",
+        "target_achievement_rate": "Target Achievement Rate",
+        "electricity_sales_price": "Electricity Sales Price",
+        "taipower_contract_price": "Taipower Contract Price",
+        "monthly_roi_progress": "Monthly ROI Progress",
+        "accumulated_roi": "Accumulated ROI",
+        "investment_recovery_period": "Investment Recovery Period",
+        "shortened_by_months": "Shortened by {months} Months"
+      },
+      "revenue_analytics": {
+        "title": "Revenue Analysis",
+        "period_day": "Day",
+        "period_week": "Week",
+        "period_month": "Month",
+        "revenue_trend": "Revenue Trend",
+        "actual_revenue": "Actual Revenue",
+        "estimated_revenue": "Estimated Revenue",
+        "weather_generation_correlation": "Weather & Generation Correlation",
+        "legend_sunny": "Sunny",
+        "legend_cloudy": "Cloudy",
+        "legend_rainy": "Rainy"
+      },
+      "detailed_financial_report": {
+        "title": "Detailed Financial Report",
+        "export_excel": "Export Excel",
+        "date": "Date",
+        "generation_kwh": "Generation (kWh)",
+        "price": "Price",
+        "total_revenue": "Total Revenue",
+        "storage_usage_kwh": "Storage Usage (kWh)",
+        "net_revenue": "Net Revenue",
+        "weather": "Weather",
+        "showing_entries": "Showing {start}-{end} of {total} entries"
+      },
+      "optimization_suggestions": {
+        "title": "System Optimization Suggestions",
+        "smart_discharge_title": "Smart Discharge Timing Adjustment",
+        "smart_discharge_description": "Low sunlight over the past 7 days. Consider delaying discharge to evening peak hours (19:00-22:00) for an estimated 8.5% revenue increase.",
+        "performance_evaluation_title": "System Performance Evaluation",
+        "performance_evaluation_description": "Your system efficiency ranks in the top 25% compared to other sites, with 12% higher generation per square meter than average.",
+        "maintenance_alert_title": "Equipment Maintenance Alert",
+        "maintenance_alert_description": "Detected 8% efficiency drop in Storage Unit D. Inspection recommended. Estimated repair cost: $1,800, with potential 5% system efficiency improvement."
+      },
+      "operating_cost_analysis": {
+        "title": "Operating Cost Analysis",
+        "monthly_operating_cost": "Monthly Operating Cost",
+        "compare_last_month": "Compared to Last Month",
+        "average_gross_profit_per_kwh": "Average Gross Profit per kWh",
+        "gross_margin_percentage": "Gross Margin {percentage}%",
+        "monthly_net_profit": "Monthly Net Profit"
+      }
     }
   }
 }
