@@ -4,25 +4,18 @@
     SunIcon, 
     CalendarIcon, 
     DownloadIcon,
-    // PercentIcon, // Moved to OperatingCostAnalysis
-    // WalletIcon, // Moved to OperatingCostAnalysis
-    // TrendingUpIcon, // Moved to KpiDashboard & OperatingCostAnalysis
-    // TrendingDownIcon, // Moved to KpiDashboard & OperatingCostAnalysis
-    // WrenchIcon // Moved to OperatingCostAnalysis & OptimizationSuggestions
   } from 'lucide-vue-next';
   import { useI18n } from 'vue-i18n';
   import KpiDashboard from './KpiDashboard.vue';
   import RevenueAnalytics from './RevenueAnalytics.vue';
   import DetailedFinancialReport from './DetailedFinancialReport.vue';
   import OptimizationSuggestions from './OptimizationSuggestions.vue';
-  import OperatingCostAnalysis from './OperatingCostAnalysis.vue'; // Import the new component
+  import OperatingCostAnalysis from './OperatingCostAnalysis.vue';
   
   const { t } = useI18n();
-  
-  // Current month
+
   const currentMonth = ref('May 2025');
   
-  // Dashboard data for KpiDashboard
   const dailyGeneration = ref('47944.739');
   const dailyGenerationIncrease = ref('12.5');
   const dailyRevenue = ref(2759699.205);
@@ -122,10 +115,6 @@
           <button class="text-sm px-3 py-1 bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 rounded-md flex items-center">
             <CalendarIcon class="w-4 h-4 mr-1" />
             {{ currentMonth }}
-          </button>
-          <button class="text-sm px-3 py-1 bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 rounded-md flex items-center">
-            <DownloadIcon class="w-4 h-4 mr-1" />
-            {{ t('main.report.header.export_report') }}
           </button>
         </div>
       </div>
