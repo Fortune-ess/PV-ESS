@@ -59,6 +59,10 @@ export function useAuthApi() {
     return await api.get(`/auth/verify-email?token=${token}`)
   }
 
+  const contactUs = async (name: string, email: string, subject: string, message: string) => {
+    return await api.post('/auth/contact', { name, email, subject, message})
+  }
+
   return {
     login,
     register,
@@ -68,5 +72,6 @@ export function useAuthApi() {
     resetPassword,
     verifyResetToken,
     verifyEmail,
+    contactUs,
   }
 }

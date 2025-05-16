@@ -21,8 +21,6 @@ interface NavLink {
 
 const navLinks: NavLink[] = [
   { key: 'navbar.home', link: '/home' },
-  { key: 'navbar.products', link: '/products' },
-  { key: 'navbar.solutions', link: '/solutions' },
   { key: 'navbar.contact', link: '/contact' },
 ]
 

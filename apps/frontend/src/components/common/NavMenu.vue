@@ -24,11 +24,11 @@ const onLogout = () => {
   >
     <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white backdrop-blur-sm">
       <router-link
+        class="block px-3 py-2 rounded-md text-base font-medium text-black hover:text-gray-600 transition-colors duration-200 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-gray-400 hover:after:w-1/3 after:transition-all after:duration-300"
         v-for="link in navLinks"
         :key="link.key as string"
         :to="link.link as string"
-        class="block px-3 py-2 rounded-md text-base font-medium text-black hover:text-gray-600 transition-colors duration-200 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-gray-400 hover:after:w-1/3 after:transition-all after:duration-300"
-      >
+         >
         {{ $t(link.key as string) }}
       </router-link>
       <button

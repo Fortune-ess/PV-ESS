@@ -66,4 +66,12 @@ router.get('/verify-email', async (req: Request, res: Response) => {
   }
 })
 
+router.post('/contact', async (req: Request, res: Response) => {
+  try {
+    await authController.contactUs(req, res)
+  } catch (error) {
+    res.status(500).json({ message: (error as Error).message })
+  }
+})
+
 export default router

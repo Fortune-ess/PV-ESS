@@ -1,6 +1,7 @@
 import dotenv from 'dotenv'
 import { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
+import nodemailer from 'nodemailer'
 import { redisClient } from '../config/redis'
 import { AuthService } from '../services/authService'
 import { PasswordResetService } from '../services/passwordResetService'
@@ -151,6 +152,59 @@ export class AuthController {
       successResponse(res, result)
     } catch (error) {
       errorResponse(res, (error as Error).message)
+    }
+  }
+
+  async contactUs(req: Request, res: Response) {
+    try {
+      const { name, email, subject, message } = req.body
+
+      // Create transporter
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+        tls: {
+          rejectUnauthorized: false,
+        },
+      })
+
+      // Email content
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: process.env.EMAIL_USER,
+        replyto: email,
+        subject: `Contact Form: ${subject}`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eaeaea; border-radius: 5px; background-color: #f9f9f9;">
+            <h2 style="color: #333; border-bottom: 2px solid #4a90e2; padding-bottom: 10px;">New Contact Form Submission</h2>
+            <div style="background-color: white; padding: 15px; border-radius: 4px; margin-top: 15px;">
+              <p style="margin: 8px 0;"><strong style="color: #4a90e2;">Name:</strong> ${name}</p>
+              <p style="margin: 8px 0;"><strong style="color: #4a90e2;">Email:</strong> <a href="mailto:${email}" style="color: #333; text-decoration: none;">${email}</a></p>
+              <p style="margin: 8px 0;"><strong style="color: #4a90e2;">Subject:</strong> ${subject}</p>
+              <div style="margin: 15px 0;">
+                <p style="margin: 8px 0;"><strong style="color: #4a90e2;">Message:</strong></p>
+                <div style="background-color: #f5f5f5; padding: 12px; border-left: 4px solid #4a90e2; margin-top: 5px;">
+                  ${message.replace(/\n/g, '<br>')}
+                </div>
+              </div>
+            </div>
+            <div style="margin-top: 20px; font-size: 12px; color: #777; text-align: center;">
+              <p>This is an automated message from your contact form.</p>
+            </div>
+          </div>
+        `,
+      }
+
+      // Send email
+      await transporter.sendMail(mailOptions)
+
+      successResponse(res, { message: 'Email sent successfully' })
+    } catch (error) {
+      console.error('Error sending contact email:', error)
+      errorResponse(res, 'Failed to send email')
     }
   }
 }

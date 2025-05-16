@@ -59,5 +59,10 @@ export const useAuthStore = defineStore('auth', {
       const res = await verifyEmail(token)
       return res
     },
+    async contactUs (name: string, email: string, subject: string, message: string) {
+      const { contactUs } = useAuthApi()
+      const res = await contactUs(name, email, subject, message)
+      return res
+    },
   },
 })
